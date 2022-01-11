@@ -99,7 +99,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return The current wheel speeds.
    */
-  public MecanumDriveWheelSpeeds getWheelSpeeds() {  //why does this require 4 inputs ?
+  public MecanumDriveWheelSpeeds getWheelSpeeds() { 
     return new MecanumDriveWheelSpeeds(m_frontLeft.getSelectedSensorVelocity(), m_frontRight.getSelectedSensorVelocity(), m_rearLeft.getSelectedSensorVelocity(), m_rearRight.getSelectedSensorVelocity());
   }
 
@@ -188,8 +188,6 @@ public class DriveSubsystem extends SubsystemBase {
   // public Encoder getRearRightEncoder() {
   //   return m_rearRightEncoder;
   // }
-
-  //why use that ??  ↓
   /**
   * Gets the current wheel speeds.
   *

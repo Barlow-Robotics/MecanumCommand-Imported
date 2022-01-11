@@ -24,15 +24,9 @@ public final class Constants {
     public static final int ID_frontRightMotor = 2;
     public static final int ID_rearRightMotor = 20;
 
-    public static final int[] kFrontLeftEncoderPorts = new int[] {0, 1};
-    public static final int[] kRearLeftEncoderPorts = new int[] {2, 3};
-    public static final int[] kFrontRightEncoderPorts = new int[] {4, 5};
-    public static final int[] kRearRightEncoderPorts = new int[] {5, 6};
-
-    public static final boolean kFrontLeftEncoderReversed = false;
-    public static final boolean kRearLeftEncoderReversed = true;
-    public static final boolean kFrontRightEncoderReversed = false;
-    public static final boolean kRearRightEncoderReversed = true;
+    public static final double countsPerRevolution = 8192.0;
+    public static final double circumferenceOfWheel = 8.0*Math.PI;
+    public static final double distanceGoal = 120.0;
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
