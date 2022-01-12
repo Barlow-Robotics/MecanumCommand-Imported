@@ -24,9 +24,9 @@ public class AutonomousCommand extends CommandBase{
     m_subsystem.resetDistance();
   }
 
-  @Override //implement this: see the drive method in DriveSubsytems, not sure what numbers r needed
+  @Override 
   public void execute() {
-    m_subsystem.drive(0.0, 0.75, 3, true); //JUST PLACEHOLDER CODE!!
+    m_subsystem.drive(0.0, 0.75, 0, false);
   }
 
   @Override
