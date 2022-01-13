@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import java.util.List;
-import edu.wpi.first.wpilibj.GenericHID;//trying to import .Hand, says it can't be resolved...
+//trying to import .Hand, says it can't be resolved...
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -54,7 +54,7 @@ public class RobotContainer {
                 m_robotDrive.arcadeDrive(  
                   // https://gist.github.com/thekeenant/7d705236c38892f6f15d
                    m_driverController.getY(GenericHID.Hand.kLeft),
-                   m_driverController.getX(GenericHID.Hand.kRight),  //Why is Hand having an error ?
+                   m_driverController.getX(GenericHID.Hand.kRight), //Why is Hand having an error ?
                    m_driverController.getRawAxis(1), //Left-side Y axis
                   -m_driverController.getRawAxis(2)),   //Right-side X axis
 
