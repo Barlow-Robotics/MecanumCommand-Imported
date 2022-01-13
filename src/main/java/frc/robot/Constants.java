@@ -19,10 +19,17 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static final class DriveConstants {
+<<<<<<< HEAD
     public static final int ID_frontLeftMotor = 4;
     public static final int ID_rearLeftMotor = 1;
     public static final int ID_frontRightMotor = 2;
     public static final int ID_rearRightMotor = 5;
+=======
+    public static final int ID_frontLeftMotor = 15;
+    public static final int ID_rearLeftMotor = 14;
+    public static final int ID_frontRightMotor = 0;
+    public static final int ID_rearRightMotor = 1;
+>>>>>>> e2abe80db8ca1b6954f890e577c713bdc700b877
 
     public static final double countsPerRevolution = 8192.0;
     public static final double circumferenceOfWheel = 8.0*Math.PI;
