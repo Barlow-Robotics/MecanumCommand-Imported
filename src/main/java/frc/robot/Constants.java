@@ -150,4 +150,28 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
+    public static final class ArmBarConstants {
+        //these are all temp values!!!
+        
+        public static final int ID_armBarMotor = 5;
+
+        public static final double manualVoltageRampingConstant = 0.21;
+        public static final double closedVoltageRampingConstant = 0.21;
+
+        public static final int encoderTimeout = 30;
+        public static final int mainFeedbackLoop = 0;
+
+        public static final int PID_id = 0;
+
+        public static final double DrivetrainKf = 1.8;
+        public static final double DrivetrainkP = 0.02;
+
+        public static final int ID_hallEffectsA1 = 0;
+        public static final int ID_hallEffectsA2 = 0;
+        public static final int ID_hallEffectsB1 = 0;
+        public static final int ID_hallEffectsB2 = 0;
+
+    }
+
 }
