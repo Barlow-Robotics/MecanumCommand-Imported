@@ -27,6 +27,8 @@ public final class Constants {
         public static final int ID_frontRightMotor = 5;
         public static final int ID_backRightMotor = 2;
 
+        public static final int ID_intakeMotor = 6;
+
         //public static final double countsPerRevolution = 8192.0;
         public static final double circumferenceOfWheel = 6.0 * Math.PI;
         public static final double distanceGoal = 120.0;
@@ -133,8 +135,18 @@ public final class Constants {
         public static final int NeonGreen = 3 ;
     }
 
-
-    
+    public static final class IntakeConstants {
+        public static final double intakeMotorSpeed = 0.3;
+        public static final int mainFeedbackLoop = 0;
+        public static final int encoderTimeout = 0;
+        public static final int Extend_Solenoid = 0;
+        public static final int Retract_Solenoid = 1;
+        public static final double closedVoltageRampingConstant = 0;
+        public static final double manualVoltageRampingConstant = 0;
+        public static final double DrivetrainKf = 0;
+        public static final double DrivetrainkP = 0;
+        public static final int PID_id = 0;
+    }
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 3;
@@ -150,4 +162,6 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
+    public static final String Feeder = null;
 }
