@@ -12,6 +12,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ExtendIntake;
+import frc.robot.commands.RetractIntake;
 import frc.robot.commands.StartIntake;
 import frc.robot.commands.StopIntake;
 import frc.robot.subsystems.DriveSubsystem;
@@ -27,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import java.util.List;
-
 import edu.wpi.first.networktables.*;
 
 
@@ -48,13 +49,16 @@ public class RobotContainer {
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
     private final JoystickButton intakeButton = new JoystickButton(m_driverController,
             Constants.Logitech_F310_Controller.Right_Bumper);
+    private final JoystickButton extendButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Left_Bumper);
 
-    private final Intake m_intake = new Intake();
+    private final Intake m_intake = new Intake(); 
 
     private final StartIntake startIntakeCommand = new StartIntake(m_intake);
     private final StopIntake stopIntakeCommand = new StopIntake(m_intake);
-
-
+    private final ExtendIntake extendIntakeCommand = new ExtendIntake(m_intake);
+    private final RetractIntake retractIntakeCommand = new RetractIntake(m_intake);
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -123,6 +127,7 @@ public class RobotContainer {
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5))
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
         intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+        extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
     }
 
     /**
