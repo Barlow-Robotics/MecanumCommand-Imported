@@ -12,6 +12,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.StartIntake;
+import frc.robot.commands.StopIntake;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.UnderGlow;
@@ -44,8 +46,14 @@ public class RobotContainer {
 
     // The driver's controller
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
+    private final JoystickButton intakeButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Right_Bumper);
 
-    Intake m_intake = new Intake();
+    private final Intake m_intake = new Intake();
+
+    private final StartIntake startIntakeCommand = new StartIntake(m_intake);
+    private final StopIntake stopIntakeCommand = new StopIntake(m_intake);
+
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -114,6 +122,7 @@ public class RobotContainer {
         // new JoystickButton(m_driverController, Constants.OIConstants.halfSpeedButton)
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5))
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
+        intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
     }
 
     /**

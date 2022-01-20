@@ -163,5 +163,30 @@ public final class Constants {
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 
+    public final class Logitech_F310_Controller {
+
+        // Constants for Axes
+        public static final int Left_Stick_X = 0 ;
+        public static final int Left_Stick_Y = 1 ;
+        public static final int Left_Trigger = 2 ;
+        public static final int Right_Trigger = 3 ;
+        public static final int Right_Stick_X = 4 ;
+        public static final int Right_Stick_Y = 5 ;
+
+        // Constants for buttons
+        public static final int Button_A = 1 ;
+        public static final int Button_B = 2 ;
+        public static final int Button_X = 3 ;
+        public static final int Button_Y = 4 ;
+        public static final int Left_Bumper = 5 ;
+        public static final int Right_Bumper = 6 ;
+        public static final int Back_Button = 7 ;
+        public static final int Start_Button = 8 ;
+        public static final int Left_Stick = 9 ;
+        public static final int Right_Stick = 10 ;
+        
+    }
+
+
     public static final String Feeder = null;
 }

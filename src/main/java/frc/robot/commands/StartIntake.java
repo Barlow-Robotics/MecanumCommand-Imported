@@ -15,6 +15,7 @@ public class StartIntake extends CommandBase {
   public StartIntake(Intake i) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = i;
+    addRequirements(m_intake);
   }
 
   // Called when the command is initially scheduled.
