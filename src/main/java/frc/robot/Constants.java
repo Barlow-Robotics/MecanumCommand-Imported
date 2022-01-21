@@ -134,7 +134,7 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int ID_intakeMotor = 6;
+        public static final int ID_intakeMotor = 3;
         public static final double intakeMotorSpeed = 0.3;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;

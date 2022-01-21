@@ -54,12 +54,14 @@ public class Intake extends SubsystemBase {
 
   public void start() {
     // motor for wheels starts running
-    intakeMotor.set(TalonSRXControlMode.Velocity, IntakeConstants.intakeMotorSpeed);
+//    intakeMotor.set(TalonSRXControlMode.Velocity, IntakeConstants.intakeMotorSpeed);
+    intakeMotor.set(TalonSRXControlMode.PercentOutput, -0.5);
   }
 
   public void stop() {
     // motor for wheels stops running
-    intakeMotor.set(TalonSRXControlMode.Velocity, 0);
+//    intakeMotor.set(TalonSRXControlMode.Velocity, 0);
+    intakeMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
   }
 
 
