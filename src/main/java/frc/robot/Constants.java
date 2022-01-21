@@ -27,8 +27,6 @@ public final class Constants {
         public static final int ID_frontRightMotor = 5;
         public static final int ID_backRightMotor = 2;
 
-        public static final int ID_intakeMotor = 6;
-
         //public static final double countsPerRevolution = 8192.0;
         public static final double circumferenceOfWheel = 6.0 * Math.PI;
         public static final double distanceGoal = 120.0;
@@ -136,6 +134,7 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
+        public static final int ID_intakeMotor = 6;
         public static final double intakeMotorSpeed = 0.3;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;

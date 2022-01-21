@@ -278,7 +278,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 
 
-    private void setMotorConfig(WPI_TalonSRX motor) {
+    private void setMotorConfig(WPI_TalonSRX motor) { //changed to TalonFX for intake
         motor.configFactoryDefault() ;
         motor.configSelectedFeedbackSensor(
             FeedbackDevice.QuadEncoder, 
