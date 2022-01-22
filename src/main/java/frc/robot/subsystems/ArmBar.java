@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 //import sensors
@@ -30,6 +31,8 @@ public class ArmBar extends SubsystemBase {
   /** Creates a new ArmBar. */
   public ArmBar() {
     armBarMotor = new WPI_TalonSRX(ArmBarConstants.ID_armBarMotor);
+    armBarMotor.setSelectedSensorPosition(0.0);
+    armBarMotor.set(TalonSRXControlMode.Velocity, ArmBarConstants.armBarMotorSpeed);
 
     hallEffectsA1 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA1);
     hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA2);
@@ -44,38 +47,40 @@ public class ArmBar extends SubsystemBase {
   }
 
   public void rotateGripperArmDegree(double angle){
-    
+    //motor will go until the bar is rotated so that the the original bar position and the new bar position form the desired angle
+    armBarMotor.set(TalonSRXControlMode.Position, (angle/360)*Constants.ArmBarConstants.gearRatio*Constants.ArmBarConstants.unitsPerRotation);
+    //armBarMotor.setSelectedSensorPosition(0.0);
   }
 
   public void rotateGripperArmA(){
-    //Begin rotating gripper arm until the A grippers registers as closed
+    //Begin rotating gripper arms until the A grippers registers as closed
     while(!gripperAIsClosed()){
       //rotate motor
     }
   }
 
   public void rotateGripperArmB(){
-    //Begin rotating gripper arm until the A grippers registers as closed
+    //Begin rotating gripper arms until the A grippers registers as closed
     while(!gripperBIsClosed()){
       //rotate motor
     }
   }
 
   public void releaseGripperA(){
-      //Pull pin on A
+      //Pull pin on both A's
   }
 
   public void releaseGripperB(){
-      //Pull pin on B
+      //Pull pin on both B's
   }
 
   public boolean gripperAIsClosed(){
-    //Check for halleffect on A
+    //Check for halleffect on both A's
     return(hallEffectsA1.get() && hallEffectsA2.get());
   }
 
   public boolean gripperBIsClosed(){
-    //Check for halleffect on B
+    //Check for halleffect on both B's
     return(hallEffectsB1.get() && hallEffectsB2.get());
   }
 

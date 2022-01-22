@@ -76,7 +76,7 @@ public final class Constants {
         public static final double DrivetrainKf = 1.8; // 0.1797
         public static final double DrivetrainkP = 0.02;
 
-        public static final double unitsPerRotation = 8192;
+        public static final double unitsPerRotation = 1024;
         public static final double RPMsToUnitsPerHundredMilliseconds = 1.0 / 600.0;
         public static final double desiredRPMsForDrive = 560.0;
         public static final double maxDriveVelocity = 6000.0;
@@ -154,7 +154,17 @@ public final class Constants {
     public static final class ArmBarConstants {
         //these are all temp values!!!
         
-        public static final int ID_armBarMotor = 5;
+        public static final int ID_armBarMotor = 10;
+        
+        public static final int ID_hallEffectsA1 = 11;
+        public static final int ID_hallEffectsA2 = 12;
+        public static final int ID_hallEffectsB1 = 13;
+        public static final int ID_hallEffectsB2 = 14;
+
+        public static final int unitsPerRotation = 1024;
+        public static final double gearRatio = 48/1;
+
+        public static final double armBarMotorSpeed = 0.0;
 
         public static final double manualVoltageRampingConstant = 0.21;
         public static final double closedVoltageRampingConstant = 0.21;
@@ -167,10 +177,8 @@ public final class Constants {
         public static final double DrivetrainKf = 1.8;
         public static final double DrivetrainkP = 0.02;
 
-        public static final int ID_hallEffectsA1 = 0;
-        public static final int ID_hallEffectsA2 = 0;
-        public static final int ID_hallEffectsB1 = 0;
-        public static final int ID_hallEffectsB2 = 0;
+        
+
 
     }
 
