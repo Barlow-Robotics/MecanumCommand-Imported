@@ -12,6 +12,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+
+import frc.robot.subsystems.ArmBar;
+
 import frc.robot.commands.ExtendIntake;
 import frc.robot.commands.RetractIntake;
 import frc.robot.commands.StartIntake;
@@ -20,6 +23,7 @@ import frc.robot.commands.StartShooting;
 import frc.robot.commands.StopIntake;
 import frc.robot.commands.StopReceiving;
 import frc.robot.commands.StopShooting;
+
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -54,6 +58,9 @@ public class RobotContainer {
 
     // The driver's controller
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
+
+    ArmBar armBar = new ArmBar();
+
     private final JoystickButton intakeButton = new JoystickButton(m_driverController,
             Constants.Logitech_F310_Controller.Right_Bumper);
     private final JoystickButton extendButton = new JoystickButton(m_driverController,
