@@ -23,7 +23,8 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
 
   WPI_TalonSRX intakeMotor;
-  Solenoid extendSolenoid, retractSolenoid;
+  Solenoid extendSolenoid;
+  Solenoid retractSolenoid;
   Compressor compressor; 
 
 

@@ -61,7 +61,7 @@ public class ArmBar extends SubsystemBase {
   public void rotateGripperArmDegree(double angle){
     //motor will go until the bar is rotated so that the the original bar position and the new bar position form the desired angle
     armBarMotor.set(TalonSRXControlMode.Position, (angle/360)*Constants.ArmBarConstants.gearRatio*Constants.ArmBarConstants.unitsPerRotation);
-    //armBarMotor.setSelectedSensorPosition(0.0);
+    //armBarMotor.setSelectedSensorPosition(0.0); do we need this / where would it go if we do
   }
 
   // public void rotateGripperArmA(){
@@ -78,25 +78,23 @@ public class ArmBar extends SubsystemBase {
   //   }
   // }
 
-  public void moveBackUntilBarCloses(){
-    //drive backwards
-  }
-
   public void releaseGripperA(){
-      //solenoid does something here
+    solenoidA1.set(true);
+    solenoidA2.set(true);
   }
 
   public void releaseGripperB(){
-      //solenoid does something here
+    solenoidB1.set(true);
+    solenoidB2.set(true);
   }
 
   public boolean gripperAIsClosed(){
-    //Check for halleffect on both A's
+    //Check for halleffect
     return(hallEffectsA1.get() && hallEffectsA2.get());
   }
 
   public boolean gripperBIsClosed(){
-    //Check for halleffect on both B's
+    //Check for halleffect
     return(hallEffectsB1.get() && hallEffectsB2.get());
   }
 

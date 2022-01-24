@@ -23,10 +23,12 @@ import frc.robot.commands.StartShooting;
 import frc.robot.commands.StopIntake;
 //import frc.robot.commands.StopReceiving;
 import frc.robot.commands.StopShooting;
+import frc.robot.commands.Climb;
 
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterIntake;
+import frc.robot.subsystems.ArmBar;
 import frc.robot.subsystems.UnderGlow;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -53,6 +55,7 @@ public class RobotContainer {
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
     private final Intake m_intake = new Intake();
     private final ShooterIntake m_shooter = new ShooterIntake();
+    private final ArmBar m_armBar = new ArmBar();
 
     private final UnderGlow underGlow = new UnderGlow() ;
 
@@ -68,6 +71,8 @@ public class RobotContainer {
     
     private final JoystickButton shooterButton = new JoystickButton(m_driverController,
             Constants.Logitech_F310_Controller.Button_A);
+
+    private final JoystickButton climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);    
 //     private final JoystickButton receiverButton = new JoystickButton(m_driverController,
 //             Constants.Logitech_F310_Controller.Button_Y); 
 
@@ -82,6 +87,9 @@ public class RobotContainer {
 
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
+    
+    private final Climb climbCommand = new Climb(m_armBar);
+
 //     private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);
 //     private final StopReceiving stopReceivingCommand = new StopReceiving(m_shooter);
     
@@ -155,6 +163,7 @@ public class RobotContainer {
         intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
         extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
+        climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep trying to restart itself
         //receiverButton.whenPressed(startReceivingCommand).whenReleased(stopReceivingCommand);
         
 }
