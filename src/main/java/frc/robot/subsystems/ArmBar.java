@@ -15,7 +15,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 //import sensors
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 
 public class ArmBar extends SubsystemBase {
@@ -28,6 +30,11 @@ public class ArmBar extends SubsystemBase {
   public DigitalInput hallEffectsB1;
   public DigitalInput hallEffectsB2;
 
+  public Solenoid solenoidA1;
+  public Solenoid solenoidA2;
+  public Solenoid solenoidB1;
+  public Solenoid solenoidB2;
+
   /** Creates a new ArmBar. */
   public ArmBar() {
     armBarMotor = new WPI_TalonSRX(ArmBarConstants.ID_armBarMotor);
@@ -38,6 +45,11 @@ public class ArmBar extends SubsystemBase {
     hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA2);
     hallEffectsB1 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsB1);
     hallEffectsB2 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsB2);
+
+    solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsA1);
+    solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsA2);
+    solenoidB1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsB1);
+    solenoidB2= new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsB2);
   
   }
 
@@ -52,26 +64,30 @@ public class ArmBar extends SubsystemBase {
     //armBarMotor.setSelectedSensorPosition(0.0);
   }
 
-  public void rotateGripperArmA(){
-    //Begin rotating gripper arms until the A grippers registers as closed
-    while(!gripperAIsClosed()){
-      //rotate motor
-    }
-  }
+  // public void rotateGripperArmA(){
+  //   //Begin rotating gripper arms until the A grippers registers as closed
+  //   while(!gripperAIsClosed()){
+  //     //rotate motor
+  //   }
+  // }
 
-  public void rotateGripperArmB(){
-    //Begin rotating gripper arms until the A grippers registers as closed
-    while(!gripperBIsClosed()){
-      //rotate motor
-    }
+  // public void rotateGripperArmB(){
+  //   //Begin rotating gripper arms until the A grippers registers as closed
+  //   while(!gripperBIsClosed()){
+  //     //rotate motor
+  //   }
+  // }
+
+  public void moveBackUntilBarCloses(){
+    //drive backwards
   }
 
   public void releaseGripperA(){
-      //Pull pin on both A's
+      //solenoid does something here
   }
 
   public void releaseGripperB(){
-      //Pull pin on both B's
+      //solenoid does something here
   }
 
   public boolean gripperAIsClosed(){
@@ -83,7 +99,6 @@ public class ArmBar extends SubsystemBase {
     //Check for halleffect on both B's
     return(hallEffectsB1.get() && hallEffectsB2.get());
   }
-
 
   private void setMotorConfig(WPI_TalonSRX motor) {
     motor.configFactoryDefault() ;
