@@ -13,15 +13,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Shooter extends SubsystemBase {
+public class ShooterIntake extends SubsystemBase {
   /** Creates a new Shooter. */
 
   WPI_TalonSRX shooterMotor;
-  WPI_TalonSRX receiverMotor;
+  //WPI_TalonSRX receiverMotor;
 
-  public Shooter() {
+  public ShooterIntake() {
       shooterMotor = new WPI_TalonSRX(Constants.ShooterConstants.ID_shooterMotor);
-      receiverMotor = new WPI_TalonSRX(Constants.ShooterConstants.ID_receiverMotor);
+      //receiverMotor = new WPI_TalonSRX(Constants.ShooterConstants.ID_receiverMotor);
   }
 
   @Override
@@ -31,29 +31,33 @@ public class Shooter extends SubsystemBase {
 
   public void startShooting() {
     shooterMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.shooterMotorVelocity);
-    receiverMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
+    //receiverMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
   }
 
   public void stopShooting() {
     shooterMotor.set(TalonSRXControlMode.Velocity, 0);
-    receiverMotor.set(TalonSRXControlMode.Velocity, 0);
+    //receiverMotor.set(TalonSRXControlMode.Velocity, 0);
   }
 
   public boolean hasStarted() {
-      return(shooterMotor.get()!=0 && receiverMotor.get()!=0);
+      return(shooterMotor.get()!=0 
+      //&& receiverMotor.get()!=0
+      );
   }
 
   public boolean isStopped() {
-      return(shooterMotor.get()==0 && receiverMotor.get()==0);
+      return(shooterMotor.get()==0
+      //&& receiverMotor.get()==0
+      );
   }
 
-  public void startReceiving() {
-    receiverMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
-  }
+  // public void startReceiving() {
+  //   receiverMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
+  // }
   
-  public void stopReceiving(){
-    receiverMotor.set(TalonSRXControlMode.Velocity, 0);
-  }
+  // public void stopReceiving(){
+  //   receiverMotor.set(TalonSRXControlMode.Velocity, 0);
+  // }
 
   private void setMotorConfig(WPI_TalonSRX motor) {
     motor.configFactoryDefault() ;

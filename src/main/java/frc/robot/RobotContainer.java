@@ -18,15 +18,15 @@ import frc.robot.subsystems.ArmBar;
 import frc.robot.commands.ExtendIntake;
 import frc.robot.commands.RetractIntake;
 import frc.robot.commands.StartIntake;
-import frc.robot.commands.StartReceiving;
+//import frc.robot.commands.StartReceiving;
 import frc.robot.commands.StartShooting;
 import frc.robot.commands.StopIntake;
-import frc.robot.commands.StopReceiving;
+//import frc.robot.commands.StopReceiving;
 import frc.robot.commands.StopShooting;
 
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterIntake;
 import frc.robot.subsystems.UnderGlow;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,7 +52,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
     private final Intake m_intake = new Intake();
-    private final Shooter m_shooter = new Shooter();
+    private final ShooterIntake m_shooter = new ShooterIntake();
 
     private final UnderGlow underGlow = new UnderGlow() ;
 
@@ -68,8 +68,8 @@ public class RobotContainer {
     
     private final JoystickButton shooterButton = new JoystickButton(m_driverController,
             Constants.Logitech_F310_Controller.Button_A);
-    private final JoystickButton receiverButton = new JoystickButton(m_driverController,
-            Constants.Logitech_F310_Controller.Button_Y); 
+//     private final JoystickButton receiverButton = new JoystickButton(m_driverController,
+//             Constants.Logitech_F310_Controller.Button_Y); 
 
    
 
@@ -82,8 +82,8 @@ public class RobotContainer {
 
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
-    private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);
-    private final StopReceiving stopReceivingCommand = new StopReceiving(m_shooter);
+//     private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);
+//     private final StopReceiving stopReceivingCommand = new StopReceiving(m_shooter);
     
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -155,7 +155,7 @@ public class RobotContainer {
         intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
         extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
-        receiverButton.whenPressed(startReceivingCommand).whenReleased(stopReceivingCommand);
+        //receiverButton.whenPressed(startReceivingCommand).whenReleased(stopReceivingCommand);
         
 }
 
