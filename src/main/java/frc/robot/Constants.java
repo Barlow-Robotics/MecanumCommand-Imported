@@ -133,8 +133,19 @@ public final class Constants {
         public static final int NeonGreen = 3 ;
     }
 
-
-    
+    public static final class IntakeConstants {
+        public static final int ID_intakeMotor = 3;
+        public static final double intakeMotorSpeed = 0.3;
+        public static final int mainFeedbackLoop = 0;
+        public static final int encoderTimeout = 0;
+        public static final int Extend_Solenoid = 0;
+        public static final int Retract_Solenoid = 1;
+        public static final double closedVoltageRampingConstant = 0;
+        public static final double manualVoltageRampingConstant = 0;
+        public static final double DrivetrainKf = 0;
+        public static final double DrivetrainkP = 0;
+        public static final int PID_id = 0;
+    }
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 3;
@@ -182,4 +193,37 @@ public final class Constants {
 
     }
 
+    public final class Logitech_F310_Controller {
+
+        // Constants for Axes
+        public static final int Left_Stick_X = 0 ;
+        public static final int Left_Stick_Y = 1 ;
+        public static final int Left_Trigger = 2 ;
+        public static final int Right_Trigger = 3 ;
+        public static final int Right_Stick_X = 4 ;
+        public static final int Right_Stick_Y = 5 ;
+
+        // Constants for buttons
+        public static final int Button_A = 1 ;
+        public static final int Button_B = 2 ;
+        public static final int Button_X = 3 ;
+        public static final int Button_Y = 4 ;
+        public static final int Left_Bumper = 5 ;
+        public static final int Right_Bumper = 6 ;
+        public static final int Back_Button = 7 ;
+        public static final int Start_Button = 8 ;
+        public static final int Left_Stick = 9 ;
+        public static final int Right_Stick = 10 ;
+        
+    }
+
+    public static final class ShooterConstants {
+        public static final int ID_shooterMotor = 7;
+        public static final int ID_receiverMotor = 8;
+        public static final double receiverMotorVelocity = 0.3;
+        public static final double shooterMotorVelocity = 0.3;
+    }
+
+
+    public static final String Feeder = null;
 }

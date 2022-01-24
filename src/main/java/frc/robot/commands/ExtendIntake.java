@@ -5,12 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Intake;
 
 public class ExtendIntake extends CommandBase {
-  /** Creates a new ExtendIntake. */
-  public ExtendIntake() {
+  
+  private Intake m_intake;
+
+  /** Creates a new StartIntake. */
+  public ExtendIntake(Intake i) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_intake = i;
+    addRequirements(m_intake);
   }
+
 
   // Called when the command is initially scheduled.
   @Override

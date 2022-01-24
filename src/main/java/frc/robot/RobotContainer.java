@@ -12,8 +12,21 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+
 import frc.robot.subsystems.ArmBar;
+
+import frc.robot.commands.ExtendIntake;
+import frc.robot.commands.RetractIntake;
+import frc.robot.commands.StartIntake;
+import frc.robot.commands.StartReceiving;
+import frc.robot.commands.StartShooting;
+import frc.robot.commands.StopIntake;
+import frc.robot.commands.StopReceiving;
+import frc.robot.commands.StopShooting;
+
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.UnderGlow;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,7 +38,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import java.util.List;
-
 import edu.wpi.first.networktables.*;
 
 
@@ -39,6 +51,8 @@ import edu.wpi.first.networktables.*;
 public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    private final Intake m_intake = new Intake();
+    private final Shooter m_shooter = new Shooter();
 
     private final UnderGlow underGlow = new UnderGlow() ;
 
@@ -47,6 +61,30 @@ public class RobotContainer {
 
     ArmBar armBar = new ArmBar();
 
+    private final JoystickButton intakeButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Right_Bumper);
+    private final JoystickButton extendButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Left_Bumper);
+    
+    private final JoystickButton shooterButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Button_A);
+    private final JoystickButton receiverButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Button_Y); 
+
+   
+
+   // Commands
+
+    private final StartIntake startIntakeCommand = new StartIntake(m_intake);
+    private final StopIntake stopIntakeCommand = new StopIntake(m_intake);
+    private final ExtendIntake extendIntakeCommand = new ExtendIntake(m_intake);
+    private final RetractIntake retractIntakeCommand = new RetractIntake(m_intake);
+
+    private final StartShooting startShootingCommand = new StartShooting(m_shooter);
+    private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
+    private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);
+    private final StopReceiving stopReceivingCommand = new StopReceiving(m_shooter);
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -114,7 +152,12 @@ public class RobotContainer {
         // new JoystickButton(m_driverController, Constants.OIConstants.halfSpeedButton)
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5))
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
-    }
+        intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+        extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
+        shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
+        receiverButton.whenPressed(startReceivingCommand).whenReleased(stopReceivingCommand);
+        
+}
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
