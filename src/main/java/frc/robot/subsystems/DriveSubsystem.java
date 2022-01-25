@@ -41,7 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
     WPI_TalonSRX m_frontRight;
     WPI_TalonSRX m_backRight;
 
-    private final MecanumDrive m_drive;
+    public final MecanumDrive m_drive;
 
     // The gyro sensor
     private final Gyro m_gyro = new ADXRS450_Gyro();

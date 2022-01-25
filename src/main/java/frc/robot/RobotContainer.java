@@ -56,7 +56,6 @@ public class RobotContainer {
     private final Intake m_intake = new Intake();
     private final ShooterIntake m_shooter = new ShooterIntake();
     private final ArmBar m_armBar = new ArmBar();
-
     private final UnderGlow underGlow = new UnderGlow() ;
 
     // The driver's controller
@@ -64,15 +63,11 @@ public class RobotContainer {
 
     ArmBar armBar = new ArmBar();
 
-    private final JoystickButton intakeButton = new JoystickButton(m_driverController,
-            Constants.Logitech_F310_Controller.Right_Bumper);
-    private final JoystickButton extendButton = new JoystickButton(m_driverController,
-            Constants.Logitech_F310_Controller.Left_Bumper);
-    
-    private final JoystickButton shooterButton = new JoystickButton(m_driverController,
-            Constants.Logitech_F310_Controller.Button_A);
+    private final JoystickButton intakeButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Right_Bumper);
+    private final JoystickButton extendButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
+    private final JoystickButton shooterButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_A);
+    private final JoystickButton climbButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Back_Button);
 
-    private final JoystickButton climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);    
 //     private final JoystickButton receiverButton = new JoystickButton(m_driverController,
 //             Constants.Logitech_F310_Controller.Button_Y); 
 
@@ -84,10 +79,8 @@ public class RobotContainer {
     private final StopIntake stopIntakeCommand = new StopIntake(m_intake);
     private final ExtendIntake extendIntakeCommand = new ExtendIntake(m_intake);
     private final RetractIntake retractIntakeCommand = new RetractIntake(m_intake);
-
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
-    
     private final Climb climbCommand = new Climb(m_armBar);
 
 //     private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);

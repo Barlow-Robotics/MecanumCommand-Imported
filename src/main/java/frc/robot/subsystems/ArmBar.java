@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class ArmBar extends SubsystemBase {
 
-  WPI_TalonSRX armBarMotor;
+  public WPI_TalonSRX armBarMotor;
   //Add sensors
 
   public DigitalInput hallEffectsA1;
@@ -34,6 +34,7 @@ public class ArmBar extends SubsystemBase {
   public Solenoid solenoidA2;
   public Solenoid solenoidB1;
   public Solenoid solenoidB2;
+
 
   /** Creates a new ArmBar. */
   public ArmBar() {
@@ -57,11 +58,15 @@ public class ArmBar extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
+  
   public void rotateGripperArmDegree(double angle){
     //motor will go until the bar is rotated so that the the original bar position and the new bar position form the desired angle
     armBarMotor.set(TalonSRXControlMode.Position, (angle/360)*Constants.ArmBarConstants.gearRatio*Constants.ArmBarConstants.unitsPerRotation);
     //armBarMotor.setSelectedSensorPosition(0.0); do we need this / where would it go if we do
+  }
+
+  public double armAngle() {
+    return 0.0 ;  // need to figure out how to get degrees.
   }
 
   // public void rotateGripperArmA(){
@@ -77,7 +82,7 @@ public class ArmBar extends SubsystemBase {
   //     //rotate motor
   //   }
   // }
-
+  
   public void releaseGripperA(){
     solenoidA1.set(true);
     solenoidA2.set(true);

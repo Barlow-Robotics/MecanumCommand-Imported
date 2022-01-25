@@ -28,7 +28,6 @@ public class Intake extends SubsystemBase {
   Compressor compressor; 
 
 
-
   public Intake() {
     intakeMotor = new WPI_TalonSRX(IntakeConstants.ID_intakeMotor);
     retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.Extend_Solenoid);
