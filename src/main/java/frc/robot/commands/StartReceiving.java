@@ -7,14 +7,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterIntake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class StartReceiving extends CommandBase {
  
- private ShooterIntake m_shooter;
+ private ShooterIndex m_shooter;
  
   /** Creates a new StartReceiving. */
-  public StartReceiving(ShooterIntake i) {
+  public StartReceiving(ShooterIndex i) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_shooter = i;
     addRequirements(m_shooter);
@@ -27,7 +27,7 @@ public class StartReceiving extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //m_shooter.startReceiving();
+    m_shooter.startReceiving();
   }
 
   // Called once the command ends or is interrupted.

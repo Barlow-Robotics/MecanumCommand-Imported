@@ -51,24 +51,31 @@ public class Climb extends CommandBase {
         currentState = ArmCommandState.DrivingBackward;
       }
       else if (currentState == ArmCommandState.DrivingBackward) {
-        m_drive.drive(-0.1, 0.0, 0, false); //how incorporate drivetrain?
+        m_drive.drive(-0.1, 0.0, 0, false); //how incorporate drivetrain? can be negative?
         if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
           m_drive.drive(0.0, 0.0, 0, false); //how incorporate drivetrain?
-          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0);
+          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0.1);
           currentState = ArmCommandState.WaitingForHighBar;
         }
       } 
       else if (currentState == ArmCommandState.WaitingForHighBar) {
         if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
-          //let go of first bar
+          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0.0);
+          m_armBar.releaseGripperA();
         }
-        else if(!m_armBar.gripperAIsClosed() && !m_armBar.gripperBIsClosed()) {
+        if(!m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
           currentState = ArmCommandState.WaitingForTraversalBar;
+          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0.1);
         }
       }
       else if (currentState == ArmCommandState.WaitingForTraversalBar) {
-        currentState = ArmCommandState.Finished;
+        if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed())
+          m_armBar.releaseGripperB();
+          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0);
       }
+        if(m_armBar.gripperAIsClosed() && !m_armBar.gripperBIsClosed() && m_armBar.armBarMotor.get()==0.0) {
+          currentState = ArmCommandState.Finished;
+        }
     }
 
     

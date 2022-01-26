@@ -27,7 +27,7 @@ import frc.robot.commands.Climb;
 
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.ShooterIntake;
+import frc.robot.subsystems.ShooterIndex;
 import frc.robot.subsystems.ArmBar;
 import frc.robot.subsystems.UnderGlow;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -54,7 +54,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
     private final Intake m_intake = new Intake();
-    private final ShooterIntake m_shooter = new ShooterIntake();
+    private final ShooterIndex m_shooter = new ShooterIndex();
     private final ArmBar m_armBar = new ArmBar();
     private final UnderGlow underGlow = new UnderGlow() ;
 

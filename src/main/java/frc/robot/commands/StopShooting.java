@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterIntake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class StopShooting extends CommandBase {
 
-  private ShooterIntake m_shooter;
+  private ShooterIndex m_shooter;
 
   /** Creates a new StopShooting. */
-  public StopShooting(ShooterIntake i) {
+  public StopShooting(ShooterIndex i) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_shooter = i;
     addRequirements(m_shooter);

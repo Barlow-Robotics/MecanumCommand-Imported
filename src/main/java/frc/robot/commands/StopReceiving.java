@@ -1,5 +1,3 @@
-//May or may not use this command
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -7,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterIntake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class StopReceiving extends CommandBase {
 
-private ShooterIntake m_shooter;
+private ShooterIndex m_shooter;
 
   /** Creates a new StopReceiving. */
-  public StopReceiving(ShooterIntake i) {
+  public StopReceiving(ShooterIndex i) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_shooter = i;
     addRequirements(m_shooter);
@@ -27,7 +25,7 @@ private ShooterIntake m_shooter;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //m_shooter.stopReceiving();
+    m_shooter.stopReceiving();
   }
 
   // Called once the command ends or is interrupted.
