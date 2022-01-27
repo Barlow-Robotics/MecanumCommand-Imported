@@ -45,12 +45,11 @@ public class Climb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-   if(currentState == ArmCommandState.WaitingForArmToBeStraightUp) {
+   if(currentState == ArmCommandState.WaitingForArmToBeStraightUp) { 
       if(m_armBar.armAngle() == ArmBarConstants.firstRotationAngle){
         currentState = ArmCommandState.DrivingBackward;
       }
-      else if (currentState == ArmCommandState.DrivingBackward) {
+      else if (currentState == ArmCommandState.DrivingBackward) { 
         m_drive.drive(-0.1, 0.0, 0, false); //how incorporate drivetrain? can be negative?
         if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
           m_drive.drive(0.0, 0.0, 0, false); //how incorporate drivetrain?
