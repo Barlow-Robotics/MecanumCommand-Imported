@@ -20,15 +20,15 @@ public class Climb extends CommandBase {
   private DriveSubsystem m_drive;
 
   enum ArmCommandState {
-    Idle, 
     WaitingForArmToBeStraightUp,
     DrivingBackward,
-    WaitingForHighBar,
-    WaitingForTraversalBar,
+    MovingToHighBar,
+    MovingToTraversalBar,
+    OnTraversalBar,
     Finished
   };
 
-  ArmCommandState currentState = ArmCommandState.Idle ;
+  ArmCommandState currentState = ArmCommandState.WaitingForArmToBeStraightUp;
 
   /** Creates a new Climb. */ 
   public Climb(ArmBar a) {
@@ -45,66 +45,60 @@ public class Climb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   if(currentState == ArmCommandState.WaitingForArmToBeStraightUp) { 
-      if(m_armBar.armAngle() == ArmBarConstants.firstRotationAngle){
-        currentState = ArmCommandState.DrivingBackward;
-      }
-      else if (currentState == ArmCommandState.DrivingBackward) { 
-        m_drive.drive(-0.1, 0.0, 0, false); //how incorporate drivetrain? can be negative?
-        if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
-          m_drive.drive(0.0, 0.0, 0, false); //how incorporate drivetrain?
-          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0.1);
-          currentState = ArmCommandState.WaitingForHighBar;
-        }
-      } 
-      else if (currentState == ArmCommandState.WaitingForHighBar) {
-        if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
-          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0.0);
-          m_armBar.releaseGripperA();
-        }
-        if(!m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed()) {
-          currentState = ArmCommandState.WaitingForTraversalBar;
-          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0.1);
-        }
-      }
-      else if (currentState == ArmCommandState.WaitingForTraversalBar) {
-        if(m_armBar.gripperAIsClosed() && m_armBar.gripperBIsClosed())
-          m_armBar.releaseGripperB();
-          m_armBar.armBarMotor.set(TalonSRXControlMode.Velocity, 0);
-      }
-        if(m_armBar.gripperAIsClosed() && !m_armBar.gripperBIsClosed() && m_armBar.armBarMotor.get()==0.0) {
-          currentState = ArmCommandState.Finished;
-        }
-    }
-
     
     switch (currentState) {
       case WaitingForArmToBeStraightUp:
-        //code for here
-        break;
-
-      case DrivingBackward:
-        //code for here
-        break;
-
-      case WaitingForHighBar:
-        //code for here
+        if(Math.abs(m_armBar.getArmAngle() - ArmBarConstants.firstRotationAngle) > ArmBarConstants.firstRotationAngleTolerance) {
+          m_armBar.rotateGripperArmDegree(ArmBarConstants.firstRotationAngle);
+        } 
+        else {
+          //need to stop motor?
+          currentState = ArmCommandState.DrivingBackward;
+        }
         break;
       
-      case WaitingForTraversalBar:
-        //code for here
+      case DrivingBackward:
+        if(m_armBar.gripperAIsClosed()) {
+          m_drive.drive(0.0, 0.0, 0, false); //how incorporate drivetrain?
+          currentState = ArmCommandState.MovingToHighBar;
+        }
+        else {
+          m_drive.drive(-0.1, 0.0, 0, false);
+        }
+        break;
+
+      case MovingToHighBar:  
+        if(!m_armBar.gripperBIsClosed()){
+          m_armBar.rotateGripperArmDegree(ArmBarConstants.consistentRotationAngle);
+        }
+        else{
+            m_armBar.releaseGripperA();
+            currentState = ArmCommandState.MovingToTraversalBar;
+        }
+        break;
+      
+      case MovingToTraversalBar:
+        if(!m_armBar.gripperAIsClosed()) {
+          m_armBar.rotateGripperArmDegree(ArmBarConstants.consistentRotationAngle);
+          //maybe swing
+        }
+        else {
+          m_armBar.releaseGripperB();
+          currentState = ArmCommandState.OnTraversalBar;
+        }
+        break;
+
+      case OnTraversalBar:
+        //do we let go or do we rotate it down using the member function?
+        if(m_armBar.gripperAIsClosed() && !m_armBar.gripperBIsClosed() && m_armBar.armBarMotor.get()==0.0) {
+            currentState = ArmCommandState.Finished;
+          }
         break;
 
       case Finished:
-        //code for here
+        //Bot is immobile - nothing else needs to go here
         break;
-    }
-
-    m_armBar.rotateGripperArmDegree(ArmBarConstants.firstRotationAngle);   
-    m_armBar.rotateGripperArmDegree(Constants.ArmBarConstants.consistentRotationAngle);
-    m_armBar.releaseGripperA();
-    m_armBar.rotateGripperArmDegree(Constants.ArmBarConstants.consistentRotationAngle);
-    m_armBar.releaseGripperB();
+      }  
   }
 
   // Called once the command ends or is interrupted.
@@ -117,4 +111,3 @@ public class Climb extends CommandBase {
     return false;
   }
 }
-

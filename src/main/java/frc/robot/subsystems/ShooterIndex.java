@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,12 +16,12 @@ import frc.robot.Constants;
 public class ShooterIndex extends SubsystemBase {
   /** Creates a new Shooter. */
 
-  WPI_TalonSRX shooterMotor;
-  WPI_TalonSRX receiverMotor;
+  WPI_TalonFX beltMotor;
+  WPI_TalonFX flyWheelMotor;
 
   public ShooterIndex() {
-      shooterMotor = new WPI_TalonSRX(Constants.ShooterConstants.ID_shooterMotor);
-      receiverMotor = new WPI_TalonSRX(Constants.ShooterConstants.ID_shooterMotor);
+      beltMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_shooterMotor);
+      flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_flyWheelMotor);
   }
 
   @Override
@@ -30,36 +30,34 @@ public class ShooterIndex extends SubsystemBase {
   }
 
   public void startShooting() {
-    shooterMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.shooterMotorVelocity);
-    receiverMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
+    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.shooterMotorVelocity);
+    flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.flyWheelMotorVelocity);
   }
 
   public void stopShooting() {
-    shooterMotor.set(TalonSRXControlMode.Velocity, 0.0);
-    receiverMotor.set(TalonSRXControlMode.Velocity, 0.0);
+    beltMotor.set(TalonFXControlMode.Velocity, 0.0);
+    flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
   }
 
   public boolean hasStarted() {
-      return(shooterMotor.get()!=0.0 
-      //&& receiverMotor.get()!=0.0
+      return(beltMotor.get()!=0.0 && flyWheelMotor.get()!=0.0
       );
   }
 
   public boolean isStopped() {
-      return(shooterMotor.get()==0
-      //&& receiverMotor.get()==0
+      return(beltMotor.get()==0 && flyWheelMotor.get()==0
       );
   }
 
   public void startReceiving() {
-    receiverMotor.set(TalonSRXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
+    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
   }
   
   public void stopReceiving(){
-    receiverMotor.set(TalonSRXControlMode.Velocity, 0);
+    beltMotor.set(TalonFXControlMode.Velocity, 0);
   }
 
-  private void setMotorConfig(WPI_TalonSRX motor) {
+  private void setMotorConfig(WPI_TalonFX motor) {
     motor.configFactoryDefault() ;
     motor.configSelectedFeedbackSensor(
         FeedbackDevice.QuadEncoder, 

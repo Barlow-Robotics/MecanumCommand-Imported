@@ -40,7 +40,7 @@ public class ArmBar extends SubsystemBase {
   public ArmBar() {
     armBarMotor = new WPI_TalonSRX(ArmBarConstants.ID_armBarMotor);
     armBarMotor.setSelectedSensorPosition(0.0);
-    armBarMotor.set(TalonSRXControlMode.Velocity, ArmBarConstants.armBarMotorSpeed);
+    armBarMotor.set(TalonSRXControlMode.Velocity, 0.0);
 
     hallEffectsA1 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA1);
     hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA2);
@@ -65,8 +65,8 @@ public class ArmBar extends SubsystemBase {
     //armBarMotor.setSelectedSensorPosition(0.0); do we need this / where would it go if we do
   }
 
-  public double armAngle() {
-    return 0.0 ;  // need to figure out how to get degrees.
+  public double getArmAngle() {
+    return 0.0;  // need to figure out how to get degrees.
   }
 
   // public void rotateGripperArmA(){

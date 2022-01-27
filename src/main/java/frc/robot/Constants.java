@@ -180,7 +180,7 @@ public final class Constants {
         public static final int unitsPerRotation = 1024;
         public static final double gearRatio = 48/1;
 
-        public static final double armBarMotorSpeed = 0.0;
+        public static final double armBarMotorSpeed = 0.1;
 
         public static final double manualVoltageRampingConstant = 0.21;
         public static final double closedVoltageRampingConstant = 0.21;
@@ -194,7 +194,9 @@ public final class Constants {
         public static final double DrivetrainkP = 0.02;
 
         public static final double firstRotationAngle = 90;
-        public static final double consistentRotationAngle = 90;
+        public static final double consistentRotationAngle = 180;
+        public static final double firstRotationAngleTolerance = 4;
+        public static final double consistentRotationAngleTolerance = 6;
         
 
 
@@ -226,9 +228,10 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int ID_shooterMotor = 7;
-        
+        public static final int ID_flyWheelMotor = 8;
         public static final double shooterMotorVelocity = 0.3;
         public static final double receiverMotorVelocity = -0.3;
+        public static final double flyWheelMotorVelocity = 0.3;
     }
 
 
