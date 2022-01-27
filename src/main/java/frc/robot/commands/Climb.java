@@ -40,8 +40,13 @@ public class Climb extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
+  public void initialize() {
+    currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+  }
+  
+  //For brake mode: talon.setNeutralMode(NeutralMode.Brake), 
+  //For coast mode: talon.setNeutralMode(NeutralMode.Coast).
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -52,7 +57,6 @@ public class Climb extends CommandBase {
           m_armBar.rotateGripperArmDegree(ArmBarConstants.firstRotationAngle);
         } 
         else {
-          //need to stop motor?
           currentState = ArmCommandState.DrivingBackward;
         }
         break;
