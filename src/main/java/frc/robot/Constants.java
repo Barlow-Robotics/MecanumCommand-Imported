@@ -229,9 +229,9 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int ID_shooterMotor = 7;
         public static final int ID_flyWheelMotor = 8;
-        public static final double shooterMotorVelocity = 0.3;
-        public static final double receiverMotorVelocity = -0.3;
-        public static final double flyWheelMotorVelocity = 0.3;
+        public static final double shooterMotorVelocity = 0.1;
+        public static final double receiverMotorVelocity = -0.1;
+        public static final double flyWheelMotorVelocity = 0.1;
     }
 
 
