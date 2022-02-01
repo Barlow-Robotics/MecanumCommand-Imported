@@ -52,16 +52,16 @@ import edu.wpi.first.networktables.*;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class RobotContainer {
     // The robot's subsystems
-    private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
     private final Intake m_intake = new Intake();
     private final ShooterIndex m_shooter = new ShooterIndex();
-    private final ArmBar m_armBar = new ArmBar();
+    // private final ArmBar m_armBar = new ArmBar();
     private final UnderGlow underGlow = new UnderGlow() ;
 
     // The driver's controller
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
 
-    ArmBar armBar = new ArmBar();
+    // ArmBar armBar = new ArmBar();
 
     private final JoystickButton intakeButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Right_Bumper);
     private final JoystickButton extendButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
@@ -81,7 +81,7 @@ public class RobotContainer {
     private final RetractIntake retractIntakeCommand = new RetractIntake(m_intake);
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
-    private final Climb climbCommand = new Climb(m_armBar);
+    // private final Climb climbCommand = new Climb(m_armBar);
 
 //     private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);
 //     private final StopReceiving stopReceivingCommand = new StopReceiving(m_shooter);
@@ -99,42 +99,42 @@ public class RobotContainer {
 
         System.out.println("The name of the controller is " + m_driverController.getName()) ;
 
-        // Configure default commands
-        // Set the default drive command to split-stick arcade drive
-        m_robotDrive.setDefaultCommand(
-                // A split-stick arcade command, with forward/backward controlled by the left
-                // hand, and turning controlled by the right.
+        // // Configure default commands
+        // // Set the default drive command to split-stick arcade drive
+        // m_robotDrive.setDefaultCommand(
+        //         // A split-stick arcade command, with forward/backward controlled by the left
+        //         // hand, and turning controlled by the right.
 
-                // new RunCommand(() -> {
-                //     m_robotDrive.drive(m_driverController.getRawAxis(Constants.OIConstants.leftYAxis),
-                //             m_driverController.getRawAxis(Constants.OIConstants.leftXAxis),
-                //             m_driverController.getRawAxis(Constants.OIConstants.rightXAxis), false);
-                // }, m_robotDrive));
+        //         // new RunCommand(() -> {
+        //         //     m_robotDrive.drive(m_driverController.getRawAxis(Constants.OIConstants.leftYAxis),
+        //         //             m_driverController.getRawAxis(Constants.OIConstants.leftXAxis),
+        //         //             m_driverController.getRawAxis(Constants.OIConstants.rightXAxis), false);
+        //         // }, m_robotDrive));
 
-                new RunCommand(() -> {
+        //         new RunCommand(() -> {
 
-                    NetworkTableInstance.getDefault().getEntry("joystick/raw_left_y").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftYAxis));
-                    NetworkTableInstance.getDefault().getEntry("joystick/raw_left_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftXAxis));
-                    NetworkTableInstance.getDefault().getEntry("joystick/raw_right_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.rightXAxis));
+        //             NetworkTableInstance.getDefault().getEntry("joystick/raw_left_y").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftYAxis));
+        //             NetworkTableInstance.getDefault().getEntry("joystick/raw_left_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftXAxis));
+        //             NetworkTableInstance.getDefault().getEntry("joystick/raw_right_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.rightXAxis));
 
-                    NetworkTableInstance.getDefault().getEntry("joystick/getY").setDouble(m_driverController.getY());
-                    NetworkTableInstance.getDefault().getEntry("joystick/getX").setDouble(m_driverController.getX());
-                    NetworkTableInstance.getDefault().getEntry("joystick/getTwist").setDouble(m_driverController.getTwist());
+        //             NetworkTableInstance.getDefault().getEntry("joystick/getY").setDouble(m_driverController.getY());
+        //             NetworkTableInstance.getDefault().getEntry("joystick/getX").setDouble(m_driverController.getX());
+        //             NetworkTableInstance.getDefault().getEntry("joystick/getTwist").setDouble(m_driverController.getTwist());
                     
 
-                    m_robotDrive.drive(
-                        //0.0,
-                        -m_driverController.getRawAxis(Constants.OIConstants.leftYAxis),
-                        ////m_driverController.getY(),
-                        //0.0,
-                        m_driverController.getRawAxis(Constants.OIConstants.leftXAxis),
-                        //0.2,
-                        m_driverController.getRawAxis(Constants.OIConstants.rightXAxis), 
-                        // m_driverController.getX(),
-                        // m_driverController.getTwist(), 
-                        false
-                        );
-                }, m_robotDrive));
+        //             m_robotDrive.drive(
+        //                 //0.0,
+        //                 -m_driverController.getRawAxis(Constants.OIConstants.leftYAxis),
+        //                 ////m_driverController.getY(),
+        //                 //0.0,
+        //                 m_driverController.getRawAxis(Constants.OIConstants.leftXAxis),
+        //                 //0.2,
+        //                 m_driverController.getRawAxis(Constants.OIConstants.rightXAxis), 
+        //                 // m_driverController.getX(),
+        //                 // m_driverController.getTwist(), 
+        //                 false
+        //                 );
+        //         }, m_robotDrive));
 
 
 
@@ -156,7 +156,7 @@ public class RobotContainer {
         intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
         extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
-        climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep trying to restart itself
+        // climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep trying to restart itself
         //receiverButton.whenPressed(startReceivingCommand).whenReleased(stopReceivingCommand);
         
 }
@@ -183,30 +183,32 @@ public class RobotContainer {
                 // End 3 meters straight ahead of where we started, facing forward
                 new Pose2d(3, 0, new Rotation2d(0)), config);
 
-        MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(exampleTrajectory,
-                m_robotDrive::getPose, DriveConstants.kFeedforward, DriveConstants.kDriveKinematics,
+        // MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(exampleTrajectory,
+        //         m_robotDrive::getPose, DriveConstants.kFeedforward, DriveConstants.kDriveKinematics,
 
-                // Position contollers
-                new PIDController(AutoConstants.kPXController, 0, 0),
-                new PIDController(AutoConstants.kPYController, 0, 0),
-                new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,
-                        AutoConstants.kThetaControllerConstraints),
+        //         // Position contollers
+        //         new PIDController(AutoConstants.kPXController, 0, 0),
+        //         new PIDController(AutoConstants.kPYController, 0, 0),
+        //         new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,
+        //                 AutoConstants.kThetaControllerConstraints),
 
-                // Needed for normalizing wheel speeds
-                AutoConstants.kMaxSpeedMetersPerSecond,
+        //         // Needed for normalizing wheel speeds
+        //         AutoConstants.kMaxSpeedMetersPerSecond,
 
-                // Velocity PID's
-                new PIDController(DriveConstants.kPFrontLeftVel, 0, 0),
-                new PIDController(DriveConstants.kPRearLeftVel, 0, 0),
-                new PIDController(DriveConstants.kPFrontRightVel, 0, 0),
-                new PIDController(DriveConstants.kPRearRightVel, 0, 0), m_robotDrive::getCurrentWheelSpeeds,
-                m_robotDrive::setDriveSpeedControllersVolts, // Consumer for the output motor voltages
-                m_robotDrive);
+        //         // Velocity PID's
+        //         new PIDController(DriveConstants.kPFrontLeftVel, 0, 0),
+        //         new PIDController(DriveConstants.kPRearLeftVel, 0, 0),
+        //         new PIDController(DriveConstants.kPFrontRightVel, 0, 0),
+        //         new PIDController(DriveConstants.kPRearRightVel, 0, 0), m_robotDrive::getCurrentWheelSpeeds,
+        //         m_robotDrive::setDriveSpeedControllersVolts, // Consumer for the output motor voltages
+        //         m_robotDrive);
 
-        // Reset odometry to the starting pose of the trajectory.
-        m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+        // // Reset odometry to the starting pose of the trajectory.
+        // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
-        // Run path following command, then stop at the end.
-        return mecanumControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+        // // Run path following command, then stop at the end.
+        // return mecanumControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+
+        return null ;
     }
 }
