@@ -23,7 +23,7 @@ import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 //import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.robot.Constants;
 import frc.robot.PhysicsSim; //where 2 get this library ?
@@ -36,10 +36,10 @@ import edu.wpi.first.networktables.*;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    WPI_TalonSRX m_frontLeft;
-    WPI_TalonSRX m_backLeft;
-    WPI_TalonSRX m_frontRight;
-    WPI_TalonSRX m_backRight;
+    WPI_TalonFX m_frontLeft;
+    WPI_TalonFX m_backLeft;
+    WPI_TalonFX m_frontRight;
+    WPI_TalonFX m_backRight;
 
     public final MecanumDrive m_drive;
 
@@ -49,17 +49,17 @@ public class DriveSubsystem extends SubsystemBase {
     // Odometry class for tracking robot pose
     MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
 
-    ArrayList<WPI_TalonSRX> motors = new ArrayList<WPI_TalonSRX>() ;
+    ArrayList<WPI_TalonFX> motors = new ArrayList<WPI_TalonFX>() ;
 
 
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
 
-        m_frontLeft = new WPI_TalonSRX(DriveConstants.ID_frontLeftMotor);
-        m_frontRight = new WPI_TalonSRX(DriveConstants.ID_frontRightMotor);
-        m_backLeft = new WPI_TalonSRX(DriveConstants.ID_backLeftMotor);
-        m_backRight = new WPI_TalonSRX(DriveConstants.ID_backRightMotor);
+        m_frontLeft = new WPI_TalonFX(DriveConstants.ID_frontLeftMotor);
+        m_frontRight = new WPI_TalonFX(DriveConstants.ID_frontRightMotor);
+        m_backLeft = new WPI_TalonFX(DriveConstants.ID_backLeftMotor);
+        m_backRight = new WPI_TalonFX(DriveConstants.ID_backRightMotor);
 
         motors.add(m_frontLeft) ;
         motors.add(m_backLeft) ;
@@ -278,7 +278,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 
 
-    private void setMotorConfig(WPI_TalonSRX motor) { //changed to TalonFX for intake
+    private void setMotorConfig(WPI_TalonFX motor) { //changed to TalonFX for intake
         motor.configFactoryDefault() ;
         motor.configSelectedFeedbackSensor(
             FeedbackDevice.QuadEncoder, 
@@ -334,12 +334,12 @@ public class DriveSubsystem extends SubsystemBase {
 
 
 
-    private void simulationInit() {
-        PhysicsSim.getInstance().addTalonSRX(m_frontRight, 0.75, 4000, true);
-        PhysicsSim.getInstance().addTalonSRX(m_frontLeft, 0.75, 4000, true);
-        PhysicsSim.getInstance().addTalonSRX(m_backRight, 0.75, 4000);
-        PhysicsSim.getInstance().addTalonSRX(m_backLeft, 0.75, 4000);
-    }
+    // private void simulationInit() {
+    //     PhysicsSim.getInstance().addTalonFX(m_frontRight, 0.75, 4000, true);
+    //     PhysicsSim.getInstance().addTalonFX(m_frontLeft, 0.75, 4000, true);
+    //     PhysicsSim.getInstance().addTalonFX(m_backRight, 0.75, 4000);
+    //     PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 4000);
+    // }
 
 
 
