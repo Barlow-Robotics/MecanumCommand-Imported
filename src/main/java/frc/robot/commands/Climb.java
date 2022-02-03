@@ -7,11 +7,9 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmBar;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.Constants;
 import frc.robot.Constants.ArmBarConstants;
 
 public class Climb extends CommandBase {
@@ -31,11 +29,11 @@ public class Climb extends CommandBase {
   ArmCommandState currentState = ArmCommandState.WaitingForArmToBeStraightUp;
 
   /** Creates a new Climb. */ 
-  public Climb(ArmBar a) {
+  public Climb(ArmBar a, DriveSubsystem d) {
     // Use addRequirements() here to declare subsystem dependencies. 
     m_armBar = a;
     addRequirements(m_armBar);
-    //what value to give "m_drive"?
+    m_drive = d;
   }
 
   // Called when the command is initially scheduled.

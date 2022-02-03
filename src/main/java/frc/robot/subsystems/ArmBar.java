@@ -9,7 +9,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmBarConstants;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
@@ -68,20 +67,6 @@ public class ArmBar extends SubsystemBase {
   public double getArmAngle() {
     return 0.0;  // need to figure out how to get degrees.
   }
-
-  // public void rotateGripperArmA(){
-  //   //Begin rotating gripper arms until the A grippers registers as closed
-  //   while(!gripperAIsClosed()){
-  //     //rotate motor
-  //   }
-  // }
-
-  // public void rotateGripperArmB(){
-  //   //Begin rotating gripper arms until the A grippers registers as closed
-  //   while(!gripperBIsClosed()){
-  //     //rotate motor
-  //   }
-  // }
   
   public void releaseGripperA(){
     solenoidA1.set(true);
