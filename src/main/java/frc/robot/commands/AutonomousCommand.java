@@ -4,43 +4,59 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.AutonomousNavigation;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class AutonomousCommand extends CommandBase {
 
-    private final DriveSubsystem m_subsystem;
+    private final DriveSubsystem m_autoDrive;
+    private final AutonomousNavigation m_autoPath;
 
     /**
      * Creates a new ExampleCommand.
      *
-     * @param subsystem The subsystem used by this command.
+     * @param auto The subsystem used by this command.
      */
-    public AutonomousCommand(DriveSubsystem subsystem) {
-        m_subsystem = subsystem;
+    public AutonomousCommand(DriveSubsystem auto, AutonomousNavigation nav) {
+        m_autoDrive = auto;
+        m_autoPath = nav;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
+        addRequirements(m_autoDrive, m_autoPath);
     }
 
     @Override
     public void initialize() {
-        m_subsystem.resetDistance();
+        m_autoDrive.resetDistance();
     }
 
     @Override
     public void execute() {
-        m_subsystem.drive(0.0, 0.75, 0, false);
+        // m_autoDrive.drive(0.0, 0.75, 0, false);
+        // shoot ball
+        m_autoPath.testPath.loadPath();
+
+
+        /*PPSwerveControllerCommand command = new PPSwerveControllerCommand(
+        m_autoPath.testPath,
+        m_autoDrive.m_odometry,
+        kinematics,
+        xController,
+        yController,
+        thetaController,
+        outputModuleStates,
+        requirements
+        );
+        */
+  }
 
     }
 
     @Override
     public boolean isFinished() {
-        double distance = (m_subsystem.getDistance() * DriveConstants.DrivetrainKf
+        double distance = (m_autoDrive.getDistance() * DriveConstants.DrivetrainKf
                 * DriveConstants.circumferenceOfWheel);
-        if (distance >= DriveConstants.distanceGoal) {
-            return true;
-        } else {
-            return false;
-        }
+        
+        return distance >= DriveConstants.distanceGoal;
     }
 
 

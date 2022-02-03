@@ -67,9 +67,7 @@ public class RobotContainer {
     // private final JoystickButton extendButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
     // private final JoystickButton shooterButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_A);
     // private final JoystickButton climbButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Back_Button);
-
-    private final JoystickButton receiverButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_Y); 
-
+    // private final JoystickButton receiverButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_Y); 
    
 
    // Commands

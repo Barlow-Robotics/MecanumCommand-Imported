@@ -31,15 +31,13 @@ public class AutonomousNavigation extends SubsystemBase {
         // PathPlannerTrajectory tarmacR2ToRBallFRBallE = PathPlanner.loadPath("TarmacR2_to_RBallF_RBallE", 8, 5);
         // PathPlannerTrajectory tarmacR2ToRBallF = PathPlanner.loadPath("TarmacR2_to_RBallF", 8, 5);
         // PathPlannerTrajectory tarmacR1ToRBallD = PathPlanner.loadPath("TarmacR1_to_RBallD", 8, 5);
-        PathPlannerTrajectory testPath = PathPlanner.loadPath("Test_Path", 8, 5);
+        public PathPlannerTrajectory testPath = PathPlanner.loadPath("Test_Path", 8, 5);
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
 
-  public static PathPlannerTrajectory loadPath(Test_Path, 8, 5, false) {
-    return Test_Path.path;
+    
 
-  }
+  
 }
