@@ -2,19 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+// package frc.robot.subsystems;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
+// import com.pathplanner.lib.PathPlanner;
+// import com.pathplanner.lib.PathPlannerTrajectory;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AutonomousNavigation extends SubsystemBase {
+// public class AutonomousNavigation extends SubsystemBase {
 
 
 
   /** Creates a new AutonomousNavigation. */
-  public AutonomousNavigation() {}
+  //public AutonomousNavigation() {}
 
   // This will load the file "Example Path.path" and generate it with a max velocity of 8 m/s and a max acceleration of 5 m/s^2
         // PathPlannerTrajectory tarmacB1ToBBallDBBallC = PathPlanner.loadPath("TarmacB1_to_BBallD_BBallC", 8, 5);
@@ -31,13 +31,27 @@ public class AutonomousNavigation extends SubsystemBase {
         // PathPlannerTrajectory tarmacR2ToRBallFRBallE = PathPlanner.loadPath("TarmacR2_to_RBallF_RBallE", 8, 5);
         // PathPlannerTrajectory tarmacR2ToRBallF = PathPlanner.loadPath("TarmacR2_to_RBallF", 8, 5);
         // PathPlannerTrajectory tarmacR1ToRBallD = PathPlanner.loadPath("TarmacR1_to_RBallD", 8, 5);
+<<<<<<< Updated upstream
         public PathPlannerTrajectory testPath = PathPlanner.loadPath("Test_Path", 8, 5);
+=======
+        //PathPlannerTrajectory testPath = PathPlanner.loadPath("Test_Path", 8, 5);
+>>>>>>> Stashed changes
 
-  @Override
-  public void periodic() {
+  // @Override
+  // //public void periodic() {
     // This method will be called once per scheduler run
+<<<<<<< Updated upstream
 
     
 
   
 }
+=======
+//   }
+
+//   public static PathPlannerTrajectory loadPath(Test_Path, 8, 5, false) {
+//     return Test_Path.path;
+
+//   }
+// }
+>>>>>>> Stashed changes

@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj.SerialPort;
 public final class Constants {
     public static final class DriveConstants {
         public static final int ID_frontLeftMotor = 4;
-        public static final int ID_backLeftMotor = 1;
-        public static final int ID_frontRightMotor = 5;
+        public static final int ID_backLeftMotor = 5;
+        public static final int ID_frontRightMotor = 1;
         public static final int ID_backRightMotor = 2;
 
         //public static final double countsPerRevolution = 8192.0;
