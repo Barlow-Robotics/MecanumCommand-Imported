@@ -26,7 +26,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 //import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.robot.Constants;
-import frc.robot.PhysicsSim; //where 2 get this library ?
+import frc.robot.sim.PhysicsSim; //where 2 get this library ?
 // import edu.wpi.first.wpilibj.RobotBase;
 // import edu.wpi.first.wpilibj.SerialPort;
 
@@ -43,6 +43,18 @@ public class DriveSubsystem extends SubsystemBase {
 
     public final MecanumDrive m_drive;
 
+    // Constructs a new SwerveControllerCommand that when executed will follow the provided trajectory
+    // public SwerveControllerCommand(
+    //     Trajectory trajectory,
+    //     Supplier<Pose2d> pose,
+    //     SwerveDriveKinematics kinematics,
+    //     PIDController xController,
+    //     PIDController yController,
+    //     ProfiledPIDController thetaController,
+    //     Consumer<SwerveModuleState[]> outputModuleStates,
+    //     Subsystem... requirements
+    // );
+
     // The gyro sensor
     private final Gyro m_gyro = new ADXRS450_Gyro();
 
@@ -50,6 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
     public MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
 
     ArrayList<WPI_TalonFX> motors = new ArrayList<WPI_TalonFX>() ;
+    public Object requirements;
 
 
 
@@ -276,8 +289,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
 
-
-
     private void setMotorConfig(WPI_TalonFX motor) { //changed to TalonFX for intake
         motor.configFactoryDefault() ;
         motor.configSelectedFeedbackSensor(
@@ -341,6 +352,29 @@ public class DriveSubsystem extends SubsystemBase {
     //     PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 4000);
     // }
 
+
+    boolean simulationInitialized = false ;
+
+  public void simulationInit() {
+        PhysicsSim.getInstance().addTalonFX(m_frontRight, 0.75, 6800, true);
+        PhysicsSim.getInstance().addTalonFX(m_frontLeft, 0.75, 6800, true);
+        PhysicsSim.getInstance().addTalonFX(m_backRight, 0.75, 6800);
+        PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 6800);
+}
+
+
+  @Override
+  public void simulationPeriodic() {
+    if (! simulationInitialized) {
+      simulationInit();
+      simulationInitialized = true ;
+    }
+
+    // do sim stuff
+
+
+
+  }
 
 
 

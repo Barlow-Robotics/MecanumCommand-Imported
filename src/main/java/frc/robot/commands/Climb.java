@@ -53,8 +53,8 @@ public class Climb extends CommandBase {
     
     switch (currentState) {
       case WaitingForArmToBeStraightUp:
-        if(Math.abs(m_armBar.getArmAngle() - ArmBarConstants.firstRotationAngle) > ArmBarConstants.firstRotationAngleTolerance) {
-          m_armBar.rotateGripperArmDegree(ArmBarConstants.firstRotationAngle);
+        if(Math.abs(m_armBar.getArmAngle() - ArmBarConstants.FirstRotationAngle) > ArmBarConstants.FirstRotationAngleTolerance) {
+          m_armBar.rotateGripperArmDegree(ArmBarConstants.FirstRotationAngle);
         } 
         else {
           currentState = ArmCommandState.DrivingBackward;
@@ -73,7 +73,7 @@ public class Climb extends CommandBase {
 
       case MovingToHighBar:  
         if(!m_armBar.gripperBIsClosed()){
-          m_armBar.rotateGripperArmDegree(ArmBarConstants.consistentRotationAngle);
+          m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
         }
         else{
             m_armBar.releaseGripperA();
@@ -83,7 +83,7 @@ public class Climb extends CommandBase {
       
       case MovingToTraversalBar:
         if(!m_armBar.gripperAIsClosed()) {
-          m_armBar.rotateGripperArmDegree(ArmBarConstants.consistentRotationAngle);
+          m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
           //maybe swing
         }
         else {

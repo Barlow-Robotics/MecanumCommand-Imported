@@ -5,33 +5,30 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class RetractIntake extends CommandBase {
   /** Creates a new RetractIntake. */
   
-  private Intake m_intake;
+  private ShooterIndex m_shooter;
 
   /** Creates a new StartIntake. */
-  public RetractIntake(Intake i) {
+  //yes, we're using SHOOTERINDEX to retract intake
+  public RetractIntake(ShooterIndex i) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = i;
-    addRequirements(m_intake);
+    m_shooter = i;
+    addRequirements(m_shooter);
   }
-
-  public RetractIntake() {
-  }
-
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_intake.retract();
-  }
+  // @Override
+  // public void execute() {
+  //   m_shooter.retract();
+  // }
 
   // Called once the command ends or is interrupted.
   @Override

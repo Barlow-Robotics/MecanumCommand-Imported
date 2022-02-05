@@ -6,16 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class StartIntake extends CommandBase {
   
   private Intake m_intake;
+  private ShooterIndex m_shooter;
 
   /** Creates a new StartIntake. */
-  public StartIntake(Intake i) {
+  public StartIntake(Intake i, ShooterIndex s) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = i;
+    m_shooter = s;
     addRequirements(m_intake);
+    addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -26,11 +30,15 @@ public class StartIntake extends CommandBase {
   @Override
   public void execute() {
     m_intake.start();
+    m_shooter.startReceiving();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_intake.stop();
+    m_shooter.stopReceiving();
+  }
 
   // Returns true when the command should end.
   @Override

@@ -18,10 +18,8 @@ import frc.robot.subsystems.ArmBar;
 import frc.robot.commands.ExtendIntake;
 import frc.robot.commands.RetractIntake;
 import frc.robot.commands.StartIntake;
-//import frc.robot.commands.StartReceiving;
 import frc.robot.commands.StartShooting;
 import frc.robot.commands.StopIntake;
-//import frc.robot.commands.StopReceiving;
 import frc.robot.commands.StopShooting;
 import frc.robot.commands.Climb;
 
@@ -53,8 +51,8 @@ import edu.wpi.first.networktables.*;
 public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-    // private final Intake m_intake = new Intake();
-    // private final ShooterIndex m_shooter = new ShooterIndex();
+    private final Intake m_intake = new Intake();
+    private final ShooterIndex m_shooter = new ShooterIndex();
     // private final ArmBar m_armBar = new ArmBar();
     // private final UnderGlow underGlow = new UnderGlow() ;
 
@@ -63,26 +61,23 @@ public class RobotContainer {
 
     // ArmBar armBar = new ArmBar();
 
-    // private final JoystickButton intakeButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Right_Bumper);
+    private final JoystickButton intakeButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Right_Bumper);
     // private final JoystickButton extendButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
-    // private final JoystickButton shooterButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_A);
+    private final JoystickButton shooterButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_A);
     // private final JoystickButton climbButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Back_Button);
     // private final JoystickButton receiverButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_Y); 
    
 
    // Commands
 
-    // private final StartIntake startIntakeCommand = new StartIntake(m_intake);
-    // private final StopIntake stopIntakeCommand = new StopIntake(m_intake);
+    private final StartIntake startIntakeCommand = new StartIntake(m_intake, m_shooter);
+    private final StopIntake stopIntakeCommand = new StopIntake(m_intake, m_shooter);
     // private final ExtendIntake extendIntakeCommand = new ExtendIntake(m_intake);
     // private final RetractIntake retractIntakeCommand = new RetractIntake(m_intake);
-    // private final StartShooting startShootingCommand = new StartShooting(m_shooter);
-    // private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
+    private final StartShooting startShootingCommand = new StartShooting(m_shooter);
+    private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
     // private final Climb climbCommand = new Climb(m_armBar);
 
-//     private final StartReceiving startReceivingCommand = new StartReceiving (m_shooter);
-//     private final StopReceiving stopReceivingCommand = new StopReceiving(m_shooter);
-    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -155,11 +150,10 @@ public class RobotContainer {
         // new JoystickButton(m_driverController, Constants.OIConstants.halfSpeedButton);
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5));
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
-        // intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+        intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
         // extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
-        // shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
+        shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
         // climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep trying to restart itself
-        //receiverButton.whenPressed(startReceivingCommand).whenReleased(stopReceivingCommand);
         
 }
 

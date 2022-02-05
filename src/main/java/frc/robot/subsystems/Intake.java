@@ -10,29 +10,28 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-
-
+import frc.robot.sim.PhysicsSim;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
 
-  WPI_TalonSRX intakeMotor;
-  Solenoid extendSolenoid;
-  Solenoid retractSolenoid;
-  Compressor compressor; 
-
+  WPI_TalonFX intakeMotor;
+  // Solenoid extendSolenoid; // wpk move to index if they are not already there.
+  // Solenoid retractSolenoid;
+  // Compressor compressor;
 
   public Intake() {
-    intakeMotor = new WPI_TalonSRX(IntakeConstants.ID_intakeMotor);
-    retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.Extend_Solenoid);
-    extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.Retract_Solenoid);
-    compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    intakeMotor = new WPI_TalonFX(IntakeConstants.ID_IntakeMotor, "Intake Motor");
+    // retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+    // Constants.IntakeConstants.Retract_Solenoid);
+    // extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+    // Constants.IntakeConstants.Extend_Solenoid);
+    // compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
+    setMotorConfig(intakeMotor);
   }
 
   @Override
@@ -40,59 +39,82 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void extend() {
-    // solenoid extends
-    extendSolenoid.set(true);
-    retractSolenoid.set(false);
-  }
 
-  public void retract() {
-    // solenoid compresses
-    extendSolenoid.set(false);
-    retractSolenoid.set(true);
-  }
+  // public void extend() {
+  // // solenoid extends
+  // // extendSolenoid.set(true);
+  // // retractSolenoid.set(false);
+  // }
+
+  // public void retract() {
+  // // solenoid compresses
+  // // extendSolenoid.set(false);
+  // // retractSolenoid.set(true);
+  // }
 
   public void start() {
     // motor for wheels starts running
-//    intakeMotor.set(TalonSRXControlMode.Velocity, IntakeConstants.intakeMotorSpeed);
-    intakeMotor.set(TalonSRXControlMode.PercentOutput, -0.5);
+    // intakeMotor.set(TalonFXControlMode.Velocity,
+    // IntakeConstants.intakeMotorSpeed);
+    intakeMotor.set(TalonFXControlMode.PercentOutput, Constants.IntakeConstants.IntakeMotorSpeed);
   }
 
   public void stop() {
     // motor for wheels stops running
-//    intakeMotor.set(TalonSRXControlMode.Velocity, 0);
-    intakeMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
+    // intakeMotor.set(TalonFXControlMode.Velocity, 0);
+    intakeMotor.set(TalonFXControlMode.PercentOutput, 0.0);
   }
 
-
-  public boolean isExtended() {
-    return(extendSolenoid.get());
-  }
+  // public boolean isExtended() {
+  // return(extendSolenoid.get());
+  // }
 
   public boolean isStarted() {
-    return(intakeMotor.get()!=0);
+    return (intakeMotor.get() != 0);
   }
 
-
-  
-  private void setMotorConfig(WPI_TalonSRX motor) {
-    motor.configFactoryDefault() ;
+  private void setMotorConfig(WPI_TalonFX motor) { // changed to TalonFX for intake
+    motor.configFactoryDefault();
     motor.configSelectedFeedbackSensor(
-        FeedbackDevice.QuadEncoder, 
-        Constants.IntakeConstants.mainFeedbackLoop,
-        Constants.IntakeConstants.encoderTimeout
-        ); 
-    motor.configClosedloopRamp(Constants.IntakeConstants.closedVoltageRampingConstant) ;
-    motor.configOpenloopRamp(Constants.IntakeConstants.manualVoltageRampingConstant) ;
+        FeedbackDevice.QuadEncoder,
+        Constants.DriveConstants.mainFeedbackLoop,
+        Constants.DriveConstants.encoderTimeout);
+    motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant);
+    motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant);
     motor.configNominalOutputForward(0);
     motor.configNominalOutputReverse(0);
     motor.configPeakOutputForward(1.0);
     motor.configPeakOutputReverse(-1.0);
-    //motor.configMotionCruiseVelocity( (int) (Constants.IntakeConstants.unitsPerRotation * Constants.IntakeConstants.desiredRPMsForDrive));
-    motor.config_kF(Constants.IntakeConstants.PID_id, Constants.IntakeConstants.DrivetrainKf);
-    motor.config_kP(Constants.IntakeConstants.PID_id, Constants.IntakeConstants.DrivetrainkP);
-    motor.config_kI(Constants.IntakeConstants.PID_id, 0);
-    motor.config_kD(Constants.IntakeConstants.PID_id, 0);
+    // motor.configMotionCruiseVelocity( (int)
+    // (Constants.DriveConstants.unitsPerRotation *
+    // Constants.DriveConstants.desiredRPMsForDrive));
+    motor.config_kF(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainKf);
+    motor.config_kP(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainkP);
+    motor.config_kI(Constants.DriveConstants.PID_id, 0);
+    motor.config_kD(Constants.DriveConstants.PID_id, 0);
     motor.setNeutralMode(NeutralMode.Brake);
+  }
+
+
+
+
+  boolean simulationInitialized = false ;
+
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(intakeMotor, 0.5, 6800);
+  }
+
+
+  @Override
+  public void simulationPeriodic() {
+    if (! simulationInitialized) {
+      simulationInit();
+      simulationInitialized = true ;
+    }
+
+    // do sim stuff
+
+
+
   }
 }

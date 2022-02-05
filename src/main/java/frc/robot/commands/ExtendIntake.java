@@ -5,17 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class ExtendIntake extends CommandBase {
   
-  private Intake m_intake;
+  private ShooterIndex m_shooter;
 
   /** Creates a new StartIntake. */
-  public ExtendIntake(Intake i) {
+  //yes, we're using SHOOTERINDEX to extend intake
+  public ExtendIntake(ShooterIndex i) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = i;
-    addRequirements(m_intake);
+    m_shooter = i;
+    addRequirements(m_shooter);
   }
 
 
@@ -24,10 +25,10 @@ public class ExtendIntake extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_intake.extend();
-  }
+  // @Override
+  // public void execute() {
+  //   m_shooter.extend();
+  // }
 
   // Called once the command ends or is interrupted.
   @Override

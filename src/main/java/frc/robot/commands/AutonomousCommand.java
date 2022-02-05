@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.AutonomousNavigation;
@@ -15,10 +17,10 @@ public class AutonomousCommand extends CommandBase {
     /**
      * Creates a new ExampleCommand.
      *
-     * @param auto The subsystem used by this command.
+     * @param aDrive The subsystem used by this command.
      */
-    public AutonomousCommand(DriveSubsystem auto, AutonomousNavigation nav) {
-        m_autoDrive = auto;
+    public AutonomousCommand(DriveSubsystem aDrive, AutonomousNavigation nav) {
+        m_autoDrive = aDrive;
         m_autoPath = nav;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(m_autoDrive, m_autoPath);
@@ -33,23 +35,19 @@ public class AutonomousCommand extends CommandBase {
     public void execute() {
         // m_autoDrive.drive(0.0, 0.75, 0, false);
         // shoot ball
-        m_autoPath.testPath.loadPath();
-
-
-        /*PPSwerveControllerCommand command = new PPSwerveControllerCommand(
-        m_autoPath.testPath,
-        m_autoDrive.m_odometry,
-        kinematics,
-        xController,
-        yController,
-        thetaController,
-        outputModuleStates,
-        requirements
-        );
-        */
+        //m_autoPath.testPath.loadPath();
+    
+            //PPSwerveControllerCommand command = new PPSwerveControllerCommand(
+        // m_autoPath.testPath,
+        // m_autoDrive.m_odometry,
+        // m_autoDrive.kinematics,
+        // m_autoDrive.xController,
+        // m_autoDrive.yController,
+        // m_autoDrive.thetaController,
+        // m_autoDrive.outputModuleStates,
+        // m_autoDrive.requirements
+        // );
   }
-
-    }
 
     @Override
     public boolean isFinished() {
