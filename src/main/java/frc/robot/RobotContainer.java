@@ -150,7 +150,15 @@ public class RobotContainer {
         // new JoystickButton(m_driverController, Constants.OIConstants.halfSpeedButton);
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5));
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
-        intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+
+        // intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+
+        intakeButton.whenPressed(                  
+            new RunCommand(() -> {
+              System.out.println("pressed");
+              }, m_robotDrive)
+        ); 
+
         // extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
         // climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep trying to restart itself
