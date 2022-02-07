@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIndex extends SubsystemBase {
   /** Creates a new Shooter. */
@@ -41,8 +42,12 @@ public class ShooterIndex extends SubsystemBase {
   }
 
   public void startShooting() {
-    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity);
-    flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity);
+    if(Math.abs(flyWheelMotor.get() - ShooterConstants.FlyWheelMotorShootingVelocity) > ShooterConstants.FlyWheelShootingTolerance) {
+      beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity);
+    } 
+    else {
+      flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity);
+    }
   }
 
   public void stopShooting() {
