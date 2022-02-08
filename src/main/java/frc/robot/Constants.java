@@ -266,6 +266,7 @@ public final class Constants {
         public static final double BeltMotorShootingVelocity = 0.1;
         public static final double FlyWheelMotorIntakeVelocity = 0.1;
         public static final double FlyWheelMotorShootingVelocity = 0.1;
+        public static final double FlyWheelShootingTolerance = 0.05;
     }
 
 

@@ -14,12 +14,15 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIndex extends SubsystemBase {
   /** Creates a new Shooter. */
 
   WPI_TalonFX beltMotor;
   WPI_TalonFX flyWheelMotor;
+
+  boolean beltStarted = false ;
   // Solenoid extendSolenoid; 
   // Solenoid retractSolenoid;
   // Compressor compressor;
@@ -38,16 +41,20 @@ public class ShooterIndex extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(ShooterConstants.FlyWheelMotorShootingVelocity - flyWheelMotor.get()  < ShooterConstants.FlyWheelShootingTolerance || beltStarted ) {
+      beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity);
+      beltStarted = true ;
+    } 
   }
 
   public void startShooting() {
-    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity);
     flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity);
   }
 
   public void stopShooting() {
     beltMotor.set(TalonFXControlMode.Velocity, 0.0);
     flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
+    beltStarted = false ;
   }
 
   // public void extend() {
