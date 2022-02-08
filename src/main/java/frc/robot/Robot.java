@@ -4,12 +4,17 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ArmBarConstants;
+import frc.robot.autopathplanner.MPController;
+import frc.robot.autopathplanner.Trajectories;
 import frc.robot.commands.Climb;
 //import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.ArmBar;
@@ -23,13 +28,44 @@ import frc.robot.subsystems.ArmBar;
  */
 public class Robot extends TimedRobot {
   
+  Trajectories trajectories = new Trajectories();
+  MPController mpController;
+
   public static Trajectory[] selectedTrajectory = new Trajectory[2];
 
   public static Timer m_autoTimer = new Timer();
 
-private Command m_autonomousCommand;
+  String selectedPath;
+
+  double trajectoryTime;
+
+  private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  // Paths 
+  String testPathBackwards = "Test_Path_Backwards.csv";
+  String testPathForwards = "Test_Path_Forwards.csv";
+  String testPathLeft = "Test_Path_Left.csv";
+  String testPathRight = "Test_Path_Right.csv";
+  String testPathLoop = "Test_Path_Loop.csv";
+
+  String b1_BBallD_BBallC = "TarmacB1_to_BBallD_BBallC.csv";
+  String b1_BBallD = "TarmacB1_to_BBallD.csv";
+  String b2_BBallB_BBallC = "TarmacB2_to_BBallB_BBallC.csv";
+  String b2_BBallB = "TarmacB2_to_BBallB.csv";
+  String b2_BBallC_BBallB = "TarmacB2_to_BBallC_BBallB.csv";
+  String b2_BBallC_BBallD = "TarmacB2_to_BBallC_BBalD.csv";
+  String b2_BBallC = "TarmacB2_to_BBallC.csv";
+
+  String r1_RBallD_RBallE = "TarmacR1_to_RBallD_RBallE.csv";
+  String r1_RBallD = "TarmacR1_to_RBallD.csv";
+  String r1_RBallE_RBallF = "TarmacR1_to_RBallE_RBallF.csv";
+  String r1_RBallE = "TarmacR1_to_RBallE.csv";
+  String r2_RBallF_RBallE = "TarmacR2_to_RBallF_RBallE.csv";
+  String r2_RBallF = "TarmacR2_to_RBallF.csv";
+
+  Command pathplannerCommand;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -69,6 +105,44 @@ private Command m_autonomousCommand;
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+
+    mpController = new MPController();
+    
+    // Sets the path to be driven. 
+    selectedPath = testPathForwards;
+
+    for (int i = 0; i < 2; i++){
+      selectedTrajectory[i] = trajectories.getTrajectoryFromCSV(selectedPath)[i];
+    }
+
+    mpController.drive.setMotorConfig();
+
+    trajectoryTime = selectedTrajectory[0].getTotalTimeSeconds();
+    System.out.println("Total Trajectory Time: " + trajectoryTime + "s");
+
+    // Reset encoders
+    mpController.drive.resetEncoders();
+
+    // Initialize our odometry
+    mpController.drive.initializeOdometry();
+
+    // Ensure our odometry is at 0
+    mpController.drive.reset();
+
+    // Reset odometry to starting point of path
+    mpController.drive.resetOdometry(selectedTrajectory[0].getInitialPose());
+
+    // Update our odometry
+    mpController.drive.periodic();    
+
+    pathplannerCommand = mpController.createTrajectoryFollowerCommand(selectedTrajectory[0], selectedTrajectory[1], 2.5);
+
+    pathplannerCommand.schedule();
+
+    m_autoTimer.reset();
+    m_autoTimer.start();
+  
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -82,11 +156,20 @@ private Command m_autonomousCommand;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("Example Path", 8, 5);
+
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    mpController.drive.periodic();
+    
+    if(pathplannerCommand.isFinished()){
+      m_autoTimer.stop();
+    }
+  }
 
   @Override
   public void teleopInit() {

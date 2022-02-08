@@ -14,6 +14,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -90,6 +91,9 @@ public class DriveSubsystem extends SubsystemBase {
     PIDController backLeftPID = new PIDController(PIDConstants.bl_kP, 0, 0);
     PIDController backRightPID = new PIDController(PIDConstants.br_kP, 0, 0);
 
+    // Simple Feed Forward gotten from CHARACTERIZATION | kS | kV | kA |
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(PIDConstants.kS, PIDConstants.kV, PIDConstants.kA);
+
     // Robot pose object
     Pose2d pose = new Pose2d();
 
@@ -103,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     ArrayList<WPI_TalonFX> motors = new ArrayList<WPI_TalonFX>() ;
     public Object requirements;
-    
+
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
@@ -187,7 +191,11 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
-    
+   
+    public SimpleMotorFeedforward getFeedforward() {
+        return feedforward;
+    }
+
     public MecanumDriveKinematics getKinematics() {
         return kinematics;
     }
@@ -244,6 +252,10 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.resetPosition(pose, m_gyro.getRotation2d());
     }
 
+    public void ititializeOdometry() {
+        odometry = new MecanumDriveOdometry(kinematics, getHeading());
+    }
+
     /**
      * Drives the robot at given x, y and theta speeds. Speeds range from [-1, 1]
      * and the linear speeds have no effect on the angular speed.
@@ -283,6 +295,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     /** Resets the drive encoders to currently read a position of 0. */
     public void resetEncoders() {
+        //m_frontRight.setSelectedSensorPosition(0,0,0); need this?
+        //m_frontLeft.setSelectedSensorPosition(0,0,0); need this?
         m_backRight.setSelectedSensorPosition(0, 0, 0);
         m_backLeft.setSelectedSensorPosition(0, 0, 0);
     }
@@ -339,8 +353,8 @@ public class DriveSubsystem extends SubsystemBase {
      *
      * @return the robot's heading in degrees, from -180 to 180
      */
-    public double getHeading() {
-        return m_gyro.getRotation2d().getDegrees();
+    public Rotation2d getHeading() {
+        return Rotation2d.fromDegrees(getGyroHeading());
     }
 
     /**
@@ -440,7 +454,17 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
 
+public void reset() {
+}
 
+
+public void initializeOdometry() {
+}
+
+
+// public MecanumDriveKinematics getFeedforward() {
+//     return null;
+// }
 
 
 }
