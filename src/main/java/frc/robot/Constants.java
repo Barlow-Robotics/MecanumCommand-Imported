@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.io.FilenameFilter;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
@@ -66,6 +68,8 @@ public final class Constants {
         public static final double kPRearRightVel = 0.5;
 
         // Drivetrain
+        public static final double GearRatio = 48/1;
+
         public static final double drivetrainMinPower = 0.05;
         public static final double drivetrainMaxPower = 1.0;
         public static final double manualVoltageRampingConstant = 0.21;
@@ -97,10 +101,39 @@ public final class Constants {
         public static final double maxAngleDifferenceBetweenNavXAndVision = 0.01;
         public static final double alignTimeoutTime = 1000;
         public static final double alignMemorySize = 3;
+
+        public static final double kFrontLeft_x = 3; //feet (change)
+        public static final double kFrontLeft_y = 3; //feet (change)
+        public static final double kFrontRight_x = 3; //feet (change)
+        public static final double kFrontRight_y = 3; //feet (change)
+        public static final double kBackLeft_x = 3; //feet (change)
+        public static final double kBackLeft_y = 3; //feet (change)
+        public static final double kBackRight_x = 3; //feet (change)
+        public static final double kBackRight_y = 3; //feet (change) 
     }
 
-
-
+    public static final class PIDConstants {
+        public static final double fl_kP = 0.127;
+        public static final double fl_kI = 0;
+        public static final double fl_kD = 0;
+ 
+        public static final double bl_kP = 0.127;
+        public static final double bl_kI = 0;
+        public static final double bl_kD = 0;
+ 
+        public static final double fr_kP = 0.127;
+        public static final double fr_kI = 0;
+        public static final double fr_kD = 0;
+ 
+        public static final double br_kP = 0.127;
+        public static final double br_kI = 0;
+        public static final double br_kD = 0;
+         
+        // Characterization Data
+        public static final double kS = 0.495;
+        public static final double kV = 2.04;
+        public static final double kA = 0.119;
+    }
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 1;

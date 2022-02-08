@@ -37,16 +37,16 @@ public class AutonomousCommand extends CommandBase {
         // shoot ball
         //m_autoPath.testPath.loadPath();
     
-            //PPSwerveControllerCommand command = new PPSwerveControllerCommand(
-        // m_autoPath.testPath,
-        // m_autoDrive.m_odometry,
-        // m_autoDrive.kinematics,
-        // m_autoDrive.xController,
-        // m_autoDrive.yController,
-        // m_autoDrive.thetaController,
-        // m_autoDrive.outputModuleStates,
-        // m_autoDrive.requirements
-        // );
+            PPSwerveControllerCommand command = new PPSwerveControllerCommand(
+        m_autoPath.testPath,
+        m_autoDrive.m_odometry,
+        m_autoDrive.kinematics,
+        m_autoDrive.xController,
+        m_autoDrive.yController,
+        m_autoDrive.thetaController,
+        m_autoDrive.outputModuleStates,
+        m_autoDrive.requirements
+        );
   }
 
     @Override

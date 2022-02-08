@@ -13,7 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.sim.PhysicsSim;
+//import frc.robot.sim.PhysicsSim;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -101,7 +101,7 @@ public class Intake extends SubsystemBase {
   boolean simulationInitialized = false ;
 
   public void simulationInit() {
-    PhysicsSim.getInstance().addTalonFX(intakeMotor, 0.5, 6800);
+    //PhysicsSim.getInstance().addTalonFX(intakeMotor, 0.5, 6800);
   }
 
 
