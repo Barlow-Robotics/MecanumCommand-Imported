@@ -89,6 +89,7 @@ public class RobotContainer {
             m_driverController.setTwistChannel(Constants.OIConstants.rightXAxis);            
         }
 
+        String temp_name = m_driverController.getName() ;
         System.out.println("The name of the controller is " + m_driverController.getName()) ;
 
         // // Configure default commands
@@ -97,16 +98,19 @@ public class RobotContainer {
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
 
-                // new RunCommand(() -> {
-                //     m_robotDrive.drive(-m_driverController.getRawAxis(Constants.OIConstants.leftYAxis)* 0.5,
-                //             m_driverController.getRawAxis(Constants.OIConstants.leftXAxis)* 0.5,
-                //             m_driverController.getRawAxis(Constants.OIConstants.rightXAxis)* 0.5, false);
-                // }, m_robotDrive));
-
                 new RunCommand(() -> {
-                    m_robotDrive.drive(0.1, 0.0,0.0, false);
-                    //m_robotDrive.drive(-0.0, 0.0,0.0, false);
+                    double test = m_driverController.getY() ;
+                    double y = -m_driverController.getRawAxis(Constants.OIConstants.leftYAxis) ;
+                    double x = m_driverController.getRawAxis(Constants.OIConstants.leftXAxis) ;
+                    m_robotDrive.drive(y,
+                            x,
+                            m_driverController.getRawAxis(Constants.OIConstants.rightXAxis)* 0.5, false);
                 }, m_robotDrive));
+
+                // new RunCommand(() -> {
+                //     m_robotDrive.drive(0.1, 0.0,0.0, false);
+                //     //m_robotDrive.drive(-0.0, 0.0,0.0, false);
+                // }, m_robotDrive));
 
                 // new RunCommand(() -> {
 
@@ -151,13 +155,13 @@ public class RobotContainer {
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5));
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
 
-        // intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+        intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
 
-        intakeButton.whenPressed(                  
-            new RunCommand(() -> {
-              System.out.println("pressed");
-              }, m_robotDrive)
-        ); 
+        // intakeButton.whenPressed(                  
+        //     new RunCommand(() -> {
+        //       System.out.println("pressed");
+        //       }, m_robotDrive)
+        // ); 
 
         // extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);

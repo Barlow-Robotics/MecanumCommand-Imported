@@ -353,7 +353,7 @@ public class DriveSubsystem extends SubsystemBase {
     // }
 
 
-    boolean simulationInitialized = false ;
+  boolean simulationInitialized = false ;
 
   public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(m_frontRight, 0.75, 6800, true);

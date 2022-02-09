@@ -140,10 +140,10 @@ public final class Constants {
         public static final int encoderTimeout = 0;
         public static final int Extend_Solenoid = 0;
         public static final int Retract_Solenoid = 1;
-        public static final double closedVoltageRampingConstant = 0;
-        public static final double manualVoltageRampingConstant = 0;
-        public static final double DrivetrainKf = 0;
-        public static final double DrivetrainkP = 0;
+        public static final double closedVoltageRampingConstant = 0.1;
+        public static final double manualVoltageRampingConstant = 0.1;
+        public static final double DrivetrainKf = 0.5;
+        public static final double DrivetrainkP = 0.02;
         public static final int PID_id = 0;
     }
 
@@ -229,12 +229,13 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int ID_ShooterMotor = 7;
         public static final int ID_FlyWheelMotor = 8;
-        public static final double BeltMotorIntakeVelocity = 0.1;
-        public static final double BeltMotorShootingVelocity = 0.1;
-        public static final double FlyWheelMotorIntakeVelocity = 0.1;
-        public static final double FlyWheelMotorShootingVelocity = 0.1;
-        public static final double FlyWheelShootingTolerance = 0.05;
+        public static final double BeltMotorIntakeVelocity = 200;
+        public static final double BeltMotorShootingVelocity = -300;
+        public static final double FlyWheelMotorIntakeVelocity = 300;
+        public static final double FlyWheelMotorShootingVelocity = -2000;
+        public static final double FlyWheelShootingTolerance = 20;
     }
+
 
 
     public static final String Feeder = null;

@@ -24,7 +24,10 @@ public class StopIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    int wpk = 1 ;
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

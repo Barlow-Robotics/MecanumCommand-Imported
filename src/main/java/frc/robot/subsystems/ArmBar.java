@@ -16,13 +16,14 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
+import frc.robot.sim.PhysicsSim;
 //import sensors
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 
 public class ArmBar extends SubsystemBase {
 
-  public WPI_TalonSRX armBarMotor;
+  public WPI_TalonSRX armBarMotor; // change to FX?
   //Add sensors
 
   public DigitalInput hallEffectsA1;
@@ -122,5 +123,20 @@ public class ArmBar extends SubsystemBase {
     motor.config_kI(Constants.ArmBarConstants.PID_id, 0);
     motor.config_kD(Constants.ArmBarConstants.PID_id, 0);
     motor.setNeutralMode(NeutralMode.Brake);
+  }
+
+
+  boolean simulationInitialized = false ;
+
+  public void simulationInit() {
+    //PhysicsSim.getInstance().addTalonFX(armBarMotor, 0.75, 6800); <-- armBarMotor needs to be an FX
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    if (! simulationInitialized) {
+      simulationInit();
+      simulationInitialized = true ;
+    }
   }
 }
