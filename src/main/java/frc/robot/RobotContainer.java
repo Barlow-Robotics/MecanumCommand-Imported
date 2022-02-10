@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -77,6 +78,44 @@ public class RobotContainer {
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
     // private final Climb climbCommand = new Climb(m_armBar);
+
+
+    // Autonomous/Pathplanner stuff 
+
+    //Trajectory trajectories = new Trajectory();
+  
+    public static Trajectory[] selectedTrajectory = new Trajectory[2];
+  
+    String selectedPath;
+  
+    double trajectoryTime;
+  
+    private Command m_autonomousCommand;
+  
+    private RobotContainer m_robotContainer;
+  
+    // Paths 
+    String testPathBackwards = "Test_Path_Backwards.csv";
+    String testPathForwards = "Test_Path_Forwards.csv";
+    String testPathLeft = "Test_Path_Left.csv";
+    String testPathRight = "Test_Path_Right.csv";
+    String testPathLoop = "Test_Path_Loop.csv";
+  
+    String b1_BBallD_BBallC = "TarmacB1_to_BBallD_BBallC.csv";
+    String b1_BBallD = "TarmacB1_to_BBallD.csv";
+    String b2_BBallB_BBallC = "TarmacB2_to_BBallB_BBallC.csv";
+    String b2_BBallB = "TarmacB2_to_BBallB.csv";
+    String b2_BBallC_BBallB = "TarmacB2_to_BBallC_BBallB.csv";
+    String b2_BBallC_BBallD = "TarmacB2_to_BBallC_BBalD.csv";
+    String b2_BBallC = "TarmacB2_to_BBallC.csv";
+  
+    String r1_RBallD_RBallE = "TarmacR1_to_RBallD_RBallE.csv";
+    String r1_RBallD = "TarmacR1_to_RBallD.csv";
+    String r1_RBallE_RBallF = "TarmacR1_to_RBallE_RBallF.csv";
+    String r1_RBallE = "TarmacR1_to_RBallE.csv";
+    String r2_RBallF_RBallE = "TarmacR2_to_RBallF_RBallE.csv";
+    String r2_RBallF = "TarmacR2_to_RBallF.csv";
+  
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -171,6 +210,19 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        
+    // mpController = new MPController();
+        
+    // Sets the path to be driven. 
+    selectedPath = testPathForwards;
+
+    for (int i = 0; i < 2; i++){
+      selectedTrajectory[i] = trajectories.getTrajectoryFromCSV(selectedPath)[i];
+    }
+
+    trajectoryTime = selectedTrajectory[0].getTotalTimeSeconds();
+    System.out.println("Total Trajectory Time: " + trajectoryTime + "s");
+        
         // Create config for trajectory
         TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -179,7 +231,7 @@ public class RobotContainer {
 
         // An example trajectory to follow. All units in meters.
 
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory( //take trajectory from file
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
                 // Pass through these two interior waypoints, making an 's' curve path

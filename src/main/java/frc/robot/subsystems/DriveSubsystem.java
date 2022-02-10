@@ -295,8 +295,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     /** Resets the drive encoders to currently read a position of 0. */
     public void resetEncoders() {
-        //m_frontRight.setSelectedSensorPosition(0,0,0); need this?
-        //m_frontLeft.setSelectedSensorPosition(0,0,0); need this?
+        m_frontRight.setSelectedSensorPosition(0,0,0);
+        m_frontLeft.setSelectedSensorPosition(0,0,0); 
         m_backRight.setSelectedSensorPosition(0, 0, 0);
         m_backLeft.setSelectedSensorPosition(0, 0, 0);
     }
@@ -449,18 +449,17 @@ public class DriveSubsystem extends SubsystemBase {
 
     // do sim stuff
 
-
-
   }
 
+  public void reset() {
+      m_gyro.reset();
+      resetEncoders();
+      odometry.resetPosition(new Pose2d(), getHeading());
+  }
 
-public void reset() {
-}
-
-
-public void initializeOdometry() {
-}
-
+  public void initializeOdometry() {
+      odometry = new MecanumDriveOdometry(kinematics, getHeading());
+  }
 
 // public MecanumDriveKinematics getFeedforward() {
 //     return null;
