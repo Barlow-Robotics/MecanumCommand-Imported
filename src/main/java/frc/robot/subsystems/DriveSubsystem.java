@@ -11,11 +11,19 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import frc.robot.subsystems.MecanumDrive;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PIDConstants;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveMotorVoltages;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.ErrorCode;
@@ -26,10 +34,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 //import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.robot.Constants;
-import frc.robot.PhysicsSim; //where 2 get this library ?
+// import frc.robot.sim.PhysicsSim; //where 2 get this library ?
 // import edu.wpi.first.wpilibj.RobotBase;
 // import edu.wpi.first.wpilibj.SerialPort;
-
+import frc.robot.Robot;
 import edu.wpi.first.networktables.*;
 
 
@@ -41,17 +49,61 @@ public class DriveSubsystem extends SubsystemBase {
     WPI_TalonFX m_frontRight;
     WPI_TalonFX m_backRight;
 
+    MecanumDriveOdometry odometry;
+
     public final MecanumDrive m_drive;
+
+    // Constructs a new SwerveControllerCommand that when executed will follow the provided trajectory
+    // public SwerveControllerCommand(
+    //     Trajectory trajectory,
+    //     Supplier<Pose2d> pose,
+    //     SwerveDriveKinematics kinematics,
+    //     PIDController xController,
+    //     PIDController yController,
+    //     ProfiledPIDController thetaController,
+    //     Consumer<SwerveModuleState[]> outputModuleStates,
+    //     Subsystem... requirements
+    // );
 
     // The gyro sensor
     private final Gyro m_gyro = new ADXRS450_Gyro();
 
+    // Mechanum kinematics setup (wheel position in relation to centre)
+    static Translation2d m_frontLeftLocation = new Translation2d(Units.feetToMeters(DriveConstants.kFrontLeft_x), Units.feetToMeters(DriveConstants.kFrontLeft_y));
+    static Translation2d m_frontRightLocation = new Translation2d(Units.feetToMeters(DriveConstants.kFrontRight_x), Units.feetToMeters(DriveConstants.kFrontRight_y));
+    static Translation2d m_backLeftLocation = new Translation2d(Units.feetToMeters(DriveConstants.kBackLeft_x), Units.feetToMeters(DriveConstants.kBackLeft_y));
+    static Translation2d m_backRightLocation = new Translation2d(Units.feetToMeters(DriveConstants.kBackRight_x), Units.feetToMeters(DriveConstants.kBackRight_y));
+
+    static MecanumDriveKinematics kinematics = new MecanumDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+
     // Odometry class for tracking robot pose
-    MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+    public MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+
+    // Adjust based on how well the robot tracks the trajectory. NOT TUNED
+    PIDController xController = new PIDController(1, 0, 0);
+    PIDController yController = new PIDController(1.1, 0, 0);
+    ProfiledPIDController thetaController = new ProfiledPIDController(1.1, 0, 0,  new TrapezoidProfile.Constraints(Math.PI, Math.PI));
+
+    // PID for each wheel CHARACTERIZATION GETS YOU PRETTY CLOSE BUT MAKE SURE TO TUNE.. i think
+    PIDController frontLeftPID = new PIDController(PIDConstants.fl_kP, 0, 0);
+    PIDController frontRightPID = new PIDController(PIDConstants.fr_kP, 0, 0);
+    PIDController backLeftPID = new PIDController(PIDConstants.bl_kP, 0, 0);
+    PIDController backRightPID = new PIDController(PIDConstants.br_kP, 0, 0);
+
+    // Robot pose object
+    Pose2d pose = new Pose2d();
+
+    /**
+     * Gets gyro heading from -180 to 180. CCW Positive
+     * @return Gyro Heading [-180, 180]
+     */
+    public double getGyroHeading(){
+        return Math.IEEEremainder(m_gyro.getAngle(), 360) * -1;
+    }
 
     ArrayList<WPI_TalonFX> motors = new ArrayList<WPI_TalonFX>() ;
-
-
+    public Object requirements;
+    
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
@@ -61,10 +113,10 @@ public class DriveSubsystem extends SubsystemBase {
         m_backLeft = new WPI_TalonFX(DriveConstants.ID_backLeftMotor);
         m_backRight = new WPI_TalonFX(DriveConstants.ID_backRightMotor);
 
-        motors.add(m_frontLeft) ;
-        motors.add(m_backLeft) ;
-        motors.add(m_frontRight) ;
-        motors.add(m_backRight) ;
+        motors.add(m_frontLeft);
+        motors.add(m_backLeft);
+        motors.add(m_frontRight);
+        motors.add(m_backRight);
 
         // // These are OK forward/back, but not good with rot
         // m_backLeft.setInverted(true);
@@ -134,6 +186,42 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
+    }
+    
+    public MecanumDriveKinematics getKinematics() {
+        return kinematics;
+    }
+
+    public PIDController getXController(){
+        return xController;
+    }
+
+    public PIDController getYController(){
+        return yController;
+    }
+
+    public ProfiledPIDController getThetaController(){
+        return thetaController;
+    }
+
+    public PIDController getFrontLeftPIDController() {
+        return frontLeftPID;
+    }
+
+    public PIDController getFrontRightPIDController() {
+        return frontRightPID;
+    }
+
+    public PIDController getBackLeftPIDController() {
+        return backLeftPID;
+    }
+
+    public PIDController getBackRightPidController() {
+        return backRightPID;
+    }
+
+    public Rotation2d getDesiredRotation(){
+        return Robot.selectedTrajectory[1].sample(Robot.m_autoTimer.get()).poseMeters.getRotation();
     }
 
     /**
@@ -227,8 +315,6 @@ public class DriveSubsystem extends SubsystemBase {
             );
     }
 
-
-
     /**
      * Sets the max output of the drive. Useful for scaling the drive to drive more
      * slowly.
@@ -243,16 +329,10 @@ public class DriveSubsystem extends SubsystemBase {
         m_drive.setMaxOutput(maxOutput);
     }
 
-
-
-
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
         m_gyro.reset();
     }
-
-
-
 
     /**
      * Returns the heading of the robot.
@@ -263,9 +343,6 @@ public class DriveSubsystem extends SubsystemBase {
         return m_gyro.getRotation2d().getDegrees();
     }
 
-
-
-
     /**
      * Returns the turn rate of the robot.
      *
@@ -274,9 +351,6 @@ public class DriveSubsystem extends SubsystemBase {
     public double getTurnRate() {
         return -m_gyro.getRate();
     }
-
-
-
 
     private void setMotorConfig(WPI_TalonFX motor) { //changed to TalonFX for intake
         motor.configFactoryDefault() ;
@@ -341,6 +415,29 @@ public class DriveSubsystem extends SubsystemBase {
     //     PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 4000);
     // }
 
+
+    boolean simulationInitialized = false ;
+
+  public void simulationInit() {
+        //PhysicsSim.getInstance().addTalonFX(m_frontRight, 0.75, 6800, true);
+        //PhysicsSim.getInstance().addTalonFX(m_frontLeft, 0.75, 6800, true);
+        //PhysicsSim.getInstance().addTalonFX(m_backRight, 0.75, 6800);
+        //PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 6800);
+}
+
+
+  @Override
+  public void simulationPeriodic() {
+    if (! simulationInitialized) {
+      simulationInit();
+      simulationInitialized = true ;
+    }
+
+    // do sim stuff
+
+
+
+  }
 
 
 

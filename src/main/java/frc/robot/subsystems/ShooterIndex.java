@@ -9,9 +9,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIndex extends SubsystemBase {
   /** Creates a new Shooter. */
@@ -19,25 +22,52 @@ public class ShooterIndex extends SubsystemBase {
   WPI_TalonFX beltMotor;
   WPI_TalonFX flyWheelMotor;
 
+  boolean beltStarted = false ;
+  // Solenoid extendSolenoid; 
+  // Solenoid retractSolenoid;
+  // Compressor compressor;
+
   public ShooterIndex() {
-      beltMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_shooterMotor);
-      flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_flyWheelMotor);
+      beltMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_ShooterMotor);
+      flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_FlyWheelMotor);
+      // retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.Retract_Solenoid);
+      // extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.Extend_Solenoid);
+      // compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
+      setMotorConfig(beltMotor);
+      setMotorConfig(flyWheelMotor);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(ShooterConstants.FlyWheelMotorShootingVelocity - flyWheelMotor.get()  < ShooterConstants.FlyWheelShootingTolerance || beltStarted ) {
+      beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity);
+      beltStarted = true ;
+    } 
   }
 
   public void startShooting() {
-    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.shooterMotorVelocity);
-    flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.flyWheelMotorVelocity);
+    flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity);
   }
 
   public void stopShooting() {
     beltMotor.set(TalonFXControlMode.Velocity, 0.0);
     flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
+    beltStarted = false ;
   }
+
+  // public void extend() {
+  // //solenoid extends
+  // extendSolenoid.set(true);
+  // retractSolenoid.set(false);
+  // }
+
+  // public void retract() {
+  // //solenoid compresses
+  // extendSolenoid.set(false);
+  // retractSolenoid.set(true);
+  // }
 
   public boolean hasStarted() {
       return(beltMotor.get()!=0.0 && flyWheelMotor.get()!=0.0
@@ -49,12 +79,18 @@ public class ShooterIndex extends SubsystemBase {
       );
   }
 
+  // public boolean isExtended() {
+  //   return(extendSolenoid.get());
+  // }
+
   public void startReceiving() {
-    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.receiverMotorVelocity);
+    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorIntakeVelocity);
+    flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorIntakeVelocity);
   }
   
   public void stopReceiving(){
-    beltMotor.set(TalonFXControlMode.Velocity, 0);
+    beltMotor.set(TalonFXControlMode.Velocity, 0.0);
+    flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
   }
 
   private void setMotorConfig(WPI_TalonFX motor) {

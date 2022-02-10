@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ArmBarConstants;
 import frc.robot.commands.Climb;
+//import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.ArmBar;
 
 
@@ -19,7 +22,12 @@ import frc.robot.subsystems.ArmBar;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  
+  public static Trajectory[] selectedTrajectory = new Trajectory[2];
+
+  public static Timer m_autoTimer = new Timer();
+
+private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
@@ -104,4 +112,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+
+  @Override
+  public void simulationInit() {
+  }
+  
+  @Override
+  public void simulationPeriodic() {
+		//PhysicsSim.getInstance().run();
+	}
 }

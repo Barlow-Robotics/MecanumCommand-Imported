@@ -37,19 +37,19 @@ public class ArmBar extends SubsystemBase {
 
   /** Creates a new ArmBar. */
   public ArmBar() {
-    armBarMotor = new WPI_TalonSRX(ArmBarConstants.ID_armBarMotor);
+    armBarMotor = new WPI_TalonSRX(ArmBarConstants.ID_ArmBarMotor);
     armBarMotor.setSelectedSensorPosition(0.0);
     armBarMotor.set(TalonSRXControlMode.Velocity, 0.0);
 
-    hallEffectsA1 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA1);
-    hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsA2);
-    hallEffectsB1 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsB1);
-    hallEffectsB2 = new DigitalInput(Constants.ArmBarConstants.ID_hallEffectsB2);
+    hallEffectsA1 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsA1);
+    hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsA2);
+    hallEffectsB1 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB1);
+    hallEffectsB2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB2);
 
-    solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsA1);
-    solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsA2);
-    solenoidB1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsB1);
-    solenoidB2= new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_hallEffectsB2);
+    solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA1);
+    solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA2);
+    solenoidB1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsB1);
+    solenoidB2= new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsB2);
   
   }
 
@@ -60,7 +60,7 @@ public class ArmBar extends SubsystemBase {
   
   public void rotateGripperArmDegree(double angle){
     //motor will go until the bar is rotated so that the the original bar position and the new bar position form the desired angle
-    armBarMotor.set(TalonSRXControlMode.Position, (angle/360)*Constants.ArmBarConstants.gearRatio*Constants.ArmBarConstants.unitsPerRotation);
+    armBarMotor.set(TalonSRXControlMode.Position, (angle/360)*Constants.ArmBarConstants.GearRatio*Constants.ArmBarConstants.UnitsPerRotation);
     //armBarMotor.setSelectedSensorPosition(0.0); do we need this / where would it go if we do
   }
 

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.io.FilenameFilter;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
@@ -23,8 +25,8 @@ import edu.wpi.first.wpilibj.SerialPort;
 public final class Constants {
     public static final class DriveConstants {
         public static final int ID_frontLeftMotor = 4;
-        public static final int ID_backLeftMotor = 1;
-        public static final int ID_frontRightMotor = 5;
+        public static final int ID_backLeftMotor = 5;
+        public static final int ID_frontRightMotor = 1;
         public static final int ID_backRightMotor = 2;
 
         //public static final double countsPerRevolution = 8192.0;
@@ -66,6 +68,8 @@ public final class Constants {
         public static final double kPRearRightVel = 0.5;
 
         // Drivetrain
+        public static final double GearRatio = 48/1;
+
         public static final double drivetrainMinPower = 0.05;
         public static final double drivetrainMaxPower = 1.0;
         public static final double manualVoltageRampingConstant = 0.21;
@@ -76,11 +80,11 @@ public final class Constants {
         public static final double DrivetrainKf = 1.8; // 0.1797
         public static final double DrivetrainkP = 0.02;
 
-        public static final double unitsPerRotation = 1024;
+        public static final double UnitsPerRotation = 1024;
         public static final double RPMsToUnitsPerHundredMilliseconds = 1.0 / 600.0;
-        public static final double desiredRPMsForDrive = 560.0;
-        public static final double maxDriveVelocity = 6000.0;
-        public static final double VelocityInputConversionFactor = desiredRPMsForDrive * unitsPerRotation
+        public static final double DesiredRPMsForDrive = 560.0;
+        public static final double MaxDriveVelocity = 6000.0;
+        public static final double VelocityInputConversionFactor = DesiredRPMsForDrive * UnitsPerRotation
                 * RPMsToUnitsPerHundredMilliseconds;
 
         public static final int encoderTimeout = 30;
@@ -97,10 +101,39 @@ public final class Constants {
         public static final double maxAngleDifferenceBetweenNavXAndVision = 0.01;
         public static final double alignTimeoutTime = 1000;
         public static final double alignMemorySize = 3;
+
+        public static final double kFrontLeft_x = 3; //feet (change)
+        public static final double kFrontLeft_y = 3; //feet (change)
+        public static final double kFrontRight_x = 3; //feet (change)
+        public static final double kFrontRight_y = 3; //feet (change)
+        public static final double kBackLeft_x = 3; //feet (change)
+        public static final double kBackLeft_y = 3; //feet (change)
+        public static final double kBackRight_x = 3; //feet (change)
+        public static final double kBackRight_y = 3; //feet (change) 
     }
 
-
-
+    public static final class PIDConstants {
+        public static final double fl_kP = 0.127;
+        public static final double fl_kI = 0;
+        public static final double fl_kD = 0;
+ 
+        public static final double bl_kP = 0.127;
+        public static final double bl_kI = 0;
+        public static final double bl_kD = 0;
+ 
+        public static final double fr_kP = 0.127;
+        public static final double fr_kI = 0;
+        public static final double fr_kD = 0;
+ 
+        public static final double br_kP = 0.127;
+        public static final double br_kI = 0;
+        public static final double br_kD = 0;
+         
+        // Characterization Data
+        public static final double kS = 0.495;
+        public static final double kV = 2.04;
+        public static final double kA = 0.119;
+    }
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 1;
@@ -134,8 +167,8 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int ID_intakeMotor = 3;
-        public static final double intakeMotorSpeed = 0.3;
+        public static final int ID_IntakeMotor = 3;
+        public static final double IntakeMotorSpeed = 0.3;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;
         public static final int Extend_Solenoid = 0;
@@ -165,22 +198,22 @@ public final class Constants {
     public static final class ArmBarConstants {
         //these are all temp values!!!
         
-        public static final int ID_armBarMotor = 10;
+        public static final int ID_ArmBarMotor = 10;
         
-        public static final int ID_hallEffectsA1 = 11;
-        public static final int ID_hallEffectsA2 = 12;
-        public static final int ID_hallEffectsB1 = 13;
-        public static final int ID_hallEffectsB2 = 14;
+        public static final int ID_HallEffectsA1 = 11;
+        public static final int ID_HallEffectsA2 = 12;
+        public static final int ID_HallEffectsB1 = 13;
+        public static final int ID_HallEffectsB2 = 14;
 
-        public static final int ID_solenoidA1 = 15;
-        public static final int ID_solenoidA2 = 16;
-        public static final int ID_solenoidB1 = 17;
-        public static final int ID_solenoidB2 = 18;
+        public static final int ID_SolenoidA1 = 15;
+        public static final int ID_SolenoidA2 = 16;
+        public static final int ID_SolenoidB1 = 17;
+        public static final int ID_SolenoidB2 = 18;
 
-        public static final int unitsPerRotation = 1024;
-        public static final double gearRatio = 48/1;
+        public static final int UnitsPerRotation = 1024;
+        public static final double GearRatio = 48/1;
 
-        public static final double armBarMotorSpeed = 0.1;
+        public static final double ArmBarMotorSpeed = 0.1;
 
         public static final double manualVoltageRampingConstant = 0.21;
         public static final double closedVoltageRampingConstant = 0.21;
@@ -193,10 +226,10 @@ public final class Constants {
         public static final double DrivetrainKf = 1.8;
         public static final double DrivetrainkP = 0.02;
 
-        public static final double firstRotationAngle = 90;
-        public static final double consistentRotationAngle = 180;
-        public static final double firstRotationAngleTolerance = 4;
-        public static final double consistentRotationAngleTolerance = 6;
+        public static final double FirstRotationAngle = 90;
+        public static final double ConsistentRotationAngle = 180;
+        public static final double FirstRotationAngleTolerance = 4;
+        public static final double ConsistentRotationAngleTolerance = 6;
         
 
 
@@ -227,11 +260,13 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final int ID_shooterMotor = 7;
-        public static final int ID_flyWheelMotor = 8;
-        public static final double shooterMotorVelocity = 0.1;
-        public static final double receiverMotorVelocity = -0.1;
-        public static final double flyWheelMotorVelocity = 0.1;
+        public static final int ID_ShooterMotor = 7;
+        public static final int ID_FlyWheelMotor = 8;
+        public static final double BeltMotorIntakeVelocity = 0.1;
+        public static final double BeltMotorShootingVelocity = 0.1;
+        public static final double FlyWheelMotorIntakeVelocity = 0.1;
+        public static final double FlyWheelMotorShootingVelocity = 0.1;
+        public static final double FlyWheelShootingTolerance = 0.05;
     }
 
 
