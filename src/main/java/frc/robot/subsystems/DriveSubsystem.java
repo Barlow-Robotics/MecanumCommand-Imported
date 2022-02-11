@@ -354,17 +354,17 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void setMotorConfig(WPI_TalonFX motor) { //changed to TalonFX for intake
         motor.configFactoryDefault() ;
-        motor.configSelectedFeedbackSensor(
-            FeedbackDevice.QuadEncoder, 
-            Constants.DriveConstants.mainFeedbackLoop,
-            Constants.DriveConstants.encoderTimeout
-            ); 
+        // motor.configSelectedFeedbackSensor(
+        //     FeedbackDevice.QuadEncoder, 
+        //     Constants.DriveConstants.mainFeedbackLoop,
+        //     Constants.DriveConstants.encoderTimeout
+        //     ); 
         motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant) ;
         motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant) ;
-        motor.configNominalOutputForward(0);
-        motor.configNominalOutputReverse(0);
-        motor.configPeakOutputForward(1.0);
-        motor.configPeakOutputReverse(-1.0);
+        // motor.configNominalOutputForward(0);
+        // motor.configNominalOutputReverse(0);
+        // motor.configPeakOutputForward(1.0);
+        // motor.configPeakOutputReverse(-1.0);
         //motor.configMotionCruiseVelocity( (int) (Constants.DriveConstants.unitsPerRotation * Constants.DriveConstants.desiredRPMsForDrive));
         motor.config_kF(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainKf);
         motor.config_kP(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainkP);

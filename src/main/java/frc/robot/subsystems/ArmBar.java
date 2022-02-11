@@ -29,10 +29,10 @@ public class ArmBar extends SubsystemBase {
   public DigitalInput hallEffectsB1;
   public DigitalInput hallEffectsB2;
 
-  public Solenoid solenoidA1;
-  public Solenoid solenoidA2;
-  public Solenoid solenoidB1;
-  public Solenoid solenoidB2;
+  // public Solenoid solenoidA1;
+  // public Solenoid solenoidA2;
+  // public Solenoid solenoidB1;
+  // public Solenoid solenoidB2;
 
 
   /** Creates a new ArmBar. */
@@ -46,10 +46,10 @@ public class ArmBar extends SubsystemBase {
     hallEffectsB1 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB1);
     hallEffectsB2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB2);
 
-    solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA1);
-    solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA2);
-    solenoidB1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsB1);
-    solenoidB2= new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsB2);
+    // solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA1);
+    // solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA2);
+    // solenoidB1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsB1);
+    // solenoidB2= new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsB2);
   
   }
 
@@ -69,38 +69,38 @@ public class ArmBar extends SubsystemBase {
   }
   
   public void releaseGripperA(){
-    solenoidA1.set(true);
-    solenoidA2.set(true);
+    // solenoidA1.set(true);
+    // solenoidA2.set(true);
   }
 
   public void releaseGripperB(){
-    solenoidB1.set(true);
-    solenoidB2.set(true);
+    // solenoidB1.set(true);
+    // solenoidB2.set(true);
   }
 
   public boolean gripperAIsClosed(){
     //Check for halleffect
-    return(hallEffectsA1.get() && hallEffectsA2.get());
+    return(!hallEffectsA1.get() && !hallEffectsA2.get());
   }
 
   public boolean gripperBIsClosed(){
     //Check for halleffect
-    return(hallEffectsB1.get() && hallEffectsB2.get());
+    return(!hallEffectsB1.get() && !hallEffectsB2.get());
   }
 
   private void setMotorConfig(WPI_TalonSRX motor) {
     motor.configFactoryDefault() ;
-    motor.configSelectedFeedbackSensor(
-        FeedbackDevice.QuadEncoder, 
-        Constants.ArmBarConstants.mainFeedbackLoop,
-        Constants.ArmBarConstants.encoderTimeout
-        ); 
+    // motor.configSelectedFeedbackSensor(
+    //     FeedbackDevice.QuadEncoder, 
+    //     Constants.ArmBarConstants.mainFeedbackLoop,
+    //     Constants.ArmBarConstants.encoderTimeout
+    //     ); 
     motor.configClosedloopRamp(Constants.ArmBarConstants.closedVoltageRampingConstant) ;
     motor.configOpenloopRamp(Constants.ArmBarConstants.manualVoltageRampingConstant) ;
-    motor.configNominalOutputForward(0);
-    motor.configNominalOutputReverse(0);
-    motor.configPeakOutputForward(1.0);
-    motor.configPeakOutputReverse(-1.0);
+    // motor.configNominalOutputForward(0);
+    // motor.configNominalOutputReverse(0);
+    // motor.configPeakOutputForward(1.0);
+    // motor.configPeakOutputReverse(-1.0);
     //motor.configMotionCruiseVelocity( (int) (Constants.DriveConstants.unitsPerRotation * Constants.DriveConstants.desiredRPMsForDrive));
     motor.config_kF(Constants.ArmBarConstants.PID_id, Constants.ArmBarConstants.DrivetrainKf);
     motor.config_kP(Constants.ArmBarConstants.PID_id, Constants.ArmBarConstants.DrivetrainkP);

@@ -168,15 +168,17 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int ID_IntakeMotor = 3;
-        public static final double IntakeMotorSpeed = 0.3;
+        public static final double IntakeMotorSpeed = 300.0;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;
         public static final int Extend_Solenoid = 0;
         public static final int Retract_Solenoid = 1;
-        public static final double closedVoltageRampingConstant = 0;
-        public static final double manualVoltageRampingConstant = 0;
-        public static final double DrivetrainKf = 0;
-        public static final double DrivetrainkP = 0;
+
+        public static final double closedVoltageRampingConstant = 0.1;
+        public static final double manualVoltageRampingConstant = 0.1;
+        public static final double kF = 0.5;
+        public static final double kP = 0.02;
+
         public static final int PID_id = 0;
     }
 
