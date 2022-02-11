@@ -233,7 +233,7 @@ public final class Constants {
         public static final double FirstRotationAngleTolerance = 4;
         public static final double ConsistentRotationAngleTolerance = 6;
         
-
+        
 
     }
 

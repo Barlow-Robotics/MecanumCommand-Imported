@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 //import sensors
@@ -28,6 +29,11 @@ public class ArmBar extends SubsystemBase {
   public DigitalInput hallEffectsA2;
   public DigitalInput hallEffectsB1;
   public DigitalInput hallEffectsB2;
+
+  public DigitalOutput solenoidA1;
+  public DigitalOutput solenoidA2;
+  public DigitalOutput solenoidB1;
+  public DigitalOutput solenoidB2;
 
   // public Solenoid solenoidA1;
   // public Solenoid solenoidA2;
@@ -45,6 +51,11 @@ public class ArmBar extends SubsystemBase {
     hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsA2);
     hallEffectsB1 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB1);
     hallEffectsB2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB2);
+
+    solenoidA1 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidA1);
+    solenoidA2 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidA2);
+    solenoidB1 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidB1);
+    solenoidB2 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidB2);
 
     // solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA1);
     // solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ArmBarConstants.ID_HallEffectsA2);
