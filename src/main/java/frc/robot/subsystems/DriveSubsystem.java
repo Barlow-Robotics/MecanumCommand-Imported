@@ -228,9 +228,9 @@ public class DriveSubsystem extends SubsystemBase {
         return backRightPID;
     }
 
-    public Rotation2d getDesiredRotation(){
-        return Robot.selectedTrajectory[1].sample(Robot.m_autoTimer.get()).poseMeters.getRotation();
-    }
+    // public Rotation2d getDesiredRotation(){
+    //     return Robot.selectedTrajectory[1].sample(Robot.m_autoTimer.get()).poseMeters.getRotation();
+    // }
 
     /**
      * Returns the current wheel speeds of the robot.

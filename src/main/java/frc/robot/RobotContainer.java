@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -35,12 +37,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import edu.wpi.first.networktables.*;
-
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -62,60 +67,63 @@ public class RobotContainer {
 
     // ArmBar armBar = new ArmBar();
 
-    private final JoystickButton intakeButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Right_Bumper);
-    // private final JoystickButton extendButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
-    private final JoystickButton shooterButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_A);
-    // private final JoystickButton climbButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Back_Button);
-    // private final JoystickButton receiverButton = new JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_Y); 
-   
+    private final JoystickButton intakeButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Right_Bumper);
+    // private final JoystickButton extendButton = new
+    // JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
+    private final JoystickButton shooterButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Button_A);
+    // private final JoystickButton climbButton = new
+    // JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Back_Button);
+    // private final JoystickButton receiverButton = new
+    // JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Button_Y);
 
-   // Commands
+    // Commands
 
     private final StartIntake startIntakeCommand = new StartIntake(m_intake, m_shooter);
     private final StopIntake stopIntakeCommand = new StopIntake(m_intake, m_shooter);
     // private final ExtendIntake extendIntakeCommand = new ExtendIntake(m_intake);
-    // private final RetractIntake retractIntakeCommand = new RetractIntake(m_intake);
+    // private final RetractIntake retractIntakeCommand = new
+    // RetractIntake(m_intake);
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
     // private final Climb climbCommand = new Climb(m_armBar);
 
+    // Autonomous/Pathplanner stuff
 
-    // Autonomous/Pathplanner stuff 
+    // Trajectory trajectories = new Trajectory();
 
-    //Trajectory trajectories = new Trajectory();
-  
     public static Trajectory[] selectedTrajectory = new Trajectory[2];
-  
-    String selectedPath;
-  
+
     double trajectoryTime;
-  
+
     private Command m_autonomousCommand;
-  
+
     private RobotContainer m_robotContainer;
-  
-    // Paths 
-    String testPathBackwards = "Test_Path_Backwards.csv";
-    String testPathForwards = "Test_Path_Forwards.csv";
-    String testPathLeft = "Test_Path_Left.csv";
-    String testPathRight = "Test_Path_Right.csv";
-    String testPathLoop = "Test_Path_Loop.csv";
-  
-    String b1_BBallD_BBallC = "TarmacB1_to_BBallD_BBallC.csv";
-    String b1_BBallD = "TarmacB1_to_BBallD.csv";
-    String b2_BBallB_BBallC = "TarmacB2_to_BBallB_BBallC.csv";
-    String b2_BBallB = "TarmacB2_to_BBallB.csv";
-    String b2_BBallC_BBallB = "TarmacB2_to_BBallC_BBallB.csv";
-    String b2_BBallC_BBallD = "TarmacB2_to_BBallC_BBalD.csv";
-    String b2_BBallC = "TarmacB2_to_BBallC.csv";
-  
-    String r1_RBallD_RBallE = "TarmacR1_to_RBallD_RBallE.csv";
-    String r1_RBallD = "TarmacR1_to_RBallD.csv";
-    String r1_RBallE_RBallF = "TarmacR1_to_RBallE_RBallF.csv";
-    String r1_RBallE = "TarmacR1_to_RBallE.csv";
-    String r2_RBallF_RBallE = "TarmacR2_to_RBallF_RBallE.csv";
-    String r2_RBallF = "TarmacR2_to_RBallF.csv";
-  
+
+    // Paths
+    String testPathBackwards = "./pathplanner/generatedJSON/Test_Path_Backwards.json";
+    String testPathForwards = "./pathplanner/generatedJSON/Test_Path_Forwards.json";
+    String testPathLeft = "./pathplanner/generatedJSON/Test_Path_Left.json";
+    String testPathRight = "./pathplanner/generatedJSON/Test_Path_Right.json";
+    String testPathLoop = "./pathplanner/generatedJSON/Test_Path_Loop.json";
+
+    String b1_BBallD_BBallC = "./pathplanner/generatedJSON/TarmacB1_to_BBallD_BBallC.json";
+    String b1_BBallD = "./pathplanner/generatedJSON/TarmacB1_to_BBallD.json";
+    String b2_BBallB_BBallC = "./pathplanner/generatedJSON/TarmacB2_to_BBallB_BBallC.json";
+    String b2_BBallB = "./pathplanner/generatedJSON/TarmacB2_to_BBallB.json";
+    String b2_BBallC_BBallB = "./pathplanner/generatedJSON/TarmacB2_to_BBallC_BBallB.json";
+    String b2_BBallC_BBallD = "./pathplanner/generatedJSON/TarmacB2_to_BBallC_BBalD.json";
+    String b2_BBallC = "./pathplanner/generatedJSON/TarmacB2_to_BBallC.json";
+
+    String r1_RBallD_RBallE = "./pathplanner/generatedJSON/TarmacR1_to_RBallD_RBallE.json";
+    String r1_RBallD = "./pathplanner/generatedJSON/TarmacR1_to_RBallD.json";
+    String r1_RBallE_RBallF = "./pathplanner/generatedJSON/TarmacR1_to_RBallE_RBallF.json";
+    String r1_RBallE = "./pathplanner/generatedJSON/TarmacR1_to_RBallE.json";
+    String r2_RBallF_RBallE = "./pathplanner/generatedJSON/TarmacR2_to_RBallF_RBallE.json";
+    String r2_RBallF = "./pathplanner/generatedJSON/TarmacR2_to_RBallF.json";
+
+    String selectedPath = testPathForwards;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -124,11 +132,11 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        if ( m_driverController.getName() == Constants.OIConstants.LogitechF310Name ) {
-            m_driverController.setTwistChannel(Constants.OIConstants.rightXAxis);            
+        if (m_driverController.getName() == Constants.OIConstants.LogitechF310Name) {
+            m_driverController.setTwistChannel(Constants.OIConstants.rightXAxis);
         }
 
-        System.out.println("The name of the controller is " + m_driverController.getName()) ;
+        System.out.println("The name of the controller is " + m_driverController.getName());
 
         // // Configure default commands
         // // Set the default drive command to split-stick arcade drive
@@ -137,42 +145,40 @@ public class RobotContainer {
                 // hand, and turning controlled by the right.
 
                 // new RunCommand(() -> {
-                //     m_robotDrive.drive(-m_driverController.getRawAxis(Constants.OIConstants.leftYAxis)* 0.5,
-                //             m_driverController.getRawAxis(Constants.OIConstants.leftXAxis)* 0.5,
-                //             m_driverController.getRawAxis(Constants.OIConstants.rightXAxis)* 0.5, false);
+                // m_robotDrive.drive(-m_driverController.getRawAxis(Constants.OIConstants.leftYAxis)*
+                // 0.5,
+                // m_driverController.getRawAxis(Constants.OIConstants.leftXAxis)* 0.5,
+                // m_driverController.getRawAxis(Constants.OIConstants.rightXAxis)* 0.5, false);
                 // }, m_robotDrive));
 
                 new RunCommand(() -> {
-                    m_robotDrive.drive(0.1, 0.0,0.0, false);
-                    //m_robotDrive.drive(-0.0, 0.0,0.0, false);
+                    m_robotDrive.drive(0.1, 0.0, 0.0, false);
+                    // m_robotDrive.drive(-0.0, 0.0,0.0, false);
                 }, m_robotDrive));
 
-                // new RunCommand(() -> {
+        // new RunCommand(() -> {
 
-                //     NetworkTableInstance.getDefault().getEntry("joystick/raw_left_y").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftYAxis));
-                //     NetworkTableInstance.getDefault().getEntry("joystick/raw_left_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftXAxis));
-                //     NetworkTableInstance.getDefault().getEntry("joystick/raw_right_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.rightXAxis));
+        // NetworkTableInstance.getDefault().getEntry("joystick/raw_left_y").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftYAxis));
+        // NetworkTableInstance.getDefault().getEntry("joystick/raw_left_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.leftXAxis));
+        // NetworkTableInstance.getDefault().getEntry("joystick/raw_right_x").setDouble(m_driverController.getRawAxis(Constants.OIConstants.rightXAxis));
 
-                //     NetworkTableInstance.getDefault().getEntry("joystick/getY").setDouble(m_driverController.getY());
-                //     NetworkTableInstance.getDefault().getEntry("joystick/getX").setDouble(m_driverController.getX());
-                //     NetworkTableInstance.getDefault().getEntry("joystick/getTwist").setDouble(m_driverController.getTwist());
-                    
+        // NetworkTableInstance.getDefault().getEntry("joystick/getY").setDouble(m_driverController.getY());
+        // NetworkTableInstance.getDefault().getEntry("joystick/getX").setDouble(m_driverController.getX());
+        // NetworkTableInstance.getDefault().getEntry("joystick/getTwist").setDouble(m_driverController.getTwist());
 
-                //     m_robotDrive.drive(
-                //         //0.0,
-                //         m_driverController.getRawAxis(Constants.OIConstants.leftYAxis),
-                //         ////m_driverController.getY(),
-                //         //0.0,
-                //         m_driverController.getRawAxis(Constants.OIConstants.leftXAxis),
-                //         //0.2,
-                //         m_driverController.getRawAxis(Constants.OIConstants.rightXAxis), 
-                //         // m_driverController.getX(),
-                //         // m_driverController.getTwist(), 
-                //         false
-                //         );
-                // }, m_robotDrive);
-
-
+        // m_robotDrive.drive(
+        // //0.0,
+        // m_driverController.getRawAxis(Constants.OIConstants.leftYAxis),
+        // ////m_driverController.getY(),
+        // //0.0,
+        // m_driverController.getRawAxis(Constants.OIConstants.leftXAxis),
+        // //0.2,
+        // m_driverController.getRawAxis(Constants.OIConstants.rightXAxis),
+        // // m_driverController.getX(),
+        // // m_driverController.getTwist(),
+        // false
+        // );
+        // }, m_robotDrive);
 
         // underGlow.setDefaultCommand( new RunCommand( () -> {}, underGlow ));
 
@@ -186,23 +192,24 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         // Drive at half speed when the right bumper is held
-        // new JoystickButton(m_driverController, Constants.OIConstants.halfSpeedButton);
+        // new JoystickButton(m_driverController,
+        // Constants.OIConstants.halfSpeedButton);
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5));
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
 
         // intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
 
-        intakeButton.whenPressed(                  
-            new RunCommand(() -> {
-              System.out.println("pressed");
-              }, m_robotDrive)
-        ); 
+        intakeButton.whenPressed(
+                new RunCommand(() -> {
+                    System.out.println("pressed");
+                }, m_robotDrive));
 
         // extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
-        // climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep trying to restart itself
-        
-}
+        // climbButton.whenPressed(climbCommand); //is whenPressed right or will it keep
+        // trying to restart itself
+
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -210,34 +217,32 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        
-    // mpController = new MPController();
-        
-    // Sets the path to be driven. 
-    selectedPath = testPathForwards;
 
-    for (int i = 0; i < 2; i++){
-      selectedTrajectory[i] = trajectories.getTrajectoryFromCSV(selectedPath)[i];
-    }
+        Trajectory exampleTrajectory = null;
 
-    trajectoryTime = selectedTrajectory[0].getTotalTimeSeconds();
-    System.out.println("Total Trajectory Time: " + trajectoryTime + "s");
-        
         // Create config for trajectory
         TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                         // Add kinematics to ensure max speed is actually obeyed
                         .setKinematics(DriveConstants.kDriveKinematics);
 
-        // An example trajectory to follow. All units in meters.
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(selectedPath);
+            exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + selectedPath, ex.getStackTrace());
+        }
 
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory( //take trajectory from file
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-                // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 0, new Rotation2d(0)), config);
+        if (exampleTrajectory == null) {
+            // An example trajectory to follow. All units in meters.
+            exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                    // Start at the origin facing the +X direction
+                    new Pose2d(0, 0, new Rotation2d(0)),
+                    // Pass through these two interior waypoints, making an 's' curve path
+                    List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+                    // End 3 meters straight ahead of where we started, facing forward
+                    new Pose2d(3, 0, new Rotation2d(0)), config);
+        }
 
         MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(exampleTrajectory,
                 m_robotDrive::getPose, DriveConstants.kFeedforward, DriveConstants.kDriveKinematics,
@@ -255,7 +260,8 @@ public class RobotContainer {
                 new PIDController(DriveConstants.kPFrontLeftVel, 0, 0),
                 new PIDController(DriveConstants.kPRearLeftVel, 0, 0),
                 new PIDController(DriveConstants.kPFrontRightVel, 0, 0),
-                new PIDController(DriveConstants.kPRearRightVel, 0, 0), m_robotDrive::getCurrentWheelSpeeds,
+                new PIDController(DriveConstants.kPRearRightVel, 0, 0),
+                m_robotDrive::getCurrentWheelSpeeds,
                 m_robotDrive::setDriveSpeedControllersVolts, // Consumer for the output motor voltages
                 m_robotDrive);
 

@@ -89,8 +89,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //mpController.drive.periodic();
     
-    if(pathplannerCommand.isFinished()){
-      m_autoTimer.stop();
+    if(m_autonomousCommand.isFinished()){
     }
   }
 
