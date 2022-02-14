@@ -23,13 +23,19 @@ import edu.wpi.first.wpilibj.SerialPort;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final double RadiansToDegrees = 180.0 / Math.PI;
+    public static final double DegreesToRadians = Math.PI / 180.0;
+    public static final double Inches_Per_Foot = 12.0;
+    public static final double InchesToMeters = 0.0254;
+
     public static final class DriveConstants {
         public static final int ID_frontLeftMotor = 4;
         public static final int ID_backLeftMotor = 5;
         public static final int ID_frontRightMotor = 1;
         public static final int ID_backRightMotor = 2;
 
-        //public static final double countsPerRevolution = 8192.0;
+        // public static final double countsPerRevolution = 8192.0;
         public static final double circumferenceOfWheel = 6.0 * Math.PI;
         public static final double distanceGoal = 120.0;
 
@@ -38,13 +44,11 @@ public final class Constants {
         public static final double kWheelBase = 0.7;
         // Distance between centers of front and back wheels on robot
 
-        public static final MecanumDriveKinematics kDriveKinematics 
-            = new MecanumDriveKinematics(
-                new Translation2d(kWheelBase / 2, kTrackWidth / 2), 
+        public static final MecanumDriveKinematics kDriveKinematics = new MecanumDriveKinematics(
+                new Translation2d(kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
-                );
+                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         public static final int kEncoderCPR = 1024;
         public static final double kWheelDiameterMeters = 0.15;
@@ -68,7 +72,7 @@ public final class Constants {
         public static final double kPRearRightVel = 0.5;
 
         // Drivetrain
-        public static final double GearRatio = 48/1;
+        public static final double GearRatio = 48 / 1;
 
         public static final double drivetrainMinPower = 0.05;
         public static final double drivetrainMaxPower = 1.0;
@@ -102,38 +106,24 @@ public final class Constants {
         public static final double alignTimeoutTime = 1000;
         public static final double alignMemorySize = 3;
 
-        public static final double kFrontLeft_x = 3; //feet (change)
-        public static final double kFrontLeft_y = 3; //feet (change)
-        public static final double kFrontRight_x = 3; //feet (change)
-        public static final double kFrontRight_y = 3; //feet (change)
-        public static final double kBackLeft_x = 3; //feet (change)
-        public static final double kBackLeft_y = 3; //feet (change)
-        public static final double kBackRight_x = 3; //feet (change)
-        public static final double kBackRight_y = 3; //feet (change) 
+        public static final double kFrontLeft_x = 3; // feet (change)
+        public static final double kFrontLeft_y = 3; // feet (change)
+        public static final double kFrontRight_x = 3; // feet (change)
+        public static final double kFrontRight_y = 3; // feet (change)
+        public static final double kBackLeft_x = 3; // feet (change)
+        public static final double kBackLeft_y = 3; // feet (change)
+        public static final double kBackRight_x = 3; // feet (change)
+        public static final double kBackRight_y = 3; // feet (change)
+
+        // wpk need to measure and update.
+        public static final int Counts_Per_Revolution = 21300;
+        public static final double Wheel_Diameter = 6.0;
+        public static final double Inches_Per_Revolution = Math.PI * Wheel_Diameter;
+        public static final double Meters_Per_Revolution = Inches_Per_Revolution * InchesToMeters;
+        public static final double Meters_Per_Count = Meters_Per_Revolution / Counts_Per_Revolution;
+
     }
 
-    public static final class PIDConstants {
-        public static final double fl_kP = 0.127;
-        public static final double fl_kI = 0;
-        public static final double fl_kD = 0;
- 
-        public static final double bl_kP = 0.127;
-        public static final double bl_kI = 0;
-        public static final double bl_kD = 0;
- 
-        public static final double fr_kP = 0.127;
-        public static final double fr_kI = 0;
-        public static final double fr_kD = 0;
- 
-        public static final double br_kP = 0.127;
-        public static final double br_kI = 0;
-        public static final double br_kD = 0;
-         
-        // Characterization Data
-        public static final double kS = 0.495;
-        public static final double kV = 2.04;
-        public static final double kA = 0.119;
-    }
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 1;
@@ -143,43 +133,52 @@ public final class Constants {
         public static final int rightXAxis = 4;
         public static final int rightYAxis = 5;
 
-        public static final String LogitechF310Name = "Controller (Gamepad F310)" ;
+        public static final String LogitechF310Name = "Controller (Gamepad F310)";
     }
+
+
+    public final class Logitech_F310_Controller {
+
+        // Constants for Axes
+        public static final int Left_Stick_X = 0;
+        public static final int Left_Stick_Y = 1;
+        public static final int Left_Trigger = 2;
+        public static final int Right_Trigger = 3;
+        public static final int Right_Stick_X = 4;
+        public static final int Right_Stick_Y = 5;
+
+        // Constants for buttons
+        public static final int Button_A = 1;
+        public static final int Button_B = 2;
+        public static final int Button_X = 3;
+        public static final int Button_Y = 4;
+        public static final int Left_Bumper = 5;
+        public static final int Right_Bumper = 6;
+        public static final int Back_Button = 7;
+        public static final int Start_Button = 8;
+        public static final int Left_Stick = 9;
+        public static final int Right_Stick = 10;
+
+    }
+
+
 
     // For Brian's Controller
 
     // public static final class OIConstants {
-    //     public static final int kDriverControllerPort = 1;
-    //     public static final int halfSpeedButton = 2;
-    //     public static final int leftYAxis = 0;
-    //     public static final int leftXAxis = 1;
-    //     public static final int rightXAxis = 3;
-    //     public static final int rightYAxis = 5;
+    // public static final int kDriverControllerPort = 1;
+    // public static final int halfSpeedButton = 2;
+    // public static final int leftYAxis = 0;
+    // public static final int leftXAxis = 1;
+    // public static final int rightXAxis = 3;
+    // public static final int rightYAxis = 5;
     // }
 
-
-
     public static final class UnderGlowConstants {
-        public static final SerialPort.Port port = SerialPort.Port.kUSB1 ;
-        public static final int BlueAliance = 1 ;
-        public static final int RedAliance = 2 ;
-        public static final int NeonGreen = 3 ;
-    }
-
-    public static final class IntakeConstants {
-        public static final int ID_IntakeMotor = 3;
-        public static final double IntakeMotorSpeed = 300.0;
-        public static final int mainFeedbackLoop = 0;
-        public static final int encoderTimeout = 0;
-        public static final int Extend_Solenoid = 0;
-        public static final int Retract_Solenoid = 1;
-
-        public static final double closedVoltageRampingConstant = 0.1;
-        public static final double manualVoltageRampingConstant = 0.1;
-        public static final double kF = 0.5;
-        public static final double kP = 0.02;
-
-        public static final int PID_id = 0;
+        public static final SerialPort.Port port = SerialPort.Port.kUSB1;
+        public static final int BlueAliance = 1;
+        public static final int RedAliance = 2;
+        public static final int NeonGreen = 3;
     }
 
     public static final class AutoConstants {
@@ -197,11 +196,11 @@ public final class Constants {
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 
+
     public static final class ArmBarConstants {
-        //these are all temp values!!!
-        
+
         public static final int ID_ArmBarMotor = 10;
-        
+
         public static final int ID_HallEffectsA1 = 11;
         public static final int ID_HallEffectsA2 = 12;
         public static final int ID_HallEffectsB1 = 13;
@@ -212,65 +211,64 @@ public final class Constants {
         public static final int ID_SolenoidB1 = 17;
         public static final int ID_SolenoidB2 = 18;
 
-        public static final int UnitsPerRotation = 1024;
-        public static final double GearRatio = 48/1;
+        public static final int UnitsPerRotation = 2048;
+        public static final double GearboxGearRatio = 48 / 1; // farther gear to axel gear
+        public static final double ChainGearRatio = 12 / 12; // (or 15/12) upper gear to lower gear
 
         public static final double ArmBarMotorSpeed = 0.1;
 
-        public static final double manualVoltageRampingConstant = 0.21;
-        public static final double closedVoltageRampingConstant = 0.21;
+        public static final double manualVoltageRampingConstant = 0.05;
+        public static final double closedVoltageRampingConstant = 0.05;
 
-        public static final int encoderTimeout = 30;
-        public static final int mainFeedbackLoop = 0;
+        public static final int Position_PID_id = 0;
+        public static final double Position_kF = 0.0;
+        public static final double Position_kP = 0.10;
 
-        public static final int PID_id = 0;
+        public static final int Velocity_PID_id = 1;
+        public static final double Velocity_kF = 0.0485;
+        public static final double Velocity_kP = 0.01;
+        public static final double Velocity_kD = 0.00;
 
-        public static final double DrivetrainKf = 1.8;
-        public static final double DrivetrainkP = 0.02;
 
         public static final double FirstRotationAngle = 90;
         public static final double ConsistentRotationAngle = 180;
         public static final double FirstRotationAngleTolerance = 4;
         public static final double ConsistentRotationAngleTolerance = 6;
-        
-
 
     }
 
-    public final class Logitech_F310_Controller {
 
-        // Constants for Axes
-        public static final int Left_Stick_X = 0 ;
-        public static final int Left_Stick_Y = 1 ;
-        public static final int Left_Trigger = 2 ;
-        public static final int Right_Trigger = 3 ;
-        public static final int Right_Stick_X = 4 ;
-        public static final int Right_Stick_Y = 5 ;
+    public static final class IntakeConstants {
+        public static final int ID_IntakeMotor = 3;
+        public static final double IntakeMotorSpeed = 250.0;
+        public static final int mainFeedbackLoop = 0;
+        public static final int encoderTimeout = 0;
+        public static final int Extend_Solenoid = 0;
+        public static final int Retract_Solenoid = 1;
 
-        // Constants for buttons
-        public static final int Button_A = 1 ;
-        public static final int Button_B = 2 ;
-        public static final int Button_X = 3 ;
-        public static final int Button_Y = 4 ;
-        public static final int Left_Bumper = 5 ;
-        public static final int Right_Bumper = 6 ;
-        public static final int Back_Button = 7 ;
-        public static final int Start_Button = 8 ;
-        public static final int Left_Stick = 9 ;
-        public static final int Right_Stick = 10 ;
-        
+        public static final double closedVoltageRampingConstant = 0.1;
+        public static final double manualVoltageRampingConstant = 0.1;
+        public static final double kF = 1.0;
+        public static final double kP = 0.0;
+
+        public static final int PID_id = 0;
     }
 
     public static final class ShooterConstants {
         public static final int ID_ShooterMotor = 7;
         public static final int ID_FlyWheelMotor = 8;
-        public static final double BeltMotorIntakeVelocity = 0.1;
-        public static final double BeltMotorShootingVelocity = 0.1;
-        public static final double FlyWheelMotorIntakeVelocity = 0.1;
-        public static final double FlyWheelMotorShootingVelocity = 0.1;
-        public static final double FlyWheelShootingTolerance = 0.05;
-    }
+        public static final double BeltMotorIntakeVelocity = 200;
+        public static final double BeltMotorShootingVelocity = -5700;
+        public static final double FlyWheelMotorIntakeVelocity = -500;
+        public static final double FlyWheelMotorShootingVelocity = 1000;
+        public static final double FlyWheelMinShootingSpeed = 20000;
 
+        public static final double BeltMotor_kF = 1.0;
+        public static final double BeltMotor_kP = 0.0;
+
+        public static final double FlyWheelMotor_kP = 0.0;
+        public static final double FlyWheelMotor_kF = 1.0;
+    }
 
     public static final String Feeder = null;
 }

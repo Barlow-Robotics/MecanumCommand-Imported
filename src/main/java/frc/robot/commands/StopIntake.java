@@ -5,41 +5,43 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterIndex;
+import frc.robot.subsystems.Intake;
 
 public class StopIntake extends CommandBase {
 
-  private Intake m_intake;
-  private ShooterIndex m_shooter;
+    private Intake m_intake;
+    private ShooterIndex m_shooter;
 
-  /** Creates a new StopIntake. */
-  public StopIntake(Intake i, ShooterIndex s) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = i;
-    m_shooter = s;
-    addRequirements(m_intake);
-    addRequirements(m_shooter);
-  }
+    /** Creates a new StopIntake. */
+    public StopIntake(Intake i, ShooterIndex s) {
+        // Use addRequirements() here to declare subsystem dependencies.
+        m_intake = i;
+        m_shooter = s;
+        addRequirements(m_intake);
+        addRequirements(m_shooter);
+    }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_intake.stop();
-    m_shooter.stopReceiving();
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        m_intake.stop();
+        m_shooter.stopReceiving();
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }
