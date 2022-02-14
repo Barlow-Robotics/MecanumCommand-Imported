@@ -20,7 +20,9 @@ public class Climb extends CommandBase {
         WaitingForArmToBeStraightUp,
         DrivingBackward,
         MovingToHighBar,
+        LettingGoHighBar,
         MovingToTraversalBar,
+        LettingGoTraversalBar,
         OnTraversalBar,
         Finished
     };
@@ -71,7 +73,13 @@ public class Climb extends CommandBase {
                     // wpk Need tthink about whether this is the correct angle angle from mid to high might be more than 180
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
                 } else {
-                    m_armBar.releaseGripperA();
+                    currentState = ArmCommandState.LettingGoHighBar;
+                }
+                break;
+
+            case LettingGoHighBar:
+                m_armBar.releaseGripperA();
+                if(!m_armBar.gripperAIsClosed()){
                     currentState = ArmCommandState.MovingToTraversalBar;
                 }
                 break;
@@ -80,9 +88,14 @@ public class Climb extends CommandBase {
                 if (!m_armBar.gripperAIsClosed()) {
                     // wpk is this the angle we want?
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
-                    // maybe swing
                 } else {
-                    m_armBar.releaseGripperB();
+                    currentState = ArmCommandState.LettingGoTraversalBar;
+                }
+                break;
+
+            case LettingGoTraversalBar:
+                m_armBar.releaseGripperB();
+                if(!m_armBar.gripperBIsClosed()){
                     currentState = ArmCommandState.OnTraversalBar;
                 }
                 break;
