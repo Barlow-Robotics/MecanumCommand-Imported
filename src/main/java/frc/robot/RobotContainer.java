@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -34,9 +36,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import edu.wpi.first.networktables.*;
 
@@ -86,8 +92,6 @@ public class RobotContainer {
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
 
     private final Climb climbCommand = new Climb(m_armBar, m_robotDrive);
-
-
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -145,12 +149,9 @@ public class RobotContainer {
         // extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
 
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
-        climbButton.whenPressed(climbCommand); 
+        climbButton.whenPressed(climbCommand);
 
     }
-
-
-
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -165,17 +166,29 @@ public class RobotContainer {
                         // Add kinematics to ensure max speed is actually obeyed
                         .setKinematics(DriveConstants.kDriveKinematics);
 
-        // An example trajectory to follow. All units in meters.
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-                // List.of(new Translation2d(1, 1), new Translation2d(-2,1)),
-                List.of(new Translation2d(0, 1)),
-                new Pose2d(0, 3, new Rotation2d(0)),
-                config);
+        String trajectoryJSON = "./pathplanner/generatedJSON/Test_Path_Forwards.wpilib.json";
+        Trajectory trajectory = null;
+
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+        }
+
+        if (trajectory == null) {
+            // An example trajectory to follow. All units in meters.
+            trajectory = TrajectoryGenerator.generateTrajectory(
+                    // Start at the origin facing the +X direction
+                    new Pose2d(0, 0, new Rotation2d(0)),
+                    // List.of(new Translation2d(1, 1), new Translation2d(-2,1)),
+                    List.of(new Translation2d(0, 1)),
+                    new Pose2d(0, 3, new Rotation2d(0)),
+                    config);
+        }
 
         MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(
-                exampleTrajectory,
+                trajectory,
                 m_robotDrive::getPose,
                 DriveConstants.kFeedforward,
                 DriveConstants.kDriveKinematics,
@@ -200,11 +213,11 @@ public class RobotContainer {
                 m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
-        Pose2d ip = exampleTrajectory.getInitialPose();
+        Pose2d ip = trajectory.getInitialPose();
         m_robotDrive.resetOdometry(ip);
-
         // Run path following command, then stop at the end.
         return mecanumControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+
     }
 
 }

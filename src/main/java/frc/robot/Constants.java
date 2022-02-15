@@ -66,10 +66,10 @@ public final class Constants {
         public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(1, 0.8, 0.15);
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPFrontLeftVel = 0.5;
-        public static final double kPRearLeftVel = 0.5;
-        public static final double kPFrontRightVel = 0.5;
-        public static final double kPRearRightVel = 0.5;
+        public static final double kPFrontLeftVel = 0.75;
+        public static final double kPRearLeftVel = 0.75;
+        public static final double kPFrontRightVel = 0.75;
+        public static final double kPRearRightVel = 0.75;
 
         // Drivetrain
         public static final double GearRatio = 48 / 1;
@@ -260,8 +260,8 @@ public final class Constants {
         public static final double BeltMotorIntakeVelocity = 200;
         public static final double BeltMotorShootingVelocity = -5700;
         public static final double FlyWheelMotorIntakeVelocity = -500;
-        public static final double FlyWheelMotorShootingVelocity = 1000;
-        public static final double FlyWheelMinShootingSpeed = 20000;
+        public static final double FlyWheelMotorShootingVelocity = 850;
+        public static final double FlyWheelMinShootingSpeed = 18000;
 
         public static final double BeltMotor_kF = 1.0;
         public static final double BeltMotor_kP = 0.0;
