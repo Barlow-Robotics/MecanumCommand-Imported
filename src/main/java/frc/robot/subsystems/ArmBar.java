@@ -59,6 +59,11 @@ public class ArmBar extends SubsystemBase {
 
     }
 
+
+    public void ResetPosition() {
+        armBarMotor.setSelectedSensorPosition(0.0);
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
@@ -111,17 +116,32 @@ public class ArmBar extends SubsystemBase {
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.ArmBarConstants.closedVoltageRampingConstant);
         motor.configOpenloopRamp(Constants.ArmBarConstants.manualVoltageRampingConstant);
-        motor.config_kF(Constants.ArmBarConstants.Position_PID_id, Constants.ArmBarConstants.Position_kF);
-        motor.config_kP(Constants.ArmBarConstants.Position_PID_id, Constants.ArmBarConstants.Position_kP);
-        motor.config_kI(Constants.ArmBarConstants.Position_PID_id, 0);
-        motor.config_kD(Constants.ArmBarConstants.Position_PID_id, 0);
+        motor.config_kF(Constants.ArmBarConstants.Position_PID_id, Constants.ArmBarConstants.Position_kF, 30);
+        motor.config_kP(Constants.ArmBarConstants.Position_PID_id, Constants.ArmBarConstants.Position_kP, 30);
+        motor.config_kI(Constants.ArmBarConstants.Position_PID_id, 0, 30);
+        motor.config_kD(Constants.ArmBarConstants.Position_PID_id, 0, 30);
 
         motor.config_kF(Constants.ArmBarConstants.Velocity_PID_id, Constants.ArmBarConstants.Velocity_kF);
         motor.config_kP(Constants.ArmBarConstants.Velocity_PID_id, Constants.ArmBarConstants.Velocity_kP);
         motor.config_kI(Constants.ArmBarConstants.Velocity_PID_id, Constants.ArmBarConstants.Velocity_kD);
         motor.config_kD(Constants.ArmBarConstants.Velocity_PID_id, 0);
 
+        motor.configNominalOutputForward(0, 30);
+		motor.configNominalOutputReverse(0, 30);
+		motor.configPeakOutputForward(1, 30);
+		motor.configPeakOutputReverse(-1, 30);
+
+		/**
+		 * Config the allowable closed-loop error, Closed-Loop output will be
+		 * neutral within this range. See Table in Section 17.2.1 for native
+		 * units per rotation.
+		 */
+		motor.configAllowableClosedloopError(0, Constants.ArmBarConstants.Position_PID_id, 30);
+
+
+
         motor.setNeutralMode(NeutralMode.Brake);
+//        motor.setNeutralMode(NeutralMode.Coast);
     }
 
 

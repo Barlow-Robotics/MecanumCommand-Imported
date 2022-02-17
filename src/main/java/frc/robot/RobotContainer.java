@@ -130,6 +130,12 @@ public class RobotContainer {
 
         // underGlow.setDefaultCommand( new RunCommand( () -> {}, underGlow ));
 
+        m_armBar.setDefaultCommand(
+                new RunCommand(() -> {
+                    m_armBar.ResetPosition( ) ;
+                }, m_armBar)
+        );
+
     }
 
     /**
