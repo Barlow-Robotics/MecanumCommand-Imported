@@ -20,9 +20,9 @@ public class Climb extends CommandBase {
         WaitingForArmToBeStraightUp,
         DrivingBackward,
         MovingToHighBar,
-        LettingGoHighBar,
+        LettingGoMidBar,
         MovingToTraversalBar,
-        LettingGoTraversalBar,
+        LettingGoHighBar,
         OnTraversalBar,
         Finished
     };
@@ -69,8 +69,24 @@ public class Climb extends CommandBase {
                 break;
 
             case MovingToHighBar:
-                if (!m_armBar.gripperBIsClosed()) {
+                if (m_armBar.gripperBIsOpen()) {
                     // wpk Need tthink about whether this is the correct angle angle from mid to high might be more than 180
+                    m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
+                } else {
+                    currentState = ArmCommandState.LettingGoMidBar;
+                }
+                break;
+
+            case LettingGoMidBar:
+                m_armBar.releaseGripperA();
+                if(m_armBar.gripperAIsOpen()){
+                    currentState = ArmCommandState.MovingToTraversalBar;
+                }
+                break;
+
+            case MovingToTraversalBar:
+                if (m_armBar.gripperAIsOpen()) {
+                    // wpk is this the angle we want?
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
                 } else {
                     currentState = ArmCommandState.LettingGoHighBar;
@@ -78,24 +94,8 @@ public class Climb extends CommandBase {
                 break;
 
             case LettingGoHighBar:
-                m_armBar.releaseGripperA();
-                if(!m_armBar.gripperAIsClosed()){
-                    currentState = ArmCommandState.MovingToTraversalBar;
-                }
-                break;
-
-            case MovingToTraversalBar:
-                if (!m_armBar.gripperAIsClosed()) {
-                    // wpk is this the angle we want?
-                    m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
-                } else {
-                    currentState = ArmCommandState.LettingGoTraversalBar;
-                }
-                break;
-
-            case LettingGoTraversalBar:
                 m_armBar.releaseGripperB();
-                if(!m_armBar.gripperBIsClosed()){
+                if(m_armBar.gripperBIsOpen()){
                     currentState = ArmCommandState.OnTraversalBar;
                 }
                 break;
@@ -105,7 +105,7 @@ public class Climb extends CommandBase {
 
             case OnTraversalBar:
                 // do we let go or do we rotate it down using the member function?
-                if (m_armBar.gripperAIsClosed() && !m_armBar.gripperBIsClosed() && m_armBar.armBarMotor.get() == 0.0) {
+                if (m_armBar.gripperAIsClosed() && m_armBar.gripperBIsOpen() && m_armBar.armBarMotor.get() == 0.0) {
                     currentState = ArmCommandState.Finished;
                 }
                 break;

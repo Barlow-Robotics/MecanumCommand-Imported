@@ -7,9 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.*;
@@ -19,28 +16,22 @@ public class ShooterIndex extends SubsystemBase {
 
     WPI_TalonFX beltMotor;
     WPI_TalonFX flyWheelMotor;
+    WPI_TalonFX liftMotor ;
 
     boolean beltStarted = false;
     boolean isShooting = false;
-    // Solenoid extendSolenoid;
-    // Solenoid retractSolenoid;
-    // Compressor compressor;
+
+
+    public enum LiftPostion { In_Transiton, Intake, Shooting } ;
 
     public ShooterIndex() {
         beltMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_ShooterMotor);
         flyWheelMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_FlyWheelMotor);
+        liftMotor = new WPI_TalonFX(Constants.ShooterConstants.Lift.ID_Motor) ;
 
         setMotorConfig(beltMotor);
         setMotorConfig(flyWheelMotor);
-
-        // retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
-        // Constants.IntakeConstants.Retract_Solenoid);
-        // extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
-        // Constants.IntakeConstants.Extend_Solenoid);
-        // compressor = new Compressor(PneumaticsModuleType.CTREPCM);
-
-
-
+        setLiftMotorConfig(liftMotor) ;
     }
 
     @Override
@@ -68,17 +59,30 @@ public class ShooterIndex extends SubsystemBase {
         isShooting = false;
     }
 
-    // public void extend() {
-    // //solenoid extends
-    // extendSolenoid.set(true);
-    // retractSolenoid.set(false);
-    // }
 
-    // public void retract() {
-    // //solenoid compresses
-    // extendSolenoid.set(false);
-    // retractSolenoid.set(true);
-    // }
+
+    public void GotoShootingPosition() {
+        // wpk - need to add something to detect where the arm really is.
+        liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
+    }
+
+
+    public void GotoIntakePosition() {
+        // wpk - need to add something to detect where the arm really is.
+        liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorIntakeAngle) ;
+    }
+
+
+    public LiftPostion getPosition() {
+        if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.95 ) {
+            return LiftPostion.Shooting ;
+        } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.05) {
+            return LiftPostion.Intake ;
+        } else {
+            return LiftPostion.In_Transiton ;
+        }
+    }
+
 
     public boolean hasStarted() {
         return (beltMotor.get() != 0.0 && flyWheelMotor.get() != 0.0);
@@ -88,9 +92,6 @@ public class ShooterIndex extends SubsystemBase {
         return (beltMotor.get() == 0 && flyWheelMotor.get() == 0);
     }
 
-    // public boolean isExtended() {
-    // return(extendSolenoid.get());
-    // }
 
     public void startReceiving() {
         beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorIntakeVelocity) ;
@@ -103,7 +104,6 @@ public class ShooterIndex extends SubsystemBase {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
     }
 
-
     
     private void setMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
@@ -115,6 +115,29 @@ public class ShooterIndex extends SubsystemBase {
         motor.config_kD(Constants.IntakeConstants.PID_id, 0);
         motor.setNeutralMode(NeutralMode.Brake);
     }
+
+
+    private void setLiftMotorConfig(WPI_TalonFX motor) {
+        motor.configFactoryDefault();
+        motor.configClosedloopRamp(Constants.IntakeConstants.closedVoltageRampingConstant);
+        motor.configOpenloopRamp(Constants.IntakeConstants.manualVoltageRampingConstant);
+
+        motor.config_kF(Constants.ShooterConstants.Lift.PID_ID, Constants.ShooterConstants.Lift.kF);
+        motor.config_kP(Constants.ShooterConstants.Lift.PID_ID, Constants.ShooterConstants.Lift.kP);
+        motor.config_kI(Constants.ShooterConstants.Lift.PID_ID, Constants.ShooterConstants.Lift.kI);
+        motor.config_kD(Constants.ShooterConstants.Lift.PID_ID, Constants.ShooterConstants.Lift.kD);
+
+        motor.configMotionCruiseVelocity(Constants.ShooterConstants.Lift.CruiseVelocity) ;
+        motor.configMotionAcceleration(Constants.ShooterConstants.Lift.CruiseVelocity) ;
+        motor.configMotionSCurveStrength(Constants.ShooterConstants.Lift.AccelerationSmoothing) ;
+
+        motor.setSelectedSensorPosition(0.0) ;
+
+        motor.setNeutralMode(NeutralMode.Brake);
+    }
+
+
+
 
     void report() {
         NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed")

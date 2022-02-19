@@ -28,11 +28,9 @@ public class ArmBar extends SubsystemBase {
     public DigitalInput hallEffectsB2;
 
     public DigitalOutput solenoidA1;
-
-    // public Solenoid solenoidA1;
-    // public Solenoid solenoidA2;
-    // public Solenoid solenoidB1;
-    // public Solenoid solenoidB2;
+    public DigitalOutput solenoidA2;
+    public DigitalOutput solenoidB1;
+    public DigitalOutput solenoidB2;
 
     /** Creates a new ArmBar. */
     public ArmBar() {
@@ -47,6 +45,9 @@ public class ArmBar extends SubsystemBase {
         hallEffectsB2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsB2);
 
         solenoidA1 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidA1) ;
+        solenoidA2 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidA2) ;
+        solenoidB1 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidB1) ;
+        solenoidB2 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidB2) ;
 
         // solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM,
         // Constants.ArmBarConstants.ID_HallEffectsA1);
@@ -84,31 +85,33 @@ public class ArmBar extends SubsystemBase {
     public double getArmAngle() {
         double result = 360 * armBarMotor.getSelectedSensorPosition() 
                           / ( Constants.ArmBarConstants.UnitsPerRotation * Constants.ArmBarConstants.GearboxGearRatio * Constants.ArmBarConstants.ChainGearRatio);
-
-        if ( result > 10) {
-            int wpk =1 ;
-        }
         return result;
     }
 
     public void releaseGripperA() {
-        // solenoidA1.set(true);
-        // solenoidA2.set(true);
+        solenoidA1.set(true);
+        solenoidA2.set(true);
     }
 
     public void releaseGripperB() {
-        // solenoidB1.set(true);
-        // solenoidB2.set(true);
+        solenoidB1.set(true);
+        solenoidB2.set(true);
     }
 
     public boolean gripperAIsClosed() {
-        // Check for halleffect
         return (!hallEffectsA1.get() && !hallEffectsA2.get());
     }
 
     public boolean gripperBIsClosed() {
-        // Check for halleffect
         return (!hallEffectsB1.get() && !hallEffectsB2.get());
+    }
+
+    public boolean gripperAIsOpen() {
+        return (hallEffectsA1.get() && hallEffectsA2.get());
+    }
+
+    public boolean gripperBIsOpen() {
+        return (hallEffectsB1.get() && hallEffectsB2.get());
     }
 
 

@@ -17,8 +17,8 @@ import frc.robot.Constants.OIConstants;
 
 import frc.robot.subsystems.ArmBar;
 
-import frc.robot.commands.ExtendIntake;
-import frc.robot.commands.RetractIntake;
+import frc.robot.commands.GotoShootingPosition;
+import frc.robot.commands.GotoIntakePosition;
 import frc.robot.commands.StartIntake;
 import frc.robot.commands.StartShooting;
 import frc.robot.commands.StopIntake;
