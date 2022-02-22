@@ -24,6 +24,7 @@ public class Climb extends CommandBase {
         MovingToTraversalBar,
         LettingGoHighBar,
         OnTraversalBar,
+        GoingToRestingPosition ,
         Finished
     };
 
@@ -52,8 +53,8 @@ public class Climb extends CommandBase {
 
         switch (currentState) {
             case WaitingForArmToBeStraightUp:
-                if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.FirstRotationAngle) > ArmBarConstants.FirstRotationAngleTolerance) {
-                    m_armBar.rotateGripperArmDegree(ArmBarConstants.FirstRotationAngle);
+                if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.MidBarRotationAngle) > ArmBarConstants.AngleTolerance) {
+                    m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle);
                 } else {
                     currentState = ArmCommandState.DrivingBackward;
                 }
@@ -69,9 +70,9 @@ public class Climb extends CommandBase {
                 break;
 
             case MovingToHighBar:
-                if (m_armBar.gripperBIsOpen()) {
+                if (!m_armBar.gripperBIsClosed()) {
                     // wpk Need tthink about whether this is the correct angle angle from mid to high might be more than 180
-                    m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
+                    m_armBar.rotateGripperArmDegree(ArmBarConstants.HighBarRotationAngle);
                 } else {
                     currentState = ArmCommandState.LettingGoMidBar;
                 }
@@ -80,15 +81,17 @@ public class Climb extends CommandBase {
             case LettingGoMidBar:
                 m_armBar.releaseGripperA();
                 if(m_armBar.gripperAIsOpen()){
+                    m_armBar.neutralGripperA();
                     currentState = ArmCommandState.MovingToTraversalBar;
                 }
                 break;
 
             case MovingToTraversalBar:
-                if (m_armBar.gripperAIsOpen()) {
+                if (!m_armBar.gripperAIsClosed()) {
                     // wpk is this the angle we want?
-                    m_armBar.rotateGripperArmDegree(ArmBarConstants.ConsistentRotationAngle);
+                    m_armBar.rotateGripperArmDegree(ArmBarConstants.TraverseBarRotationAngle);
                 } else {
+                    m_armBar.setSlowMotionConfig();  // slow thngs down so we don't drop like a stone
                     currentState = ArmCommandState.LettingGoHighBar;
                 }
                 break;
@@ -96,22 +99,29 @@ public class Climb extends CommandBase {
             case LettingGoHighBar:
                 m_armBar.releaseGripperB();
                 if(m_armBar.gripperBIsOpen()){
+                    m_armBar.neutralGripperB();
                     currentState = ArmCommandState.OnTraversalBar;
                 }
                 break;
 
-//wpk need to add a state to release gripper A and wait for both claws to indicate released
-
-
             case OnTraversalBar:
                 // do we let go or do we rotate it down using the member function?
-                if (m_armBar.gripperAIsClosed() && m_armBar.gripperBIsOpen() && m_armBar.armBarMotor.get() == 0.0) {
-                    currentState = ArmCommandState.Finished;
+                if (m_armBar.gripperAIsClosed() && m_armBar.gripperBIsOpen() ) {
+                    currentState = ArmCommandState.GoingToRestingPosition;
                 }
                 break;
 
+            case GoingToRestingPosition:
+                if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.FinalRestingAngle) > ArmBarConstants.AngleTolerance) {
+                    m_armBar.rotateGripperArmDegree(ArmBarConstants.FinalRestingAngle);
+                } else {
+                    currentState = ArmCommandState.Finished;
+                }
+                break ;
+
             case Finished:
                 // Bot is immobile - nothing else needs to go here
+                m_armBar.stopMotor();
                 break;
         }
     }
@@ -119,11 +129,12 @@ public class Climb extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        m_armBar.stopMotor();
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return currentState == ArmCommandState.Finished ;
     }
 }

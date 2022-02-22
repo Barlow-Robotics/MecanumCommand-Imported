@@ -6,10 +6,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.*;
+import frc.robot.sim.PhysicsSim;
+
 
 public class ShooterIndex extends SubsystemBase {
     /** Creates a new Shooter. */
@@ -20,6 +23,8 @@ public class ShooterIndex extends SubsystemBase {
 
     boolean beltStarted = false;
     boolean isShooting = false;
+
+    double commandedPosition = 0.0 ;
 
 
     public enum LiftPostion { In_Transiton, Intake, Shooting } ;
@@ -64,19 +69,24 @@ public class ShooterIndex extends SubsystemBase {
     public void GotoShootingPosition() {
         // wpk - need to add something to detect where the arm really is.
         liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
+        //liftMotor.set(TalonFXControlMode.Position, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
+        commandedPosition = Constants.ShooterConstants.Lift.MotorShootingAngle ;
     }
 
 
     public void GotoIntakePosition() {
         // wpk - need to add something to detect where the arm really is.
         liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorIntakeAngle) ;
+        //liftMotor.set(TalonFXControlMode.Position, Constants.ShooterConstants.Lift.MotorIntakeAngle) ;
+        commandedPosition = Constants.ShooterConstants.Lift.MotorIntakeAngle ;
     }
 
 
     public LiftPostion getPosition() {
-        if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.95 ) {
+//        System.out.println("shooter position is " + liftMotor.getSelectedSensorPosition() ) ;
+        if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
             return LiftPostion.Shooting ;
-        } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.05) {
+        } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.02) {
             return LiftPostion.Intake ;
         } else {
             return LiftPostion.In_Transiton ;
@@ -119,6 +129,7 @@ public class ShooterIndex extends SubsystemBase {
 
     private void setLiftMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
+        motor.setInverted(TalonFXInvertType.Clockwise);
         motor.configClosedloopRamp(Constants.IntakeConstants.closedVoltageRampingConstant);
         motor.configOpenloopRamp(Constants.IntakeConstants.manualVoltageRampingConstant);
 
@@ -140,10 +151,36 @@ public class ShooterIndex extends SubsystemBase {
 
 
     void report() {
-        NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed")
-                .setDouble(beltMotor.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("index/flywheel_motor_speed")
-                .setDouble(flyWheelMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed").setDouble(beltMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("index/flywheel_motor_speed").setDouble(flyWheelMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("index/lift_motor_speed").setDouble(liftMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("index/lift_motor_position").setDouble(liftMotor.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("index/lift_motor_stator_current").setDouble(liftMotor.getStatorCurrent());
+        NetworkTableInstance.getDefault().getEntry("index/lift_motor_supply_current").setDouble(liftMotor.getSupplyCurrent());
+        NetworkTableInstance.getDefault().getEntry("index/lift_motor_closed_loop_error").setDouble(liftMotor.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("index/lift_motor_closed_loop_target").setDouble(liftMotor.getClosedLoopTarget());
+        NetworkTableInstance.getDefault().getEntry("index/commandedPosition").setDouble(commandedPosition);
     }
+
+
+
+    boolean simulationInitialized = false;
+
+    public void simulationInit() {
+        PhysicsSim.getInstance().addTalonFX(liftMotor, 0.75, 6800, false );
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        if (!simulationInitialized) {
+            simulationInit();
+            simulationInitialized = true;
+        }
+        PhysicsSim.getInstance().run();
+
+        // do sim stuff
+
+    }
+
 
 }

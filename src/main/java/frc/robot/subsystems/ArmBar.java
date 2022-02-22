@@ -16,6 +16,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import frc.robot.sim.PhysicsSim;
+import edu.wpi.first.networktables.*;
+
 
 public class ArmBar extends SubsystemBase {
 
@@ -49,6 +51,11 @@ public class ArmBar extends SubsystemBase {
         solenoidB1 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidB1) ;
         solenoidB2 = new DigitalOutput(Constants.ArmBarConstants.ID_SolenoidB2) ;
 
+        neutralGripperA();
+        neutralGripperB();
+
+        setNormalMotionConfig();
+
         // solenoidA1 = new Solenoid(PneumaticsModuleType.CTREPCM,
         // Constants.ArmBarConstants.ID_HallEffectsA1);
         // solenoidA2 = new Solenoid(PneumaticsModuleType.CTREPCM,
@@ -57,6 +64,8 @@ public class ArmBar extends SubsystemBase {
         // Constants.ArmBarConstants.ID_HallEffectsB1);
         // solenoidB2= new Solenoid(PneumaticsModuleType.CTREPCM,
         // Constants.ArmBarConstants.ID_HallEffectsB2);
+
+        report() ;
 
     }
 
@@ -67,24 +76,32 @@ public class ArmBar extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         // This method will be called once per scheduler run
+        report() ;
     }
 
     public void rotateGripperArmDegree(double angle) {
         // motor will go until the bar is rotated so that the the original bar position
         // and the new bar position form the desired angle
-        double desiredPosition = (angle / 360) * Constants.ArmBarConstants.GearboxGearRatio
-                * Constants.ArmBarConstants.UnitsPerRotation;
+        // double desiredPosition = (angle / 360) * Constants.ArmBarConstants.GearboxGearRatio
+        //         * Constants.ArmBarConstants.UnitsPerRotation;
 
+        double desiredPosition = angle * Constants.ArmBarConstants.UnitsPerArmDegree ;
         armBarMotor.selectProfileSlot(Constants.ArmBarConstants.Position_PID_id, 0);
-        armBarMotor.set(TalonFXControlMode.Position, desiredPosition);
+        armBarMotor.set(TalonFXControlMode.MotionMagic, desiredPosition);
+
         // armBarMotor.setSelectedSensorPosition(0.0); do we need this / where would it
         // go if we do
     }
 
+
+    public void stopMotor() {
+        armBarMotor.set(TalonFXControlMode.PercentOutput, 0);
+    }
+
     public double getArmAngle() {
-        double result = 360 * armBarMotor.getSelectedSensorPosition() 
-                          / ( Constants.ArmBarConstants.UnitsPerRotation * Constants.ArmBarConstants.GearboxGearRatio * Constants.ArmBarConstants.ChainGearRatio);
+        double result = armBarMotor.getSelectedSensorPosition() / Constants.ArmBarConstants.UnitsPerArmDegree ;
         return result;
     }
 
@@ -97,6 +114,18 @@ public class ArmBar extends SubsystemBase {
         solenoidB1.set(true);
         solenoidB2.set(true);
     }
+
+
+    public void neutralGripperA() {
+        solenoidA1.set(false);
+        solenoidA2.set(false);
+    }
+
+    public void neutralGripperB() {
+        solenoidB1.set(false);
+        solenoidB2.set(false);
+    }
+
 
     public boolean gripperAIsClosed() {
         return (!hallEffectsA1.get() && !hallEffectsA2.get());
@@ -124,6 +153,11 @@ public class ArmBar extends SubsystemBase {
         motor.config_kI(Constants.ArmBarConstants.Position_PID_id, 0, 30);
         motor.config_kD(Constants.ArmBarConstants.Position_PID_id, 0, 30);
 
+        motor.configMotionCruiseVelocity(Constants.ArmBarConstants.CruiseVelocity) ;
+        motor.configMotionAcceleration(Constants.ArmBarConstants.CruiseVelocity) ;
+        motor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
+
+
         motor.config_kF(Constants.ArmBarConstants.Velocity_PID_id, Constants.ArmBarConstants.Velocity_kF);
         motor.config_kP(Constants.ArmBarConstants.Velocity_PID_id, Constants.ArmBarConstants.Velocity_kP);
         motor.config_kI(Constants.ArmBarConstants.Velocity_PID_id, Constants.ArmBarConstants.Velocity_kD);
@@ -139,12 +173,33 @@ public class ArmBar extends SubsystemBase {
 		 * neutral within this range. See Table in Section 17.2.1 for native
 		 * units per rotation.
 		 */
-		motor.configAllowableClosedloopError(0, Constants.ArmBarConstants.Position_PID_id, 30);
-
-
+		motor.configAllowableClosedloopError(Constants.ArmBarConstants.Position_PID_id, 0, 30);
 
         motor.setNeutralMode(NeutralMode.Brake);
 //        motor.setNeutralMode(NeutralMode.Coast);
+    }
+
+
+    public void setNormalMotionConfig() {
+        armBarMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.CruiseVelocity) ;
+        armBarMotor.configMotionAcceleration(Constants.ArmBarConstants.MaxAcceleration) ;
+        armBarMotor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
+    }
+
+    public void setSlowMotionConfig() {
+        armBarMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.SlowCruiseVelocity) ;
+        armBarMotor.configMotionAcceleration(Constants.ArmBarConstants.SlowMaxAcceleration) ;
+        armBarMotor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
+    }
+
+
+    void report() {
+        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_speed").setDouble(armBarMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_position").setDouble(armBarMotor.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_stator_current").setDouble(armBarMotor.getStatorCurrent());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_supply_current").setDouble(armBarMotor.getSupplyCurrent());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_closed_loop_error").setDouble(armBarMotor.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_closed_loop_target").setDouble(armBarMotor.getClosedLoopTarget());
     }
 
 

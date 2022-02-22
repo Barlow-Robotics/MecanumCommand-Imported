@@ -69,6 +69,14 @@ public class RobotContainer {
     private final JoystickButton intakeButton = new JoystickButton(m_driverController,
             Constants.Logitech_F310_Controller.Right_Bumper);
 
+
+        private final JoystickButton liftToShootingButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Button_Y);
+
+            private final JoystickButton liftToIntakeButton = new JoystickButton(m_driverController,
+            Constants.Logitech_F310_Controller.Button_B);
+
+
     // private final JoystickButton extendButton = new
     // JoystickButton(m_driverController,Constants.Logitech_F310_Controller.Left_Bumper);
 
@@ -86,8 +94,9 @@ public class RobotContainer {
     private final StartIntake startIntakeCommand = new StartIntake(m_shooter, m_intake);
     private final StopIntake stopIntakeCommand = new StopIntake(m_intake, m_shooter);
 
-    // private final ExtendIntake extendIntakeCommand = new ExtendIntake(m_intake);
-    // private final RetractIntake retractIntakeCommand = new
+    private final GotoShootingPosition shootingPositionCommand = new GotoShootingPosition(m_shooter);
+    private final GotoIntakePosition intakePositionCommand = new GotoIntakePosition(m_shooter);
+
     private final StartShooting startShootingCommand = new StartShooting(m_shooter);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
 
@@ -130,11 +139,11 @@ public class RobotContainer {
 
         // underGlow.setDefaultCommand( new RunCommand( () -> {}, underGlow ));
 
-        m_armBar.setDefaultCommand(
-                new RunCommand(() -> {
-                    m_armBar.ResetPosition( ) ;
-                }, m_armBar)
-        );
+        // m_armBar.setDefaultCommand(
+        //         new RunCommand(() -> {
+        //             m_armBar.ResetPosition( ) ;
+        //         }, m_armBar)
+        // );
 
     }
 
@@ -152,6 +161,11 @@ public class RobotContainer {
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
 
         intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
+
+        liftToShootingButton.whenPressed( shootingPositionCommand) ;
+
+        liftToIntakeButton.whenPressed( intakePositionCommand ) ;
+
         // extendButton.whenPressed(extendIntakeCommand).whenReleased(retractIntakeCommand);
 
         shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
