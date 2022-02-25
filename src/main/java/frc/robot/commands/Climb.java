@@ -11,12 +11,15 @@ import frc.robot.subsystems.ArmBar;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.Constants.ArmBarConstants;
 
+import edu.wpi.first.networktables.*;
+
 public class Climb extends CommandBase {
 
     private ArmBar m_armBar;
     private DriveSubsystem m_drive;
 
-    enum ArmCommandState {
+    public enum ArmCommandState {
+        ResettingPosition,
         WaitingForArmToBeStraightUp,
         DrivingBackward,
         MovingToHighBar,
@@ -29,6 +32,8 @@ public class Climb extends CommandBase {
     };
 
     ArmCommandState currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+
+    int state;
 
     /** Creates a new Climb. */
     public Climb(ArmBar a, DriveSubsystem d) {
@@ -51,7 +56,31 @@ public class Climb extends CommandBase {
     @Override
     public void execute() {
 
+        if(currentState == ArmCommandState.WaitingForArmToBeStraightUp){
+            state=0;
+        } else if(currentState == ArmCommandState.DrivingBackward){
+            state=1;
+        } else if(currentState == ArmCommandState.MovingToHighBar){
+            state=2;
+        } else if(currentState == ArmCommandState.LettingGoMidBar){
+            state=3;
+        } else if(currentState == ArmCommandState.MovingToTraversalBar){
+            state=4;
+        } else if(currentState == ArmCommandState.LettingGoHighBar){
+            state=5;
+        } else if(currentState == ArmCommandState.OnTraversalBar){
+            state=6;
+        } else if(currentState == ArmCommandState.GoingToRestingPosition){
+            state=7;
+        } else if(currentState == ArmCommandState.Finished){
+            state=8;
+        }
+
         switch (currentState) {
+            case ResettingPosition:
+                //m_armBar.ResetPosition();
+                currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+                break ;
             case WaitingForArmToBeStraightUp:
                 if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.MidBarRotationAngle) > ArmBarConstants.AngleTolerance) {
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle);
@@ -137,4 +166,9 @@ public class Climb extends CommandBase {
     public boolean isFinished() {
         return currentState == ArmCommandState.Finished ;
     }
+
+    void report() {
+        NetworkTableInstance.getDefault().getEntry("driverStation/climb_state").setDouble(state);
+    }
+
 }

@@ -38,7 +38,7 @@ public class GotoShootingPosition extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_shooter.getPosition() == ShooterIndex.LiftPostion.Shooting) {
+        if (m_shooter.getPosition() == ShooterIndex.LiftPosition.Shooting) {
             return true;
         } else {
             return false;

@@ -201,15 +201,15 @@ public final class Constants {
 
         public static final int ID_ArmBarMotor = 10;
 
-        public static final int ID_HallEffectsA1 = 0;
-        public static final int ID_HallEffectsA2 = 1;
-        public static final int ID_HallEffectsB1 = 2;
-        public static final int ID_HallEffectsB2 = 3;
+        public static final int ID_HallEffectsA1 = 1;
+        public static final int ID_HallEffectsA2 = 2;
+        public static final int ID_HallEffectsB1 = 3;
+        public static final int ID_HallEffectsB2 = 4;
 
-        public static final int ID_SolenoidA1 = 4;
-        public static final int ID_SolenoidA2 = 5;
-        public static final int ID_SolenoidB1 = 6;
-        public static final int ID_SolenoidB2 = 7;
+        public static final int ID_SolenoidA1 = 5;
+        public static final int ID_SolenoidA2 = 6;
+        public static final int ID_SolenoidB1 = 7;
+        public static final int ID_SolenoidB2 = 8;
 
         public static final int UnitsPerMotorRotation = 2048;
         public static final double GearboxGearRatio = 100 / 1; // farther gear to axel gear
@@ -217,7 +217,15 @@ public final class Constants {
         public static final double UnitsPerArmRotation = UnitsPerMotorRotation * GearboxGearRatio * ChainGearRatio ;
         public static final double UnitsPerArmDegree = UnitsPerArmRotation / 360.0 ;
 
-        public static final double DesiredArmVelocity = 60 ; // degrees persecond
+        public static final double AngleToNextArm = 33 ;
+        public static final double MidBarRotationAngle = 90;
+        public static final double HighBarRotationAngle = MidBarRotationAngle + 180 + AngleToNextArm ;
+        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;
+        public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90 - AngleToNextArm) ; // angle to hang straight down.
+        public static final double AngleTolerance = 1;
+//        public static final double ConsistentRotationAngleTolerance = 6;
+
+        public static final double DesiredArmVelocity = 2* (180 - 2*AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
         public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
         public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
         public static final int AccelerationSmoothing = 2 ;
@@ -229,7 +237,7 @@ public final class Constants {
 
         public static final int Position_PID_id = 0;
         public static final double Position_kF = 0.4;  // wpk need to give this some thought
-        public static final double Position_kP = 0.2;  // wpk need to give this some thought
+        public static final double Position_kP = 0.1;  // wpk need to give this some thought
         public static final double Position_kD = 0.0;  // wpk need to give this some thought
         public static final double Position_kI = 0.0;  // wpk need to give this some thought
 
@@ -244,15 +252,6 @@ public final class Constants {
         public static final double Velocity_kF = 0.0485;
         public static final double Velocity_kP = 0.01;
         public static final double Velocity_kD = 0.00;
-
-
-        public static final double AngleToNextArm = 33 ;
-        public static final double MidBarRotationAngle = 90;
-        public static final double HighBarRotationAngle = MidBarRotationAngle + 180 + AngleToNextArm ;
-        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;
-        public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90 - AngleToNextArm) ; // angle to hang straight down.
-        public static final double AngleTolerance = 1;
-        public static final double ConsistentRotationAngleTolerance = 6;
 
     }
 
@@ -292,19 +291,23 @@ public final class Constants {
             public static final int ID_Motor = 11;
             public static final int MotorUnitsPerRotation = 2048;
             public static final double GearboxGearRatio = 48 / 1; 
-            public static final double ChainGearRatio = 12 / 12; // (or 15/12) upper gear to lower gear
+            public static final double ChainGearRatio = 18.0 / 15.0;
             public static final double UnitsPerRotation = MotorUnitsPerRotation * GearboxGearRatio * ChainGearRatio ;
             public static final double UnitsPerDegree = (UnitsPerRotation) / 360.0 ;
 
             // public static final double MotorIntakeAngle = 0.0 * UnitsPerDegree ; 
-            public static final double MotorIntakeAngle = 0.1 * UnitsPerDegree ; // wpk temporary for testing
-            public static final double MotorShootingAngle = 15.0 * UnitsPerDegree ; 
-            public static final double MotorStartingAngle = 25.0 * UnitsPerDegree ; 
+            public static final double MotorIntakeAngle = 0.0 * UnitsPerDegree ; // wpk temporary for testing
+            public static final double MotorShootingAngle = 58.0 * UnitsPerDegree ; 
+            public static final double MotorStartingAngle = 0.0 * UnitsPerDegree ; 
 
-            public static final double DesiredArmVelocity = 40 ; // degrees persecond
+            public static final double DesiredArmVelocity = 60 ; // degrees persecond
             public static final double CruiseVelocity = (UnitsPerDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
             public static final double MaxAcceleration = CruiseVelocity / 2.0 ;
             public static final int AccelerationSmoothing = 2 ;
+
+            //solenoid piston stuff - temp values
+            public static final int ID_Extend_Solenoid = 1;    
+            public static final int ID_Retract_Solenoid = 0;
 
             public static final int PID_ID = 0 ;
             public static final double kF = 0.4;

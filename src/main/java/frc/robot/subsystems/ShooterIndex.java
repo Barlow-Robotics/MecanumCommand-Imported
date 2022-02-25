@@ -8,7 +8,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.*;
 import frc.robot.sim.PhysicsSim;
@@ -26,8 +29,16 @@ public class ShooterIndex extends SubsystemBase {
 
     double commandedPosition = 0.0 ;
 
+    Solenoid extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid);
+    Solenoid retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid);
+    Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+    Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+    Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
-    public enum LiftPostion { In_Transiton, Intake, Shooting } ;
+    int state;
+
+
+    public enum LiftPosition { In_Transiton, Intake, Shooting } ;
 
     public ShooterIndex() {
         beltMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_ShooterMotor);
@@ -43,23 +54,32 @@ public class ShooterIndex extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
 
-        if ( isShooting && (flyWheelMotor.getSelectedSensorVelocity() > Constants.ShooterConstants.FlyWheelMinShootingSpeed ) ) {
-            if (!beltStarted) {
-                beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity) ;
-                beltStarted = true;
-            }
-        }
+        // if ( isShooting && (flyWheelMotor.getSelectedSensorVelocity() > Constants.ShooterConstants.FlyWheelMinShootingSpeed ) ) {
+        //     if (!beltStarted) {
+        //         beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity) ;
+        //         beltStarted = true;
+        //     }
+        // }
         report();
+
+        //stuff for driver station
+        if(getPosition() == LiftPosition.Intake){
+            state=0;
+        } else if(getPosition() == LiftPosition.In_Transiton){
+            state=1;
+        } else if(getPosition() == LiftPosition.Shooting){
+            state=2;
+        }
     }
 
     public void startShooting() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity ) ;
+        //flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity ) ;
         isShooting = true;
     }
 
     public void stopShooting() {
-        beltMotor.set(TalonFXControlMode.Velocity, 0.0);
-        flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
+        // beltMotor.set(TalonFXControlMode.Velocity, 0.0);
+        // flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
         beltStarted = false;
         isShooting = false;
     }
@@ -68,30 +88,39 @@ public class ShooterIndex extends SubsystemBase {
 
     public void GotoShootingPosition() {
         // wpk - need to add something to detect where the arm really is.
-        liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
+        //liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
         //liftMotor.set(TalonFXControlMode.Position, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
-        commandedPosition = Constants.ShooterConstants.Lift.MotorShootingAngle ;
+        //commandedPosition = Constants.ShooterConstants.Lift.MotorShootingAngle ;
+        extendSolenoid.set(false);
+        retractSolenoid.set(true);
+        extendSolenoid2.set(false);
+        retractSolenoid2.set(true);
     }
 
 
     public void GotoIntakePosition() {
         // wpk - need to add something to detect where the arm really is.
-        liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorIntakeAngle) ;
+        //liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorIntakeAngle) ;
         //liftMotor.set(TalonFXControlMode.Position, Constants.ShooterConstants.Lift.MotorIntakeAngle) ;
-        commandedPosition = Constants.ShooterConstants.Lift.MotorIntakeAngle ;
+        //commandedPosition = Constants.ShooterConstants.Lift.MotorIntakeAngle ;
+        extendSolenoid.set(true);
+        retractSolenoid.set(false);
+        extendSolenoid2.set(true);
+        retractSolenoid2.set(false);
     }
 
 
-    public LiftPostion getPosition() {
+    public LiftPosition getPosition() {
 //        System.out.println("shooter position is " + liftMotor.getSelectedSensorPosition() ) ;
         if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
-            return LiftPostion.Shooting ;
+            return LiftPosition.Shooting ;
         } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.02) {
-            return LiftPostion.Intake ;
+            return LiftPosition.Intake ;
         } else {
-            return LiftPostion.In_Transiton ;
+            return LiftPosition.In_Transiton ;
         }
     }
+
 
 
     public boolean hasStarted() {
@@ -160,6 +189,9 @@ public class ShooterIndex extends SubsystemBase {
         NetworkTableInstance.getDefault().getEntry("index/lift_motor_closed_loop_error").setDouble(liftMotor.getClosedLoopError());
         NetworkTableInstance.getDefault().getEntry("index/lift_motor_closed_loop_target").setDouble(liftMotor.getClosedLoopTarget());
         NetworkTableInstance.getDefault().getEntry("index/commandedPosition").setDouble(commandedPosition);
+
+        NetworkTableInstance.getDefault().getEntry("driverStation/is_shooting").setBoolean(isShooting);
+        NetworkTableInstance.getDefault().getEntry("driverStation/shoot_orientation").setDouble(state);
     }
 
 

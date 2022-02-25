@@ -34,6 +34,7 @@ public class ArmBar extends SubsystemBase {
     public DigitalOutput solenoidB1;
     public DigitalOutput solenoidB2;
 
+
     /** Creates a new ArmBar. */
     public ArmBar() {
         armBarMotor = new WPI_TalonFX(ArmBarConstants.ID_ArmBarMotor);
@@ -194,12 +195,12 @@ public class ArmBar extends SubsystemBase {
 
 
     void report() {
-        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_speed").setDouble(armBarMotor.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_position").setDouble(armBarMotor.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_stator_current").setDouble(armBarMotor.getStatorCurrent());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_supply_current").setDouble(armBarMotor.getSupplyCurrent());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_closed_loop_error").setDouble(armBarMotor.getClosedLoopError());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/lift_motor_closed_loop_target").setDouble(armBarMotor.getClosedLoopTarget());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_speed").setDouble(armBarMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_position").setDouble(armBarMotor.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_stator_current").setDouble(armBarMotor.getStatorCurrent());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_supply_current").setDouble(armBarMotor.getSupplyCurrent());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_closed_loop_error").setDouble(armBarMotor.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_closed_loop_target").setDouble(armBarMotor.getClosedLoopTarget());
     }
 
 
