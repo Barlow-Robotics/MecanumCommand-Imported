@@ -7,11 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmBarConstants;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -21,7 +25,8 @@ import edu.wpi.first.networktables.*;
 
 public class ArmBar extends SubsystemBase {
 
-    public WPI_TalonFX armBarMotor;
+    public WPI_TalonFX rightMotor;
+    public WPI_TalonFX leftMotor;
     // Add sensors
 
     public DigitalInput hallEffectsA1;
@@ -37,10 +42,17 @@ public class ArmBar extends SubsystemBase {
 
     /** Creates a new ArmBar. */
     public ArmBar() {
-        armBarMotor = new WPI_TalonFX(ArmBarConstants.ID_ArmBarMotor);
-        armBarMotor.setSelectedSensorPosition(0.0);
-        // armBarMotor.set(TalonSRXControlMode.Velocity, 0.0);
-        setMotorConfig(armBarMotor);
+        rightMotor = new WPI_TalonFX(ArmBarConstants.ID_rightMotor);
+        // rightMotor.set(TalonSRXControlMode.Velocity, 0.0);
+        setMotorConfig(rightMotor);
+
+        leftMotor = new WPI_TalonFX(ArmBarConstants.ID_leftMotor);
+        setMotorConfig(leftMotor);
+        leftMotor.follow(rightMotor);
+        leftMotor.follow(rightMotor);
+        leftMotor.setInverted(TalonFXInvertType.OpposeMaster);
+
+        rightMotor.setSelectedSensorPosition(0.0);
 
         hallEffectsA1 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsA1);
         hallEffectsA2 = new DigitalInput(Constants.ArmBarConstants.ID_HallEffectsA2);
@@ -71,8 +83,8 @@ public class ArmBar extends SubsystemBase {
     }
 
 
-    public void ResetPosition() {
-        armBarMotor.setSelectedSensorPosition(0.0);
+    public void ResetPosition(double angle) {
+        rightMotor.setSelectedSensorPosition(angle, 0,  30);
     }
 
     @Override
@@ -89,20 +101,20 @@ public class ArmBar extends SubsystemBase {
         //         * Constants.ArmBarConstants.UnitsPerRotation;
 
         double desiredPosition = angle * Constants.ArmBarConstants.UnitsPerArmDegree ;
-        armBarMotor.selectProfileSlot(Constants.ArmBarConstants.Position_PID_id, 0);
-        armBarMotor.set(TalonFXControlMode.MotionMagic, desiredPosition);
+        rightMotor.selectProfileSlot(Constants.ArmBarConstants.Position_PID_id, 0);
+        rightMotor.set(TalonFXControlMode.MotionMagic, desiredPosition);
 
-        // armBarMotor.setSelectedSensorPosition(0.0); do we need this / where would it
+        // rightMotor.setSelectedSensorPosition(0.0); do we need this / where would it
         // go if we do
     }
 
 
     public void stopMotor() {
-        armBarMotor.set(TalonFXControlMode.PercentOutput, 0);
+        rightMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
 
     public double getArmAngle() {
-        double result = armBarMotor.getSelectedSensorPosition() / Constants.ArmBarConstants.UnitsPerArmDegree ;
+        double result = rightMotor.getSelectedSensorPosition() / Constants.ArmBarConstants.UnitsPerArmDegree ;
         return result;
     }
 
@@ -176,39 +188,44 @@ public class ArmBar extends SubsystemBase {
 		 */
 		motor.configAllowableClosedloopError(Constants.ArmBarConstants.Position_PID_id, 0, 30);
 
-        motor.setNeutralMode(NeutralMode.Brake);
+        motor.setNeutralMode(NeutralMode.Coast);
 //        motor.setNeutralMode(NeutralMode.Coast);
     }
 
 
     public void setNormalMotionConfig() {
-        armBarMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.CruiseVelocity) ;
-        armBarMotor.configMotionAcceleration(Constants.ArmBarConstants.MaxAcceleration) ;
-        armBarMotor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
+        rightMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.CruiseVelocity) ;
+        rightMotor.configMotionAcceleration(Constants.ArmBarConstants.MaxAcceleration) ;
+        rightMotor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
     }
 
     public void setSlowMotionConfig() {
-        armBarMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.SlowCruiseVelocity) ;
-        armBarMotor.configMotionAcceleration(Constants.ArmBarConstants.SlowMaxAcceleration) ;
-        armBarMotor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
+        rightMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.SlowCruiseVelocity) ;
+        rightMotor.configMotionAcceleration(Constants.ArmBarConstants.SlowMaxAcceleration) ;
+        rightMotor.configMotionSCurveStrength(Constants.ArmBarConstants.AccelerationSmoothing) ;
     }
 
+
+    void report(TalonFX motor, String motorName) {
+        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_speed").setDouble(motor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_position").setDouble(motor.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_stator_current").setDouble(motor.getStatorCurrent());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_supply_current").setDouble(motor.getSupplyCurrent());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_error").setDouble(motor.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_target").setDouble(motor.getClosedLoopTarget());
+    }
 
     void report() {
-        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_speed").setDouble(armBarMotor.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_position").setDouble(armBarMotor.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_stator_current").setDouble(armBarMotor.getStatorCurrent());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_supply_current").setDouble(armBarMotor.getSupplyCurrent());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_closed_loop_error").setDouble(armBarMotor.getClosedLoopError());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/motor_closed_loop_target").setDouble(armBarMotor.getClosedLoopTarget());
+        report( rightMotor, "rightMotor") ;
+        report( leftMotor, "leftMotor") ;
     }
-
 
 
     boolean simulationInitialized = false;
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(armBarMotor, 0.75, 6800 );
+        PhysicsSim.getInstance().addTalonFX(rightMotor, 0.75, 6800 );
+        PhysicsSim.getInstance().addTalonFX(leftMotor, 0.75, 6800 );
     }
 
     @Override

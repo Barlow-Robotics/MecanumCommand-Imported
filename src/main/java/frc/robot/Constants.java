@@ -137,6 +137,39 @@ public final class Constants {
     }
 
 
+    public final class RadioMaster_Controller {
+
+        public static final int Left_Gimbal_X = 3;
+        public static final int Right_Gimbal_X = 0;
+        public static final int Right_Gimbal_Y = 1;
+
+        public static final int SB3_Axis = 5 ;
+        public static final int SA_Axis = 4 ;
+        public static final int SH_Momentary = 0 ;
+
+        public static final double Forward_Axis_Attenuation = -0.5 ;
+        public static final double Lateral_Axis_Attenuation = 0.5 ;
+        public static final double Yaw_Axis_Attenuation = 0.5 ;
+
+
+        // // Constants for buttons
+        // public static final int Button_A = 2;
+        // public static final int Button_B = 3;
+        // public static final int Button_X = 1;
+        // public static final int Button_Y = 4;
+        // public static final int Left_Bumper = 5;
+        // public static final int Right_Bumper = 6;
+        // public static final int Back_Button = 7;
+        // public static final int Start_Button = 8;
+        // public static final int Left_Stick = 9;
+        // public static final int Right_Stick = 10;
+
+
+
+    }
+
+
+
     public final class Logitech_F310_Controller {
 
         // Constants for Axes
@@ -158,6 +191,69 @@ public final class Constants {
         public static final int Start_Button = 8;
         public static final int Left_Stick = 9;
         public static final int Right_Stick = 10;
+
+        public static final double Forward_Axis_Attenuation = -0.5 ;
+        public static final double Lateral_Axis_Attenuation = 0.5 ;
+        public static final double Yaw_Axis_Attenuation = 0.5 ;
+
+    }
+
+
+    public final class Logitech_Dual_Action {
+
+        // Constants for Axes
+        public static final int Left_Stick_X = 0;
+        public static final int Left_Stick_Y = 1;
+        public static final int Right_Stick_X = 2;
+        public static final int Right_Stick_Y = 3;
+
+        // Constants for buttons
+        public static final int Left_Trigger = 7;
+        public static final int Right_Trigger = 8;
+        public static final int Button_A = 2;
+        public static final int Button_B = 3;
+        public static final int Button_X = 1;
+        public static final int Button_Y = 4;
+        public static final int Left_Bumper = 5;
+        public static final int Right_Bumper = 6;
+        public static final int Back_Button = 9;
+        public static final int Start_Button = 10;
+        public static final int Left_Stick = 11;
+        public static final int Right_Stick = 12;
+
+        public static final double Forward_Axis_Attenuation = -0.5 ;
+        public static final double Lateral_Axis_Attenuation = 0.5 ;
+        public static final double Yaw_Axis_Attenuation = 0.5 ;
+
+    }
+
+
+
+    public final class Xbox_Controller {
+
+        // Constants for Axes
+        public static final int Left_Stick_X = 0;
+        public static final int Left_Stick_Y = 1;
+        public static final int Left_Trigger = 2;
+        public static final int Right_Trigger = 3;
+        public static final int Right_Stick_X = 4;
+        public static final int Right_Stick_Y = 5;
+
+        // Constants for buttons
+        public static final int Button_A = 1;
+        public static final int Button_B = 2;
+        public static final int Button_X = 3;
+        public static final int Button_Y = 4;
+        public static final int Left_Bumper = 5;
+        public static final int Right_Bumper = 6;
+        public static final int Back_Button = 7;
+        public static final int Start_Button = 8;
+        public static final int Left_Stick = 9;
+        public static final int Right_Stick = 10;
+
+        public static final double Forward_Axis_Attenuation = -0.5 ;
+        public static final double Lateral_Axis_Attenuation = 0.5 ;
+        public static final double Yaw_Axis_Attenuation = 0.5 ;
 
     }
 
@@ -199,7 +295,8 @@ public final class Constants {
 
     public static final class ArmBarConstants {
 
-        public static final int ID_ArmBarMotor = 10;
+        public static final int ID_rightMotor = 10;
+        public static final int ID_leftMotor = 15;
 
         public static final int ID_HallEffectsA1 = 1;
         public static final int ID_HallEffectsA2 = 2;
@@ -212,20 +309,20 @@ public final class Constants {
         public static final int ID_SolenoidB2 = 8;
 
         public static final int UnitsPerMotorRotation = 2048;
-        public static final double GearboxGearRatio = 100 / 1; // farther gear to axel gear
-        public static final double ChainGearRatio = 12 / 12; // (or 15/12) upper gear to lower gear
+        public static final double GearboxGearRatio = 100.0 / 1.0; // farther gear to axel gear
+        public static final double ChainGearRatio = 42.0 / 12.0; // (or 15/12) upper gear to lower gear
         public static final double UnitsPerArmRotation = UnitsPerMotorRotation * GearboxGearRatio * ChainGearRatio ;
         public static final double UnitsPerArmDegree = UnitsPerArmRotation / 360.0 ;
 
-        public static final double AngleToNextArm = 33 ;
+        public static final double AngleToNextArm = 33.0 ;
         public static final double MidBarRotationAngle = 90;
-        public static final double HighBarRotationAngle = MidBarRotationAngle + 180 + AngleToNextArm ;
+        public static final double HighBarRotationAngle = MidBarRotationAngle + 90 + AngleToNextArm ;
         public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;
         public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90 - AngleToNextArm) ; // angle to hang straight down.
-        public static final double AngleTolerance = 1;
+        public static final double AngleTolerance = 1.0;
 //        public static final double ConsistentRotationAngleTolerance = 6;
 
-        public static final double DesiredArmVelocity = 2* (180 - 2*AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
         public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
         public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
         public static final int AccelerationSmoothing = 2 ;
@@ -239,7 +336,7 @@ public final class Constants {
         public static final double Position_kF = 0.4;  // wpk need to give this some thought
         public static final double Position_kP = 0.1;  // wpk need to give this some thought
         public static final double Position_kD = 0.0;  // wpk need to give this some thought
-        public static final double Position_kI = 0.0;  // wpk need to give this some thought
+        public static final double Position_kI = 0.00001;  // wpk need to give this some thought
 
 
         public static final double ArmBarMotorSpeed = 0.1;
