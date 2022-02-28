@@ -8,15 +8,12 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.MecanumDriveMotorVoltages;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.*;
@@ -39,7 +36,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final Gyro m_gyro = new ADXRS450_Gyro();
 
     // Odometry class for tracking robot pose
-    MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+    public MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics,
+            m_gyro.getRotation2d());
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
@@ -82,22 +80,9 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Update the odometry in the periodic block
-        m_odometry.update(
-                m_gyro.getRotation2d(),
-                new MecanumDriveWheelSpeeds(
-                    getSpeed(m_frontLeft) ,
-                    getSpeed(m_backLeft) ,
-                    getSpeed(m_frontRight) ,
-                    getSpeed(m_backRight) 
-                    )
-         ) ;
-        report();
-    }
+        m_odometry.update(m_gyro.getRotation2d(), getCurrentWheelSpeeds());
 
-    private double getSpeed(WPI_TalonFX motor) {
-        // multiplied by 10 because velocity reported as counts per 1/10th second
-        double s = motor.getSelectedSensorVelocity() * 10.0 * Constants.DriveConstants.Meters_Per_Count;
-        return (s);
+        report();
     }
 
     /**
@@ -118,6 +103,24 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.resetPosition(pose, m_gyro.getRotation2d());
     }
 
+    private double getSpeed(WPI_TalonFX motor) {
+        // multiplied by 10 because velocity reported as counts per 1/10th second
+        double s = motor.getSelectedSensorVelocity() * 10.0 * Constants.DriveConstants.Meters_Per_Count;
+        return (s);
+    }
+
+    /**
+     * Gets the current wheel speeds.
+     *
+     * @return the current wheel speeds in a MecanumDriveWheelSpeeds object.
+     */
+    public MecanumDriveWheelSpeeds getCurrentWheelSpeeds() {
+        return new MecanumDriveWheelSpeeds(
+                getSpeed(m_frontLeft),
+                getSpeed(m_backLeft),
+                getSpeed(m_frontRight),
+                getSpeed(m_backRight));
+    }
 
     /**
      * Drives the robot at given x, y and theta speeds. Speeds range from [-1, 1]
@@ -159,27 +162,46 @@ public class DriveSubsystem extends SubsystemBase {
         m_backRight.setSelectedSensorPosition(0);
     }
 
+    /**
+     * Gets gyro heading from -180 to 180. CCW Positive
+     * 
+     * @return Gyro Heading [-180, 180]
+     */
+    public double getGyroHeading() {
+        return Math.IEEEremainder(m_gyro.getAngle(), 360) * 1;
+    }
 
+    private void report() {
+        // Report various parameters out to network tables for monitoring purposes
+        NetworkTableInstance.getDefault().getEntry("drive/back_left_position")
+                .setDouble(m_backLeft.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("drive/back_left_velocity")
+                .setDouble(m_backLeft.getSelectedSensorVelocity());
 
-    public void setWheelSpeeds(MecanumDriveWheelSpeeds speeds) {
-        m_frontLeft.set(TalonFXControlMode.Velocity, speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_frontRight.set(TalonFXControlMode.Velocity, speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_backLeft.set(TalonFXControlMode.Velocity, speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_backRight.set(TalonFXControlMode.Velocity, speeds.rearRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/set_speed/frontLeft").setDouble(speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/set_speed/frontRight").setDouble(speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/set_speed/backLeft").setDouble(speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/set_speed/backRight").setDouble(speeds.rearRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/commanded_speed/frontLeft").setDouble(speeds.frontLeftMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/commanded_speed/frontRight").setDouble(speeds.frontRightMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/commanded_speed/backLeft").setDouble(speeds.rearLeftMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("drive/commanded_speed/backRight").setDouble(speeds.rearRightMetersPerSecond);
+        NetworkTableInstance.getDefault().getEntry("drive/back_right_position")
+                .setDouble(m_backRight.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("drive/back_right_velocity")
+                .setDouble(m_backRight.getSelectedSensorVelocity());
+
+        NetworkTableInstance.getDefault().getEntry("drive/front_left_position")
+                .setDouble(m_frontLeft.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("drive/front_left_velocity")
+                .setDouble(m_frontLeft.getSelectedSensorVelocity());
+
+        NetworkTableInstance.getDefault().getEntry("drive/front_right_position")
+                .setDouble(m_frontRight.getSelectedSensorPosition());
+        NetworkTableInstance.getDefault().getEntry("drive/front_right_velocity")
+                .setDouble(m_frontRight.getSelectedSensorVelocity());
     }
 
     /**
      * Sets the max output of the drive. Useful for scaling the drive to drive more
      * slowly.
      * 
+     * 
+     * /** Sets the max output of the drive. Useful for scaling the drive to drive
+     * more slowly.
+     *
      * @param maxOutput the maximum output to which the drive will be constrained
      */
     public void setMaxOutput(double maxOutput) {
@@ -196,13 +218,8 @@ public class DriveSubsystem extends SubsystemBase {
      *
      * @return the robot's heading in degrees, from -180 to 180
      */
-    public double getGyroHeading() {
-        return Math.IEEEremainder(m_gyro.getAngle(), 360) ;
-    }
-
-
-    public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(getGyroHeading()) ;
+    public double getHeading() {
+        return m_gyro.getRotation2d().getDegrees();
     }
 
     /**
@@ -210,59 +227,20 @@ public class DriveSubsystem extends SubsystemBase {
      *
      * @return The turn rate of the robot, in degrees per second
      */
-    // public double getTurnRate() {
-    //     return -m_gyro.getRate();
-    // }
+    public double getTurnRate() {
+        return -m_gyro.getRate();
+    }
 
     private void setMotorConfig(WPI_TalonFX motor) { // changed to TalonFX for intake
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.DriveConstants.closedVoltageRampingConstant);
         motor.configOpenloopRamp(Constants.DriveConstants.manualVoltageRampingConstant);
-        motor.config_kF(Constants.DriveConstants.PID_id, Constants.DriveConstants.Drivetrainkf);
+        motor.config_kF(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainKf);
         motor.config_kP(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainkP);
-        motor.config_kI(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainkI);
-        motor.config_kD(Constants.DriveConstants.PID_id, Constants.DriveConstants.DrivetrainkD);
+        motor.config_kI(Constants.DriveConstants.PID_id, 0);
+        motor.config_kD(Constants.DriveConstants.PID_id, 0);
         motor.setNeutralMode(NeutralMode.Brake);
-
-        		/* Config sensor used for Primary PID [Velocity] */
-        motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
-
     }
-
-
-
-
-    private void report() {
-        // Report various parameters out to network tables for monitoring purposes
-        NetworkTableInstance.getDefault().getEntry("drive/back_left_position").setDouble(m_backLeft.getSelectedSensorPosition());
-
-        System.out.println( "back left position is " + m_backLeft.getSelectedSensorPosition()) ;
-        NetworkTableInstance.getDefault().getEntry("drive/back_left_velocity").setDouble(m_backLeft.getSelectedSensorVelocity());
-        //NetworkTableInstance.getDefault().getEntry("drive/back_left_target_velocity").setDouble(m_backLeft.getClosedLoopTarget());
-
-        NetworkTableInstance.getDefault().getEntry("drive/back_right_position").setDouble(m_backRight.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/back_right_velocity").setDouble(m_backRight.getSelectedSensorVelocity());
-
-        NetworkTableInstance.getDefault().getEntry("drive/front_left_position").setDouble(m_frontLeft.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/front_left_velocity").setDouble(m_frontLeft.getSelectedSensorVelocity());
-
-        NetworkTableInstance.getDefault().getEntry("drive/front_right_position").setDouble(m_frontRight.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/front_right_velocity").setDouble(m_frontRight.getSelectedSensorVelocity());
-    
-        NetworkTableInstance.getDefault().getEntry("drive/gyro_heading").setDouble(getGyroHeading());
-
-
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontLeft").setDouble(getSpeed(m_frontLeft));
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontRight").setDouble(getSpeed(m_frontRight));
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/backLeft").setDouble(getSpeed(m_backLeft));
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/backRight").setDouble(getSpeed(m_backRight));
-
-        NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(m_odometry.getPoseMeters().getX());
-        NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(m_odometry.getPoseMeters().getY());
-
-    }
-
-
 
     boolean simulationInitialized = false;
 

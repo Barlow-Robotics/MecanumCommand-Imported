@@ -26,7 +26,6 @@ import frc.robot.commands.StopShooting;
 import frc.robot.commands.Climb;
 
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Intake;
 //import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterIndex;
 import frc.robot.subsystems.ArmBar;
@@ -34,7 +33,6 @@ import frc.robot.subsystems.UnderGlow;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -48,14 +46,10 @@ import java.nio.file.Path;
 import java.util.List;
 import edu.wpi.first.networktables.*;
 
-import com.pathplanner.lib.*;
-import com.pathplanner.lib.PathPlannerTrajectory.*;
-import com.pathplanner.lib.commands.PPMecanumControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.Button ;
+import frc.robot.JoystickAnalogButton; 
 
-// import java.io.IOException;
-// import java.nio.file.Path;
-// import java.util.List;
-// import frc.robot.Robot;
+import frc.robot.subsystems.Intake;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -93,8 +87,6 @@ public class RobotContainer {
     private double Lateral_Speed_Attenuation = 0.5 ;
     private double Yaw_Attenuation = 0.5 ;
 
-    PathPlannerTrajectory trajectory ;
-    List<PathPlannerTrajectory> trajectories ;
 
 
 
@@ -122,7 +114,6 @@ public class RobotContainer {
 
         // // Configure default commands
         // // Set the default drive command to split-stick arcade drive
-        trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
@@ -263,37 +254,65 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        // Create config for trajectory
+        TrajectoryConfig config = new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                        // Add kinematics to ensure max speed is actually obeyed
+                        .setKinematics(DriveConstants.kDriveKinematics);
 
-        // PathPlannerTrajectory trajectory = trajectories.get(0) ;
+        String trajectoryJSON = "./pathplanner/generatedJSON/Test_Path_Forwards.wpilib.json";
+        Trajectory trajectory = null;
 
-        PPMecanumControllerCommand ppCommand = new PPMecanumControllerCommand(
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+        }
+
+        if (trajectory == null) {
+            // An example trajectory to follow. All units in meters.
+            trajectory = TrajectoryGenerator.generateTrajectory(
+                    // Start at the origin facing the +X direction
+                    new Pose2d(0, 0, new Rotation2d(0)),
+                    // List.of(new Translation2d(1, 1), new Translation2d(-2,1)),
+                    List.of(new Translation2d(0, 1)),
+                    new Pose2d(0, 3, new Rotation2d(0)),
+                    config);
+        }
+
+        MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(
                 trajectory,
                 m_robotDrive::getPose,
+                DriveConstants.kFeedforward,
                 DriveConstants.kDriveKinematics,
+
+                // Position contollers
                 new PIDController(AutoConstants.kPXController, 0, 0),
                 new PIDController(AutoConstants.kPYController, 0, 0),
-                new ProfiledPIDController( AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
+                new ProfiledPIDController(
+                        AutoConstants.kPThetaController, 0, 0,
+                        AutoConstants.kThetaControllerConstraints),
+
+                // Needed for normalizing wheel speeds
                 AutoConstants.kMaxSpeedMetersPerSecond,
-                m_robotDrive::setWheelSpeeds,
-                m_robotDrive
-                );
 
-
-
+                // Velocity PID's
+                new PIDController(DriveConstants.kPFrontLeftVel, 0, 0),
+                new PIDController(DriveConstants.kPRearLeftVel, 0, 0),
+                new PIDController(DriveConstants.kPFrontRightVel, 0, 0),
+                new PIDController(DriveConstants.kPRearRightVel, 0, 0),
+                m_robotDrive::getCurrentWheelSpeeds,
+                m_robotDrive::setDriveMotorControllersVolts, // Consumer for the output motor voltages
+                m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
-        Pose2d temp = trajectory.getInitialPose();
-        PathPlannerState s = (PathPlannerState) trajectory.getStates().get(0) ;
-
-
-      //  Pose2d temp2 = new Pose2d( temp.getTranslation(), new Rotation2d()) ;
-
-      //Pose2d temp2 = new Pose2d( temp.getTranslation(), new Rotation2d(Math.PI/2.0)) ;
-        Pose2d temp2 = new Pose2d( temp.getTranslation(), s.holonomicRotation) ;
-      //m_robotDrive.resetOdometry(trajectory.getInitialPose());
-        m_robotDrive.resetOdometry(temp2);
-
+        Pose2d ip = trajectory.getInitialPose();
+        m_robotDrive.resetOdometry(ip);
         // Run path following command, then stop at the end.
-        return ppCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-}
+        return mecanumControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+
+    }
+
 }
