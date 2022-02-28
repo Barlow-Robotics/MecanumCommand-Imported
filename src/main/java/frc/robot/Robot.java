@@ -13,6 +13,7 @@ import frc.robot.Constants.ArmBarConstants;
 import frc.robot.commands.Climb;
 //import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.ArmBar;
+import edu.wpi.first.networktables.*;
 
 
 /**
@@ -99,9 +100,17 @@ private Command m_autonomousCommand;
     }
   }
 
+  //private long startTime, endTime, duration, previousStartTime;
+
+
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // endTime = System.currentTimeMillis();
+    // duration = endTime - startTime;
+    // NetworkTableInstance.getDefault().getEntry("performance/frameTime").setDouble((double) duration) ;
+
+  }
 
   @Override
   public void testInit() {

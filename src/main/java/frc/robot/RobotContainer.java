@@ -46,6 +46,9 @@ import java.nio.file.Path;
 import java.util.List;
 import edu.wpi.first.networktables.*;
 
+import edu.wpi.first.wpilibj2.command.button.Button ;
+import frc.robot.JoystickAnalogButton; 
+
 import frc.robot.subsystems.Intake;
 
 /*
@@ -160,7 +163,11 @@ public class RobotContainer {
 
 
             // these all need to be updated.
-            intakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Right_Bumper);
+            
+            // wpk need to test this out.
+
+            intakeButton = new JoystickAnalogButton(m_driverController, 1, 0.5);
+//            intakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Right_Bumper);
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
