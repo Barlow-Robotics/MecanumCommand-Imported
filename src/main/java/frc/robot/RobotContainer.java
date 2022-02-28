@@ -42,7 +42,7 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -75,28 +75,26 @@ public class RobotContainer {
     // The driver's controller
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
 
-    private JoystickButton intakeButton ;
+    private JoystickButton intakeButton;
 
-    private JoystickButton liftToShootingButton ;
+    private JoystickButton liftToShootingButton;
 
-    private JoystickButton liftToIntakeButton ;
+    private JoystickButton liftToIntakeButton;
 
-    private JoystickButton shooterButton ;
+    private JoystickButton shooterButton;
 
-    private JoystickButton climbButton ;
+    private JoystickButton climbButton;
 
-    private int Forward_Speed_Axis ;
-    private int Lateral_Speed_Axis ;
-    private int Yaw_Axis ;
+    private int Forward_Speed_Axis;
+    private int Lateral_Speed_Axis;
+    private int Yaw_Axis;
 
-    private double Forward_Speed_Attenuation = 0.5 ;
-    private double Lateral_Speed_Attenuation = 0.5 ;
-    private double Yaw_Attenuation = 0.5 ;
+    private double Forward_Speed_Attenuation = 0.5;
+    private double Lateral_Speed_Attenuation = 0.5;
+    private double Yaw_Attenuation = 0.5;
 
-    PathPlannerTrajectory trajectory ;
-    List<PathPlannerTrajectory> trajectories ;
-
-
+    PathPlannerTrajectory trajectory;
+    List<PathPlannerTrajectory> trajectories;
 
     // Commands
 
@@ -119,35 +117,24 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-
         // // Configure default commands
         // // Set the default drive command to split-stick arcade drive
         trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
+        
+        trajectories.add( PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5)) ;
+
+
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
 
                 new RunCommand(() -> {
                     m_robotDrive.drive(
-                        m_driverController.getRawAxis(Forward_Speed_Axis) * Forward_Speed_Attenuation,
-                        m_driverController.getRawAxis(Lateral_Speed_Axis) * Lateral_Speed_Attenuation,
-                        m_driverController.getRawAxis(Yaw_Axis) * Yaw_Attenuation,
-                        false
-                    );
+                            m_driverController.getRawAxis(Forward_Speed_Axis) * Forward_Speed_Attenuation,
+                            m_driverController.getRawAxis(Lateral_Speed_Axis) * Lateral_Speed_Attenuation,
+                            m_driverController.getRawAxis(Yaw_Axis) * Yaw_Attenuation,
+                            false);
                 }, m_robotDrive));
-
-        // new RunCommand(() -> {
-        // m_robotDrive.drive(0.1, 0.0,0.0, false);
-        // //m_robotDrive.drive(-0.0, 0.0,0.0, false);
-        // }, m_robotDrive));
-
-        // underGlow.setDefaultCommand( new RunCommand( () -> {}, underGlow ));
-
-        // m_armBar.setDefaultCommand(
-        // new RunCommand(() -> {
-        // m_armBar.ResetPosition( ) ;
-        // }, m_armBar)
-        // );
 
     }
 
@@ -159,53 +146,54 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        String controllerType = m_driverController.getName() ;
+        String controllerType = m_driverController.getName();
 
-        if ( controllerType.equals( "RadioMas TX16S Joystick") ){
+        if (controllerType.equals("RadioMas TX16S Joystick")) {
             Forward_Speed_Axis = Constants.RadioMaster_Controller.Right_Gimbal_Y;
             Lateral_Speed_Axis = Constants.RadioMaster_Controller.Right_Gimbal_Y;
             Yaw_Axis = Constants.RadioMaster_Controller.Left_Gimbal_X;
 
-            Forward_Speed_Attenuation = Constants.RadioMaster_Controller.Forward_Axis_Attenuation ;
-            Lateral_Speed_Attenuation = Constants.RadioMaster_Controller.Lateral_Axis_Attenuation ;
-            Yaw_Attenuation = Constants.RadioMaster_Controller.Yaw_Axis_Attenuation ;
-
+            Forward_Speed_Attenuation = Constants.RadioMaster_Controller.Forward_Axis_Attenuation;
+            Lateral_Speed_Attenuation = Constants.RadioMaster_Controller.Lateral_Axis_Attenuation;
+            Yaw_Attenuation = Constants.RadioMaster_Controller.Yaw_Axis_Attenuation;
 
             // these all need to be updated.
-            
+
             // wpk need to test this out.
 
             intakeButton = new JoystickAnalogButton(m_driverController, 1, 0.5);
-//            intakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Right_Bumper);
+            // intakeButton = new JoystickButton(m_driverController,
+            // Constants.Logitech_F310_Controller.Right_Bumper);
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
             climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
 
-        } else if (controllerType.equals( "Controller (Gamepad F310)"))  {
+        } else if (controllerType.equals("Controller (Gamepad F310)")) {
 
             Forward_Speed_Axis = Constants.Logitech_F310_Controller.Right_Stick_Y;
             Lateral_Speed_Axis = Constants.Logitech_F310_Controller.Right_Stick_X;
             Yaw_Axis = Constants.Logitech_F310_Controller.Left_Stick_X;
-            Forward_Speed_Attenuation = Constants.Logitech_F310_Controller.Forward_Axis_Attenuation ;
-            Lateral_Speed_Attenuation = Constants.Logitech_F310_Controller.Lateral_Axis_Attenuation ;
-            Yaw_Attenuation = Constants.Logitech_F310_Controller.Yaw_Axis_Attenuation ;
+            Forward_Speed_Attenuation = Constants.Logitech_F310_Controller.Forward_Axis_Attenuation;
+            Lateral_Speed_Attenuation = Constants.Logitech_F310_Controller.Lateral_Axis_Attenuation;
+            Yaw_Attenuation = Constants.Logitech_F310_Controller.Yaw_Axis_Attenuation;
 
             intakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Right_Bumper);
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
             climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
-        
-        } else if (controllerType.equals( "Xbox Controller")) {
 
-            // sometimes the logi-tech controller shows up this way when the X/D switch is in the "X" position
+        } else if (controllerType.equals("Xbox Controller")) {
+
+            // sometimes the logi-tech controller shows up this way when the X/D switch is
+            // in the "X" position
             Forward_Speed_Axis = Constants.Xbox_Controller.Right_Stick_Y;
             Lateral_Speed_Axis = Constants.Xbox_Controller.Right_Stick_X;
             Yaw_Axis = Constants.Xbox_Controller.Left_Stick_X;
-            Forward_Speed_Attenuation = Constants.Xbox_Controller.Forward_Axis_Attenuation ;
-            Lateral_Speed_Attenuation = Constants.Xbox_Controller.Lateral_Axis_Attenuation ;
-            Yaw_Attenuation = Constants.Xbox_Controller.Yaw_Axis_Attenuation ;
+            Forward_Speed_Attenuation = Constants.Xbox_Controller.Forward_Axis_Attenuation;
+            Lateral_Speed_Attenuation = Constants.Xbox_Controller.Lateral_Axis_Attenuation;
+            Yaw_Attenuation = Constants.Xbox_Controller.Yaw_Axis_Attenuation;
 
             intakeButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Right_Bumper);
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_Y);
@@ -213,14 +201,13 @@ public class RobotContainer {
             shooterButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_A);
             climbButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Back_Button);
 
-
-        } else if ( controllerType.equals("Logitech Dual Action" )) {
+        } else if (controllerType.equals("Logitech Dual Action")) {
             Forward_Speed_Axis = Constants.Logitech_Dual_Action.Right_Stick_Y;
             Lateral_Speed_Axis = Constants.Logitech_Dual_Action.Right_Stick_X;
             Yaw_Axis = Constants.Logitech_Dual_Action.Left_Stick_X;
-            Forward_Speed_Attenuation = Constants.Logitech_Dual_Action.Forward_Axis_Attenuation ;
-            Lateral_Speed_Attenuation = Constants.Logitech_Dual_Action.Lateral_Axis_Attenuation ;
-            Yaw_Attenuation = Constants.Logitech_Dual_Action.Yaw_Axis_Attenuation ;
+            Forward_Speed_Attenuation = Constants.Logitech_Dual_Action.Forward_Axis_Attenuation;
+            Lateral_Speed_Attenuation = Constants.Logitech_Dual_Action.Lateral_Axis_Attenuation;
+            Yaw_Attenuation = Constants.Logitech_Dual_Action.Yaw_Axis_Attenuation;
 
             intakeButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Right_Bumper);
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_Y);
@@ -230,13 +217,10 @@ public class RobotContainer {
 
         } else {
 
-            // no buttons will be configured and we'll crash shortly after. That's OK, we want to crash so we can find this issue.
+            // no buttons will be configured and we'll crash shortly after. That's OK, we
+            // want to crash so we can find this issue.
 
         }
-
-
-
-
 
         // Drive at half speed when the right bumper is held
         // new JoystickButton(m_driverController,
@@ -262,6 +246,13 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
+
+    public class AutonomousSequential extends SequentialCommandGroup {
+        /**
+         * Creates a new AutonomousSequential.
+         */
+    }
+
     public Command getAutonomousCommand() {
 
         // PathPlannerTrajectory trajectory = trajectories.get(0) ;
@@ -272,28 +263,35 @@ public class RobotContainer {
                 DriveConstants.kDriveKinematics,
                 new PIDController(AutoConstants.kPXController, 0, 0),
                 new PIDController(AutoConstants.kPYController, 0, 0),
-                new ProfiledPIDController( AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
+                new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,
+                        AutoConstants.kThetaControllerConstraints),
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 m_robotDrive::setWheelSpeeds,
-                m_robotDrive
-                );
-
-
-
+                m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
         Pose2d temp = trajectory.getInitialPose();
-        PathPlannerState s = (PathPlannerState) trajectory.getStates().get(0) ;
-
-
-      //  Pose2d temp2 = new Pose2d( temp.getTranslation(), new Rotation2d()) ;
-
-      //Pose2d temp2 = new Pose2d( temp.getTranslation(), new Rotation2d(Math.PI/2.0)) ;
-        Pose2d temp2 = new Pose2d( temp.getTranslation(), s.holonomicRotation) ;
-      //m_robotDrive.resetOdometry(trajectory.getInitialPose());
+        PathPlannerState s = (PathPlannerState) trajectory.getStates().get(0);
+        Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
         m_robotDrive.resetOdometry(temp2);
 
+        SequentialCommandGroup theCommand = new SequentialCommandGroup( 
+                   // new DriveBackwards(m_drive),
+                   new GotoShootingPosition(m_shooter),
+                   new StartShooting(m_shooter).withTimeout(1.0),
+                   new StopShooting(m_shooter),
+                   new GotoIntakePosition(m_shooter),
+                   new StartIntake(m_shooter, m_intake),
+                   ppCommand ,
+                   //new InitiatePath(m_drive),
+                   new StopIntake(m_intake, m_shooter),
+                   new GotoShootingPosition(m_shooter),
+                   new StartShooting(m_shooter).withTimeout(1.0),
+                   new StopShooting(m_shooter),
+                   new GotoIntakePosition(m_shooter)
+        ) ;
+         
         // Run path following command, then stop at the end.
-        return ppCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-}
+        return theCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    }
 }

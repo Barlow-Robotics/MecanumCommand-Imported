@@ -110,7 +110,7 @@ public class ShooterIndex extends SubsystemBase {
     }
 
 
-    public LiftPosition getPosition() {
+    public LiftPosition getPosition() { //NO MORE MOTOR, NOW PISTON - use sensor or time (not rec) ?
 //        System.out.println("shooter position is " + liftMotor.getSelectedSensorPosition() ) ;
         if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
             return LiftPosition.Shooting ;
