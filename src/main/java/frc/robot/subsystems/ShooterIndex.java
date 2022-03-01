@@ -84,8 +84,6 @@ public class ShooterIndex extends SubsystemBase {
         isShooting = false;
     }
 
-
-
     public void GotoShootingPosition() {
         // wpk - need to add something to detect where the arm really is.
         //liftMotor.set(TalonFXControlMode.MotionMagic, Constants.ShooterConstants.Lift.MotorShootingAngle) ;
@@ -96,7 +94,6 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(false);
         retractSolenoid2.set(true);
     }
-
 
     public void GotoIntakePosition() {
         // wpk - need to add something to detect where the arm really is.
@@ -109,7 +106,6 @@ public class ShooterIndex extends SubsystemBase {
         retractSolenoid2.set(false);
     }
 
-
     public LiftPosition getPosition() { //NO MORE MOTOR, NOW PISTON - use sensor or time (not rec) ?
 //        System.out.println("shooter position is " + liftMotor.getSelectedSensorPosition() ) ;
         if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
@@ -121,8 +117,6 @@ public class ShooterIndex extends SubsystemBase {
         }
     }
 
-
-
     public boolean hasStarted() {
         return (beltMotor.get() != 0.0 && flyWheelMotor.get() != 0.0);
     }
@@ -131,19 +125,17 @@ public class ShooterIndex extends SubsystemBase {
         return (beltMotor.get() == 0 && flyWheelMotor.get() == 0);
     }
 
-
     public void startReceiving() {
         beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorIntakeVelocity) ;
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorIntakeVelocity) ;
     }
 
-
     public void stopReceiving() {
         beltMotor.set(TalonFXControlMode.Velocity, 0.0);
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
     }
-
     
+
     private void setMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
         motor.configClosedloopRamp(Constants.IntakeConstants.closedVoltageRampingConstant);

@@ -22,15 +22,22 @@ public class Intake extends SubsystemBase {
         intakeMotor = new WPI_TalonFX(22);
         setMotorConfig(intakeMotor);
         intakeMotor.setInverted(TalonFXInvertType.Clockwise);
-
     }
 
-    public void start() {
+    public void startIntake() {
         intakeMotor.set(TalonFXControlMode.Velocity, Constants.IntakeConstants.IntakeMotorSpeed);
     }
 
-    public void stop() {
+    public void stopIntake() {
         intakeMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+    }
+
+    public void startEjecting() {
+      intakeMotor.set(TalonFXControlMode.Velocity, Constants.IntakeConstants.IntakeMotorSpeed);  
+    }
+
+    public void stopEjecting() {
+        intakeMotor.set(TalonFXControlMode.PercentOutput, 0.0);  
     }
 
     @Override
@@ -68,5 +75,4 @@ public class Intake extends SubsystemBase {
             simulationInitialized = true;
         }
     }
-
 }

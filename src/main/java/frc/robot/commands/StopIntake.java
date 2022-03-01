@@ -30,7 +30,7 @@ public class StopIntake extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_intake.stop();
+        m_intake.stopIntake();
         m_shooter.stopReceiving();
     }
 
