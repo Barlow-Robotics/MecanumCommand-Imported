@@ -32,14 +32,6 @@ public class Intake extends SubsystemBase {
         intakeMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
-    public void startEjecting() {
-      intakeMotor.set(TalonFXControlMode.Velocity, Constants.IntakeConstants.IntakeMotorSpeed);  
-    }
-
-    public void stopEjecting() {
-        intakeMotor.set(TalonFXControlMode.PercentOutput, 0.0);  
-    }
-
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

@@ -54,7 +54,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
     private final Intake m_intake = new Intake();
-    private final ShooterIndex m_shooter = new ShooterIndex();
+    private final ShooterIndex m_shooterIndex = new ShooterIndex();
     private final ArmBar m_armBar = new ArmBar();
     // private final UnderGlow underGlow = new UnderGlow() ;
 
@@ -82,19 +82,19 @@ public class RobotContainer {
 
     // Commands
 
-    private final StartIntake startIntakeCommand = new StartIntake(m_shooter, m_intake);
-    private final StopIntake stopIntakeCommand = new StopIntake(m_intake, m_shooter);
+    private final StartIntake startIntakeCommand = new StartIntake(m_shooterIndex, m_intake);
+    private final StopIntake stopIntakeCommand = new StopIntake(m_intake, m_shooterIndex);
 
-    private final GotoShootingPosition shootingPositionCommand = new GotoShootingPosition(m_shooter);
-    private final GotoIntakePosition intakePositionCommand = new GotoIntakePosition(m_shooter);
+    private final GotoShootingPosition shootingPositionCommand = new GotoShootingPosition(m_shooterIndex);
+    private final GotoIntakePosition intakePositionCommand = new GotoIntakePosition(m_shooterIndex);
 
-    private final StartShooting startShootingCommand = new StartShooting(m_shooter);
-    private final StopShooting stopShootingCommand = new StopShooting(m_shooter);
+    private final StartShooting startShootingCommand = new StartShooting(m_shooterIndex);
+    private final StopShooting stopShootingCommand = new StopShooting(m_shooterIndex);
 
     private final Climb climbCommand = new Climb(m_armBar, m_robotDrive);
 
-    private final StartEjecting startEjectingCommand = new StartEjecting(m_intake);
-    private final StopEjecting stopEjectingCommand = new StopEjecting(m_intake);
+    private final StartEjecting startEjectingCommand = new StartEjecting(m_intake, m_shooterIndex);
+    private final StopEjecting stopEjectingCommand = new StopEjecting(m_intake, m_shooterIndex);
 
     private final MoveToTarget moveToTargetCommand = new MoveToTarget(m_robotDrive);
 
@@ -110,7 +110,27 @@ public class RobotContainer {
         // // Set the default drive command to split-stick arcade drive
         trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
 
-        trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5));
+        //trajectories = new List<PathPlannerTrajectory>() ;
+        // trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("13_Test_Constant_x", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("14_Test_Constant_y", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("15_Test_Diagonal", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("16_Test_Loop", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("17_Test_Sideways", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
 
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
@@ -268,18 +288,18 @@ public class RobotContainer {
 
         SequentialCommandGroup theCommand = new SequentialCommandGroup(
                 // new DriveBackwards(m_drive),
-                new GotoShootingPosition(m_shooter),
-                new StartShooting(m_shooter).withTimeout(1.0),
-                new StopShooting(m_shooter),
-                new GotoIntakePosition(m_shooter),
-                new StartIntake(m_shooter, m_intake),
+                new GotoShootingPosition(m_shooterIndex),
+                new StartShooting(m_shooterIndex).withTimeout(1.0),
+                new StopShooting(m_shooterIndex),
+                new GotoIntakePosition(m_shooterIndex),
+                new StartIntake(m_shooterIndex, m_intake),
                 ppCommand,
                 // new InitiatePath(m_drive),
-                new StopIntake(m_intake, m_shooter),
-                new GotoShootingPosition(m_shooter),
-                new StartShooting(m_shooter).withTimeout(1.0),
-                new StopShooting(m_shooter),
-                new GotoIntakePosition(m_shooter));
+                new StopIntake(m_intake, m_shooterIndex),
+                new GotoShootingPosition(m_shooterIndex),
+                new StartShooting(m_shooterIndex).withTimeout(1.0),
+                new StopShooting(m_shooterIndex),
+                new GotoIntakePosition(m_shooterIndex));
 
         // Run path following command, then stop at the end.
         return theCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));

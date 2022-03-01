@@ -395,6 +395,7 @@ public final class Constants {
         public static final int ID_FlyWheelMotor = 8;
         public static final double BeltMotorIntakeVelocity = 200;
         public static final double BeltMotorShootingVelocity = -5700;
+        public static final double BeltMotorEjectingVelocity = -5700;
         public static final double FlyWheelMotorIntakeVelocity = -500;
         public static final double FlyWheelMotorShootingVelocity = 850;
         public static final double FlyWheelMinShootingSpeed = 18000;

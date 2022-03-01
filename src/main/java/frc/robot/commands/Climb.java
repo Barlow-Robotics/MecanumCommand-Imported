@@ -33,8 +33,6 @@ public class Climb extends CommandBase {
 
     ArmCommandState currentState = ArmCommandState.WaitingForArmToBeStraightUp;
 
-    int state;
-
     /** Creates a new Climb. */
     public Climb(ArmBar a, DriveSubsystem d) {
         // Use addRequirements() here to declare subsystem dependencies.
@@ -55,26 +53,6 @@ public class Climb extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
-        if(currentState == ArmCommandState.WaitingForArmToBeStraightUp){
-            state=0;
-        } else if(currentState == ArmCommandState.DrivingBackward){
-            state=1;
-        } else if(currentState == ArmCommandState.MovingToHighBar){
-            state=2;
-        } else if(currentState == ArmCommandState.LettingGoMidBar){
-            state=3;
-        } else if(currentState == ArmCommandState.MovingToTraversalBar){
-            state=4;
-        } else if(currentState == ArmCommandState.LettingGoHighBar){
-            state=5;
-        } else if(currentState == ArmCommandState.OnTraversalBar){
-            state=6;
-        } else if(currentState == ArmCommandState.GoingToRestingPosition){
-            state=7;
-        } else if(currentState == ArmCommandState.Finished){
-            state=8;
-        }
 
         switch (currentState) {
             case ResettingPosition:
@@ -168,7 +146,7 @@ public class Climb extends CommandBase {
     }
 
     void report() {
-        NetworkTableInstance.getDefault().getEntry("driverStation/climb_state").setDouble(state);
+        NetworkTableInstance.getDefault().getEntry("driverStation/climb_state").setString(currentState.name());
     }
 
 }

@@ -6,16 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class StartEjecting extends CommandBase {
   
   private Intake m_intake;
+  private ShooterIndex m_shooterindex;
   
   /** Creates a new StartEjecting. */
-  public StartEjecting(Intake e) {
+  public StartEjecting(Intake e, ShooterIndex s) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = e;
-    addRequirements(m_intake);
+    m_shooterindex = s;
+    addRequirements(m_intake, m_shooterindex);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +28,8 @@ public class StartEjecting extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.startEjecting();
+    m_intake.startIntake();
+    m_shooterindex.startEjecting();
   }
 
   // Called once the command ends or is interrupted.

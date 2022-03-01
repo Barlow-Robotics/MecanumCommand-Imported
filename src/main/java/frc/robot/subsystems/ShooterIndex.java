@@ -35,10 +35,8 @@ public class ShooterIndex extends SubsystemBase {
     Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
     Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
-    int state;
 
-
-    public enum LiftPosition { In_Transiton, Intake, Shooting } ;
+    public enum LiftPosition { In_Transition, Intake, Shooting } ;
 
     public ShooterIndex() {
         beltMotor = new WPI_TalonFX(Constants.ShooterConstants.ID_ShooterMotor);
@@ -62,14 +60,6 @@ public class ShooterIndex extends SubsystemBase {
         // }
         report();
 
-        //stuff for driver station
-        if(getPosition() == LiftPosition.Intake){
-            state=0;
-        } else if(getPosition() == LiftPosition.In_Transiton){
-            state=1;
-        } else if(getPosition() == LiftPosition.Shooting){
-            state=2;
-        }
     }
 
     public void startShooting() {
@@ -108,12 +98,20 @@ public class ShooterIndex extends SubsystemBase {
 
     public LiftPosition getPosition() { //NO MORE MOTOR, NOW PISTON - use sensor or time (not rec) ?
 //        System.out.println("shooter position is " + liftMotor.getSelectedSensorPosition() ) ;
-        if ( liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
-            return LiftPosition.Shooting ;
-        } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.02) {
-            return LiftPosition.Intake ;
+        // if (liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
+        //     return LiftPosition.Shooting;
+        // } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.02) {
+        //     return LiftPosition.Intake;
+        // } else {
+        //     return LiftPosition.In_Transition;
+        // }
+
+        if (!extendSolenoid.get() && retractSolenoid.get() && !extendSolenoid2.get() && retractSolenoid2.get()) {
+            return LiftPosition.Shooting;
+        } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid.get() && !retractSolenoid2.get()) {
+            return LiftPosition.Intake;
         } else {
-            return LiftPosition.In_Transiton ;
+            return LiftPosition.In_Transition;
         }
     }
 
@@ -135,6 +133,13 @@ public class ShooterIndex extends SubsystemBase {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
     }
     
+    public void startEjecting() {
+        beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorEjectingVelocity);
+    }
+
+    public void stopEjecting() {
+       beltMotor.set(TalonFXControlMode.Velocity, 0.0);
+    }
 
     private void setMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
@@ -183,7 +188,7 @@ public class ShooterIndex extends SubsystemBase {
         NetworkTableInstance.getDefault().getEntry("index/commandedPosition").setDouble(commandedPosition);
 
         NetworkTableInstance.getDefault().getEntry("driverStation/is_shooting").setBoolean(isShooting);
-        NetworkTableInstance.getDefault().getEntry("driverStation/shoot_orientation").setDouble(state);
+        NetworkTableInstance.getDefault().getEntry("driverStation/shoot_orientation").setString(getPosition().name());
     }
 
 

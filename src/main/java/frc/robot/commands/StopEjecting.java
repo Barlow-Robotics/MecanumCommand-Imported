@@ -6,16 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterIndex;
 
 public class StopEjecting extends CommandBase {
   
   private Intake m_intake;
+  private ShooterIndex m_shooterIndex;
   
   /** Creates a new StopEjecting. */
-  public StopEjecting(Intake e) {
+  public StopEjecting(Intake e, ShooterIndex s) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = e;
-    addRequirements(m_intake);
+    m_shooterIndex = s;
+    addRequirements(m_intake, m_shooterIndex);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +28,8 @@ public class StopEjecting extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.stopEjecting();
+    m_intake.stopIntake();
+    m_shooterIndex.stopEjecting();
   }
 
   // Called once the command ends or is interrupted.

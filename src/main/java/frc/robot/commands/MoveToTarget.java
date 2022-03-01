@@ -8,12 +8,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.*;
 
 public class MoveToTarget extends CommandBase {
   
-  private PIDController pid = new PIDController();
+  private PIDController pid = new PIDController(DriveConstants.DrivetrainkP, 0, 0);
   private DriveSubsystem m_drive;
+
+  private double error;
+  private double leftVelocity;
+  private double rightVelocity;
   
   /** Creates a new MoveToTarget. */
   public MoveToTarget(DriveSubsystem d) {
@@ -25,31 +31,35 @@ public class MoveToTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      //pid.reset();    ?
+     pid.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(inst.GetEntry("robot_cam/object_found"))
-      /* if see target{
-          get error
-          use pid controller to calculate speed correction 
-          leftV = desired speed +correction;
-          rightV = desired speed - correction;
-          drive.setVelocities (LF, LB, RF, RB)
+      if(NetworkTableInstance.getDefault().getEntry("robot_cam/object_found").getBoolean(false)){
+          error = NetworkTableInstance.getDefault().getEntry("robot_cam/distance_from_center").getDouble(0);
+          leftVelocity = DriveConstants.Drivetrainkf + pid.calculate(error);
+          rightVelocity = DriveConstants.Drivetrainkf - pid.calculate(error);
+          m_drive.setWheelSpeeds(
+              new MecanumDriveWheelSpeeds(
+                leftVelocity, rightVelocity, leftVelocity, rightVelocity)
+              );
       }
-      *
-      */
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+      m_drive.setWheelSpeeds(
+        new MecanumDriveWheelSpeeds(
+          0, 0, 0, 0)
+      );
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !NetworkTableInstance.getDefault().getEntry("robot_cam/object_found").getBoolean(false);
   }
 }
