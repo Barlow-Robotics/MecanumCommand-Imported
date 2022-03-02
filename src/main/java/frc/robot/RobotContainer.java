@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import edu.wpi.first.networktables.*;
 
@@ -79,7 +80,7 @@ public class RobotContainer {
     private boolean initiateSequence = true;
 
     PathPlannerTrajectory trajectory;
-    List<PathPlannerTrajectory> trajectories;
+    ArrayList<PathPlannerTrajectory> trajectories;
 
     // Commands
 
@@ -109,49 +110,51 @@ public class RobotContainer {
 
         // // Configure default commands
         // // Set the default drive command to split-stick arcade drive
-        trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
+        // trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
 
-        // trajectories = new List<PathPlannerTrajectory>() ;
-        // trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("13_Test_Constant_x",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("14_Test_Constant_y",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("15_Test_Diagonal",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("16_Test_Loop",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("17_Test_Sideways",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories = new ArrayList<PathPlannerTrajectory>();
+        trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("13_Test_Constant_x",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("14_Test_Constant_y",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("15_Test_Diagonal",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("16_Test_Loop",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("17_Test_Sideways",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle",
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        trajectories.add(PathPlanner.loadPath("20_Back_Off_Tarmac", 
+                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
 
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
@@ -289,6 +292,8 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
+        PathPlannerTrajectory trajectory = trajectories.get(20); // why is there a yellow line?
+
         PPMecanumControllerCommand ppCommand = new PPMecanumControllerCommand(
                 trajectory,
                 m_robotDrive::getPose,
@@ -308,8 +313,6 @@ public class RobotContainer {
         m_robotDrive.resetOdometry(temp2);
 
         if (initiateSequence == false) {
-
-            PathPlannerTrajectory trajectory = trajectories.get(0); //why is there a yellow line?
 
             return ppCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
 
