@@ -36,7 +36,6 @@ import edu.wpi.first.networktables.*;
 
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.PathPlannerTrajectory.*;
-import com.pathplanner.lib.commands.PPMecanumControllerCommand;
 
 // import java.io.IOException;
 // import java.nio.file.Path;
@@ -77,6 +76,8 @@ public class RobotContainer {
     private double Lateral_Speed_Attenuation = 0.5;
     private double Yaw_Attenuation = 0.5;
 
+    private boolean initiateSequence = true;
+
     PathPlannerTrajectory trajectory;
     List<PathPlannerTrajectory> trajectories;
 
@@ -110,27 +111,47 @@ public class RobotContainer {
         // // Set the default drive command to split-stick arcade drive
         trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
 
-        //trajectories = new List<PathPlannerTrajectory>() ;
-        // trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("13_Test_Constant_x", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("14_Test_Constant_y", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("15_Test_Diagonal", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("16_Test_Loop", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("17_Test_Sideways", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle", Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories = new List<PathPlannerTrajectory>() ;
+        // trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("13_Test_Constant_x",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("14_Test_Constant_y",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("15_Test_Diagonal",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("16_Test_Loop",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("17_Test_Sideways",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        // trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle",
+        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
 
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
@@ -176,7 +197,8 @@ public class RobotContainer {
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
             climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
             ejectButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_X);
-            moveToTargetButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Start_Button);
+            moveToTargetButton = new JoystickButton(m_driverController,
+                    Constants.Logitech_F310_Controller.Start_Button);
 
         } else if (controllerType.equals("Controller (Gamepad F310)")) {
 
@@ -193,7 +215,8 @@ public class RobotContainer {
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
             climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
             ejectButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_X);
-            moveToTargetButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Start_Button);
+            moveToTargetButton = new JoystickButton(m_driverController,
+                    Constants.Logitech_F310_Controller.Start_Button);
 
         } else if (controllerType.equals("Xbox Controller")) {
 
@@ -266,8 +289,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        // PathPlannerTrajectory trajectory = trajectories.get(0) ;
-
         PPMecanumControllerCommand ppCommand = new PPMecanumControllerCommand(
                 trajectory,
                 m_robotDrive::getPose,
@@ -286,22 +307,31 @@ public class RobotContainer {
         Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
         m_robotDrive.resetOdometry(temp2);
 
-        SequentialCommandGroup theCommand = new SequentialCommandGroup(
-                // new DriveBackwards(m_drive),
-                new GotoShootingPosition(m_shooterIndex),
-                new StartShooting(m_shooterIndex).withTimeout(1.0),
-                new StopShooting(m_shooterIndex),
-                new GotoIntakePosition(m_shooterIndex),
-                new StartIntake(m_shooterIndex, m_intake),
-                ppCommand,
-                // new InitiatePath(m_drive),
-                new StopIntake(m_intake, m_shooterIndex),
-                new GotoShootingPosition(m_shooterIndex),
-                new StartShooting(m_shooterIndex).withTimeout(1.0),
-                new StopShooting(m_shooterIndex),
-                new GotoIntakePosition(m_shooterIndex));
+        if (initiateSequence == false) {
 
-        // Run path following command, then stop at the end.
-        return theCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+            PathPlannerTrajectory trajectory = trajectories.get(0);
+
+            return ppCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+
+        } else {
+
+            SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+                    // new DriveBackwards(m_drive),
+                    new GotoShootingPosition(m_shooterIndex),
+                    new StartShooting(m_shooterIndex).withTimeout(1.0),
+                    new StopShooting(m_shooterIndex),
+                    new GotoIntakePosition(m_shooterIndex),
+                    new StartIntake(m_shooterIndex, m_intake),
+                    ppCommand,
+                    // new InitiatePath(m_drive),
+                    new StopIntake(m_intake, m_shooterIndex),
+                    new GotoShootingPosition(m_shooterIndex),
+                    new StartShooting(m_shooterIndex).withTimeout(1.0),
+                    new StopShooting(m_shooterIndex),
+                    new GotoIntakePosition(m_shooterIndex));
+
+            // Run path following command, then stop at the end.
+            return autoCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+        }
     }
 }
