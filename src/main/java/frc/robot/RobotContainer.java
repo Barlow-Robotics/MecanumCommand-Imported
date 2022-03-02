@@ -309,7 +309,7 @@ public class RobotContainer {
 
         if (initiateSequence == false) {
 
-            PathPlannerTrajectory trajectory = trajectories.get(0);
+            PathPlannerTrajectory trajectory = trajectories.get(0); //why is there a yellow line?
 
             return ppCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
 
