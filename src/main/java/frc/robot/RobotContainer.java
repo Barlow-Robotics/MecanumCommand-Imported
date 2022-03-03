@@ -59,7 +59,10 @@ public class RobotContainer {
     // private final UnderGlow underGlow = new UnderGlow() ;
 
     // The driver's controller
-    Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
+    Joystick m_driverController ; // change
+
+    //Gamepad
+    Joystick m_gamepad ;
 
     private JoystickButton intakeButton;
     private JoystickButton liftToShootingButton;
@@ -68,6 +71,8 @@ public class RobotContainer {
     private JoystickButton climbButton;
     private JoystickButton ejectButton;
     private JoystickButton moveToTargetButton;
+
+    private JoystickButton switchCameraButton;
 
     private int Forward_Speed_Axis;
     private int Lateral_Speed_Axis;
@@ -99,11 +104,19 @@ public class RobotContainer {
     private final StopEjecting stopEjectingCommand = new StopEjecting(m_intake, m_shooterIndex);
 
     private final MoveToTarget moveToTargetCommand = new MoveToTarget(m_robotDrive);
+    private final SwitchCamera switchCameraCommand = new SwitchCamera(); 
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+        // The driver's controller
+        m_driverController = new Joystick(OIConstants.kDriverControllerPort); // change
+
+        //Gamepad
+        m_gamepad = new Joystick(OIConstants.gamepadPort);
+
 
         // Configure the button bindings
         configureButtonBindings();
@@ -198,8 +211,8 @@ public class RobotContainer {
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
-            climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
-            ejectButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_X);
+        //     climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
+        //     ejectButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_X);
             moveToTargetButton = new JoystickButton(m_driverController,
                     Constants.Logitech_F310_Controller.Start_Button);
 
@@ -216,8 +229,8 @@ public class RobotContainer {
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_A);
-            climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
-            ejectButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_X);
+        //     climbButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Back_Button);
+        //     ejectButton = new JoystickButton(m_driverController, Constants.Logitech_F310_Controller.Button_X);
             moveToTargetButton = new JoystickButton(m_driverController,
                     Constants.Logitech_F310_Controller.Start_Button);
 
@@ -236,8 +249,8 @@ public class RobotContainer {
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_A);
-            climbButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Back_Button);
-            ejectButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_X);
+        //     climbButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Back_Button);
+        //     ejectButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Button_X);
             moveToTargetButton = new JoystickButton(m_driverController, Constants.Xbox_Controller.Start_Button);
 
         } else if (controllerType.equals("Logitech Dual Action")) {
@@ -252,21 +265,27 @@ public class RobotContainer {
             liftToShootingButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_Y);
             liftToIntakeButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_B);
             shooterButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_A);
-            climbButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Back_Button);
-            ejectButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_X);
+        //     climbButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Back_Button);
+        //     ejectButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Button_X);
             moveToTargetButton = new JoystickButton(m_driverController, Constants.Logitech_Dual_Action.Start_Button);
 
         } else {
 
-            // no buttons will be configured and we'll crash shortly after. That's OK, we
-            // want to crash so we can find this issue.
+        //      no buttons will be configured and we'll crash shortly after. That's OK, we
+        //      want to crash so we can find this issue.
         }
 
         // Drive at half speed when the right bumper is held
         // new JoystickButton(m_driverController,
-        // Constants.OIConstants.halfSpeedButton);
+        // Constants.OIConstants.halfSpeedButton); 
         // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5));
         // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
+
+ 
+        //!!!!!! game pad
+        climbButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Button_Y);
+        ejectButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Left_Trigger);
+        switchCameraButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Right_Trigger);
 
         intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
         liftToShootingButton.whenPressed(shootingPositionCommand);
@@ -276,6 +295,8 @@ public class RobotContainer {
         climbButton.whenPressed(climbCommand);
         ejectButton.whenPressed(startEjectingCommand).whenReleased(stopEjectingCommand);
         moveToTargetButton.whenPressed(moveToTargetCommand);
+        switchCameraButton.whenPressed(switchCameraCommand);
+        // //how to switchCameraButton????
     }
 
     /**
@@ -294,7 +315,7 @@ public class RobotContainer {
 
         PathPlannerTrajectory trajectory = trajectories.get(20); // why is there a yellow line?
 
-        PPMecanumControllerCommand ppCommand = new PPMecanumControllerCommand(
+        PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
                 trajectory,
                 m_robotDrive::getPose,
                 DriveConstants.kDriveKinematics,
@@ -314,20 +335,35 @@ public class RobotContainer {
 
         if (initiateSequence == false) {
 
-            return ppCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+            return pathCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
 
         } else {
 
-            SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-                    // new DriveBackwards(m_drive),
-                    new GotoShootingPosition(m_shooterIndex),
+        //     SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+        //             // new DriveBackwards(m_robotDrive),
+        //             new GotoShootingPosition(m_shooterIndex),
+        //             new StartShooting(m_shooterIndex).withTimeout(1.0),
+        //             new StopShooting(m_shooterIndex),
+        //             new GotoIntakePosition(m_shooterIndex),
+        //             new StartIntake(m_shooterIndex, m_intake),
+        //             pathCommand,
+        //             new StopIntake(m_intake, m_shooterIndex),
+        //             new GotoShootingPosition(m_shooterIndex),
+        //             new StartShooting(m_shooterIndex).withTimeout(1.0),
+        //             new StopShooting(m_shooterIndex),
+        //             new GotoIntakePosition(m_shooterIndex));
+
+        SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+                //  new DriveBackwards(m_robotDrive),
+                //     new GotoShootingPosition(m_shooterIndex), // Should already be up
                     new StartShooting(m_shooterIndex).withTimeout(1.0),
                     new StopShooting(m_shooterIndex),
                     new GotoIntakePosition(m_shooterIndex),
                     new StartIntake(m_shooterIndex, m_intake),
-                    ppCommand,
-                    // new InitiatePath(m_drive),
+                    pathCommand, 
+                    new MoveToTarget(m_robotDrive),
                     new StopIntake(m_intake, m_shooterIndex),
+                //  new DriveToTarmac(m_robotDrive),
                     new GotoShootingPosition(m_shooterIndex),
                     new StartShooting(m_shooterIndex).withTimeout(1.0),
                     new StopShooting(m_shooterIndex),

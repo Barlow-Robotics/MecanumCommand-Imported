@@ -236,7 +236,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Report various parameters out to network tables for monitoring purposes
         NetworkTableInstance.getDefault().getEntry("drive/back_left_position").setDouble(m_backLeft.getSelectedSensorPosition());
 
-        System.out.println( "back left position is " + m_backLeft.getSelectedSensorPosition()) ;
+        //System.out.println( "back left position is " + m_backLeft.getSelectedSensorPosition()) ;
         NetworkTableInstance.getDefault().getEntry("drive/back_left_velocity").setDouble(m_backLeft.getSelectedSensorVelocity());
         //NetworkTableInstance.getDefault().getEntry("drive/back_left_target_velocity").setDouble(m_backLeft.getClosedLoopTarget());
 

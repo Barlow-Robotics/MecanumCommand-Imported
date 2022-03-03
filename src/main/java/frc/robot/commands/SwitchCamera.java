@@ -5,20 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.ShooterIndex;
 
-public class StartEjecting extends CommandBase {
-  
-  private Intake m_intake;
-  private ShooterIndex m_shooterIndex;
-  
-  /** Creates a new StartEjecting. */
-  public StartEjecting(Intake e, ShooterIndex s) {
+import edu.wpi.first.networktables.*;
+
+public class SwitchCamera extends CommandBase {
+  /** Creates a new SwitchCamera. */
+  private double cameraNumber;
+
+  public SwitchCamera() {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = e;
-    m_shooterIndex = s;
-    addRequirements(m_intake, m_shooterIndex);
   }
 
   // Called when the command is initially scheduled.
@@ -28,8 +23,14 @@ public class StartEjecting extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.startIntake();
-    m_shooterIndex.startEjecting();
+    cameraNumber = NetworkTableInstance.getDefault().getEntry("robot_cam/camera_number").getDouble(0);
+
+    if (cameraNumber == 0){
+      NetworkTableInstance.getDefault().getEntry("robot_cam/camera_number").setDouble(1);
+    }
+    else {
+      NetworkTableInstance.getDefault().getEntry("robot_cam/camera_number").setDouble(0);
+    }
   }
 
   // Called once the command ends or is interrupted.

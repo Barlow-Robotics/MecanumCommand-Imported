@@ -142,7 +142,7 @@ public final class Constants {
 
 
     public static final class OIConstants {
-        public static final int kDriverControllerPort = 1;
+        public static final int kDriverControllerPort = 2;
         public static final int halfSpeedButton = 2;
         public static final int leftYAxis = 1;
         public static final int leftXAxis = 0;
@@ -150,6 +150,8 @@ public final class Constants {
         public static final int rightYAxis = 5;
 
         public static final String LogitechF310Name = "Controller (Gamepad F310)";
+
+        public static final int gamepadPort = 1;
     }
 
 
@@ -273,6 +275,12 @@ public final class Constants {
 
     }
 
+    public final class Fight_Stick {
+        public static final int Button_Y = 4;
+        
+        public static final int Left_Trigger = 2;
+        public static final int Right_Trigger = 3;
+    }
 
 
     // For Brian's Controller
