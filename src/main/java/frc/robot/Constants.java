@@ -308,6 +308,8 @@ public final class Constants {
         public static final double kAutoDriveDistanceInches = 1;
         public static final double kAutoDriveSpeed = 0.2;
 
+        public static final double AutoShootingTimeout = 1.0;
+
     // public static final double kPXController = 0.5;
     // public static final double kPYController = 0.5;
     public static final double kPXController = 3.0;

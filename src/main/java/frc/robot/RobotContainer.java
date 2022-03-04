@@ -387,7 +387,7 @@ public class RobotContainer {
                         SequentialCommandGroup autoCommand = new SequentialCommandGroup(
                                         // new DriveBackwards(m_robotDrive),
                                         // new GotoShootingPosition(m_shooterIndex), // Should already be up
-                                        new StartShooting(m_shooterIndex).withTimeout(1.0),
+                                        new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                                         new StopShooting(m_shooterIndex),
                                         new GotoIntakePosition(m_shooterIndex),
                                         new StartIntake(m_shooterIndex, m_intake),
@@ -396,7 +396,7 @@ public class RobotContainer {
                                         new StopIntake(m_intake, m_shooterIndex),
                                         new DriveToTarmac(m_robotDrive),
                                         new GotoShootingPosition(m_shooterIndex),
-                                        new StartShooting(m_shooterIndex).withTimeout(1.0),
+                                        new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                                         new StopShooting(m_shooterIndex),
                                         new GotoIntakePosition(m_shooterIndex));
 

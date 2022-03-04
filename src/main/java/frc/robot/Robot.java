@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.trajectory.Trajectory;
+// import edu.wpi.first.math.trajectory.Trajectory;
+// import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -98,6 +99,7 @@ private Command m_autonomousCommand;
   //private long startTime, endTime, duration, previousStartTime;
 
 
+  // Servo testrun = new Servo(1);
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
@@ -105,6 +107,13 @@ private Command m_autonomousCommand;
     // duration = endTime - startTime;
     // NetworkTableInstance.getDefault().getEntry("performance/frameTime").setDouble((double) duration) ;
 
+
+    // double control = Math.max(0, m_robotContainer.m_driverController.getRawAxis(2));
+    // if (control > 0.2) {
+    //   int wpk = 1;
+    // } 
+    // testrun.setAngle(control*180.0);
+    // testrun.setRaw((int)control*255);
   }
 
   @Override
