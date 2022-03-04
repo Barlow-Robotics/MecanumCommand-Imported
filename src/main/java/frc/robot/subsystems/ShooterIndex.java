@@ -191,12 +191,10 @@ public class ShooterIndex extends SubsystemBase {
         NetworkTableInstance.getDefault().getEntry("driverStation/shoot_orientation").setString(getPosition().name());
     }
 
-
-
     boolean simulationInitialized = false;
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(liftMotor, 0.75, 6800, false );
+        PhysicsSim.getInstance().addTalonFX(liftMotor, 0.75, 6800, false);
     }
 
     @Override
@@ -208,8 +206,5 @@ public class ShooterIndex extends SubsystemBase {
         PhysicsSim.getInstance().run();
 
         // do sim stuff
-
     }
-
-
 }

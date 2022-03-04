@@ -15,7 +15,7 @@ import edu.wpi.first.networktables.*;
 public class MoveToTarget extends CommandBase {
   
   private PIDController pid = new PIDController(0.01, 0, 0);
-  private DriveSubsystem m_robotDrive;
+  private DriveSubsystem m_drive;
 
   private double error;
   private double leftVelocity;
@@ -25,8 +25,8 @@ public class MoveToTarget extends CommandBase {
   /** Creates a new MoveToTarget. */
   public MoveToTarget(DriveSubsystem d) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_robotDrive = d;
-    addRequirements(m_robotDrive);
+    m_drive = d;
+    addRequirements(m_drive);
   }
 
   // Called when the command is initially scheduled.
@@ -44,7 +44,7 @@ public class MoveToTarget extends CommandBase {
         leftVelocity = 1.0 - pid.calculate(error);
         rightVelocity = 1.0 + pid.calculate(error);
 
-        m_robotDrive.setWheelSpeeds(
+        m_drive.setWheelSpeeds(
             new MecanumDriveWheelSpeeds(
               leftVelocity, rightVelocity, leftVelocity, rightVelocity)
             );
@@ -56,7 +56,7 @@ public class MoveToTarget extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_robotDrive.setWheelSpeeds(
+    m_drive.setWheelSpeeds(
       new MecanumDriveWheelSpeeds(
         0, 0, 0, 0)
     );
