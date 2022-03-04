@@ -169,7 +169,6 @@ public final class Constants {
         public static final double Lateral_Axis_Attenuation = 0.5 ;
         public static final double Yaw_Axis_Attenuation = 0.5 ;
 
-
         // // Constants for buttons
         // public static final int Button_A = 2;
         // public static final int Button_B = 3;

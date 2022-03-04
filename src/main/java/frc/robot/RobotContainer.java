@@ -217,21 +217,21 @@ public class RobotContainer {
 
                         // wpk need to test this out.
 
-                        intakeButton = new JoystickAnalogButton(m_driverController, 1, 0.5);
+                        intakeButton = new JoystickAnalogButton(m_driverController, Constants.RadioMaster_Controller.SA_Axis, 0.5);
                         // intakeButton = new JoystickButton(m_driverController,
                         // Constants.Logitech_F310_Controller.Right_Bumper);
                         liftToShootingButton = new JoystickButton(m_driverController,
-                                        Constants.Logitech_F310_Controller.Button_Y);
-                        liftToIntakeButton = new JoystickButton(m_driverController,
-                                        Constants.Logitech_F310_Controller.Button_B);
+                                        Constants.RadioMaster_Controller.SB3_Axis);
+                        liftToIntakeButton = new JoystickAnalogButton(m_driverController,
+                                        Constants.RadioMaster_Controller.SB3_Axis);
                         shooterButton = new JoystickButton(m_driverController,
-                                        Constants.Logitech_F310_Controller.Button_A);
+                                        Constants.RadioMaster_Controller.SH_Momentary);
                         // climbButton = new JoystickButton(m_driverController,
                         // Constants.Logitech_F310_Controller.Back_Button);
                         // ejectButton = new JoystickButton(m_driverController,
                         // Constants.Logitech_F310_Controller.Button_X);
-                        moveToTargetButton = new JoystickButton(m_driverController,
-                                        Constants.Logitech_F310_Controller.Start_Button);
+                        // moveToTargetButton = new JoystickButton(m_driverController,
+                        //                 Constants.Logitech_F310_Controller.Start_Button); ***what to do w/ this?
 
                 } else if (controllerType.equals("Controller (Gamepad F310)")) {
 
@@ -314,7 +314,7 @@ public class RobotContainer {
                 // .whenPressed(() -> m_robotDrive.setMaxOutput(0.5));
                 // .whenReleased(() -> m_robotDrive.setMaxOutput(1));
 
-                // !!!!!! game pad
+                // game pad
                 climbButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Button_Y); 
                 ejectButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Left_Trigger);
                 switchCameraButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Right_Trigger);
