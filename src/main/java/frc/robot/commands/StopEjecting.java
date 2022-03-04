@@ -9,36 +9,38 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterIndex;
 
 public class StopEjecting extends CommandBase {
-  
-  private Intake m_intake;
-  private ShooterIndex m_shooterIndex;
-  
-  /** Creates a new StopEjecting. */
-  public StopEjecting(Intake e, ShooterIndex s) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = e;
-    m_shooterIndex = s;
-    addRequirements(m_intake, m_shooterIndex);
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    private Intake m_intake;
+    private ShooterIndex m_shooterIndex;
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_intake.stopIntake();
-    m_shooterIndex.stopEjecting();
-  }
+    /** Creates a new StopEjecting. */
+    public StopEjecting(Intake e, ShooterIndex s) {
+        // Use addRequirements() here to declare subsystem dependencies.
+        m_intake = e;
+        m_shooterIndex = s;
+        addRequirements(m_intake, m_shooterIndex);
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        m_intake.stopIntake();
+        m_shooterIndex.stopEjecting();
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

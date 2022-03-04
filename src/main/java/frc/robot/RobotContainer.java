@@ -79,7 +79,7 @@ public class RobotContainer {
 
         private boolean initiateSequence = false;
 
-        PathPlannerTrajectory trajectory;
+        //PathPlannerTrajectory trajectory;
         ArrayList<PathPlannerTrajectory> trajectories;
 
         // Commands
