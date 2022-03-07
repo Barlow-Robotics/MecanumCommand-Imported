@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.networktables.*;
 
 import com.pathplanner.lib.*;
@@ -363,6 +365,27 @@ public class RobotContainer {
                 PathPlannerState s = (PathPlannerState) trajectory.getStates().get(0);
                 Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
                 m_robotDrive.resetOdometry(temp2);
+        
+                TrajectoryConfig config =
+                new TrajectoryConfig(
+                        AutoConstants.kMaxSpeedMetersPerSecond,
+                        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                        // Add kinematics to ensure max speed is actually obeyed
+                        .setKinematics(DriveConstants.kDriveKinematics);
+        
+                DriveSubsystem m_drive = new DriveSubsystem();
+                Pose2d targetPose = new Pose2d();
+                // An example trajectory to follow.  All units in meters.
+                Trajectory toTarmac =
+                TrajectoryGenerator.generateTrajectory(
+                        m_drive.getPose() ,
+                        // List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+                        List.of(),
+                        targetPose,
+                        config);
+                
+                // RamseteCommand driveToTarmac =
+                // new RamseteCommand(toTarmac);
 
                 if (initiateSequence == false) {
 
@@ -394,7 +417,7 @@ public class RobotContainer {
                                         pathCommand,
                                         new MoveToTarget(m_robotDrive),
                                         new StopIntake(m_intake, m_shooterIndex),
-                                        new DriveToTarmac(m_robotDrive),
+                                        // driveToTarmac,
                                         new GotoShootingPosition(m_shooterIndex),
                                         new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                                         new StopShooting(m_shooterIndex),

@@ -53,16 +53,15 @@ public class DriveToTarmac extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() {}
 
     // general idea: go to initial pose 
     // have to create a path via code (not pathplanner) in order to get to said initial pose 
 
     // m_drive.getInitialPose();
     //trajectory.getInitialPose();
-  }
-
   // Called once the command ends or is interrupted.
+
   @Override
   public void end(boolean interrupted) {}
 
