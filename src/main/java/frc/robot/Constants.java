@@ -161,9 +161,9 @@ public final class Constants {
         public static final int Right_Gimbal_X = 0;
         public static final int Right_Gimbal_Y = 1;
 
-        public static final int SB3_Axis = 5 ;
-        public static final int SA_Axis = 4 ;
-        public static final int SH_Momentary = 0 ;
+        public static final int SB3_Axis = 6 ;
+        public static final int SA_Axis = 5 ;
+        public static final int SH_Momentary = 4 ;
 
         public static final double Forward_Axis_Attenuation = -0.5 ;
         public static final double Lateral_Axis_Attenuation = 0.5 ;
@@ -198,9 +198,9 @@ public final class Constants {
         public static final int Right_Stick_Y = 5;
 
         // Constants for buttons
-        public static final int Button_A = 2;
-        public static final int Button_B = 3;
-        public static final int Button_X = 1;
+        public static final int Button_A = 1;
+        public static final int Button_B = 2;
+        public static final int Button_X = 2;
         public static final int Button_Y = 4;
         public static final int Left_Bumper = 5;
         public static final int Right_Bumper = 6;
@@ -333,10 +333,13 @@ public final class Constants {
         public static final int ID_HallEffectsB1 = 3;
         public static final int ID_HallEffectsB2 = 4;
 
-        public static final int ID_SolenoidA1 = 5;
-        public static final int ID_SolenoidA2 = 6;
-        public static final int ID_SolenoidB1 = 7;
-        public static final int ID_SolenoidB2 = 8;
+        public static final int ID_ServoA1 = 1;
+        public static final int ID_ServoA2 = 2;
+        public static final int ID_ServoB1 = 3;
+        public static final int ID_ServoB2 = 4;
+
+        public static final double ClawServoLatchPosition = 0.0 ;
+        public static final double ClawServoReleasePosition = 180.0 ;
 
         public static final int UnitsPerMotorRotation = 2048;
         public static final double GearboxGearRatio = 100.0 / 1.0; // farther gear to axel gear
@@ -352,9 +355,11 @@ public final class Constants {
         public static final double AngleTolerance = 1.0;
 //        public static final double ConsistentRotationAngleTolerance = 6;
 
-        public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+//        public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        public static final double DesiredArmVelocity = 0.75 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
         public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
-        public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
+//        public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
+        public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
         public static final int AccelerationSmoothing = 2 ;
 
         public static final double SlowArmVelocity = 10 ;
@@ -363,13 +368,13 @@ public final class Constants {
 
 
         public static final int Position_PID_id = 0;
-        public static final double Position_kF = 0.4;  // wpk need to give this some thought
-        public static final double Position_kP = 0.1;  // wpk need to give this some thought
-        public static final double Position_kD = 0.0;  // wpk need to give this some thought
+        public static final double Position_kF = 0.048;  // wpk need to give this some thought
+        public static final double Position_kP = 0.05;  // wpk need to give this some thought
+        public static final double Position_kD = 0.01;  // wpk need to give this some thought
         public static final double Position_kI = 0.00001;  // wpk need to give this some thought
 
 
-        public static final double ArmBarMotorSpeed = 0.1;
+        // public static final double ArmBarMotorSpeed = 0.1;
 
         public static final double manualVoltageRampingConstant = 0.05;
         public static final double closedVoltageRampingConstant = 0.05;
@@ -385,68 +390,69 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int ID_IntakeMotor = 3;
-        public static final double IntakeMotorSpeed = 250.0;
+        
+        public static final int UnitsPerMotorRotation = 2048;
+        public static final double GearboxGearRatio = 1.0 / 1.0; 
+        public static final double TotalUnitsPerRotation = (double) UnitsPerMotorRotation * GearboxGearRatio ;
+
+        public static final double RevPerSecondVelocity = TotalUnitsPerRotation / 10.0 ; 
+        public static final double RPM = RevPerSecondVelocity / 60.0 ;
+        
+        public static final double IntakeMotorSpeed = 1700 * RPM;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;
-        public static final int Extend_Solenoid = 0;
-        public static final int Retract_Solenoid = 1;
 
-        public static final double closedVoltageRampingConstant = 0.1;
-        public static final double manualVoltageRampingConstant = 0.1;
-        public static final double kF = 1.0;
-        public static final double kP = 0.0;
+        public static final double closedVoltageRampingConstant = 0.05;
+        public static final double manualVoltageRampingConstant = 0.05;
+        public static final double kF = 0.048;
+        public static final double kP = 0.005;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
         public static final int PID_id = 0;
     }
 
     public static final class ShooterConstants {
-        public static final int ID_ShooterMotor = 7;
+
+        public static final int UnitsPerMotorRotation = 2048;
+        public static final double GearboxGearRatio = 1.0 / 1.0; // farther gear to axel gear
+        public static final double TotalUnitsPerRotation = (double) UnitsPerMotorRotation * GearboxGearRatio ;
+
+        public static final double RevPerSecondVelocity = TotalUnitsPerRotation / 10.0 ; 
+        public static final double RPM = RevPerSecondVelocity / 60.0 ;
+
+
+        public static final int ID_BeltMotor = 7;
+
+        public static final double kF = 0.048;
+        public static final double kP = 0.001;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
+        public static final double BeltMotorIntakeVelocity = 700 * RPM;
+
+
+
         public static final int ID_FlyWheelMotor = 8;
-        public static final double BeltMotorIntakeVelocity = 200;
-        public static final double BeltMotorShootingVelocity = -5700;
-        public static final double BeltMotorEjectingVelocity = -5700;
-        public static final double FlyWheelMotorIntakeVelocity = -500;
-        public static final double FlyWheelMotorShootingVelocity = 850;
-        public static final double FlyWheelMinShootingSpeed = 18000;
+        public static final double FlyWheelMotorShootingVelocity = 2500 * RPM;
+        public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorShootingVelocity * 0.95;
+        public static final double BeltMotorShootingVelocity = -FlyWheelMotorShootingVelocity * 0.6;
 
-        public static final double BeltMotor_kF = 1.0;
-        public static final double BeltMotor_kP = 0.0;
+        public static final double FlyWheelMotorEjectingVelocity = 2000 * RPM;
+        public static final double BeltMotorEjectingVelocity = -1500 * RPM;
 
-        public static final double FlyWheelMotor_kP = 0.0;
-        public static final double FlyWheelMotor_kF = 1.0;
+
 
         public static final class Lift {
-            public static final int ID_Motor = 11;
-            public static final int MotorUnitsPerRotation = 2048;
-            public static final double GearboxGearRatio = 48 / 1; 
-            public static final double ChainGearRatio = 18.0 / 15.0;
-            public static final double UnitsPerRotation = MotorUnitsPerRotation * GearboxGearRatio * ChainGearRatio ;
-            public static final double UnitsPerDegree = (UnitsPerRotation) / 360.0 ;
-
-            // public static final double MotorIntakeAngle = 0.0 * UnitsPerDegree ; 
-            public static final double MotorIntakeAngle = 0.0 * UnitsPerDegree ; // wpk temporary for testing
-            public static final double MotorShootingAngle = 58.0 * UnitsPerDegree ; 
-            public static final double MotorStartingAngle = 0.0 * UnitsPerDegree ; 
-
-            public static final double DesiredArmVelocity = 60 ; // degrees persecond
-            public static final double CruiseVelocity = (UnitsPerDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
-            public static final double MaxAcceleration = CruiseVelocity / 2.0 ;
-            public static final int AccelerationSmoothing = 2 ;
-
-            //solenoid piston stuff - temp values
-            public static final int ID_Extend_Solenoid = 1;    
-            public static final int ID_Retract_Solenoid = 0;
-
-            public static final int PID_ID = 0 ;
-            public static final double kF = 0.4;
-            public static final double kP = 0.2;
-            public static final double kD = 0.0;
-            public static final double kI = 0.0;
-   
+            public static final int ID_Extend_Solenoid = 0;    
+            public static final int ID_Extend_Solenoid2 = 3;    
+            public static final int ID_Retract_Solenoid = 1;
+            public static final int ID_Retract_Solenoid2 = 2;
         }
 
 
     }
 
-    public static final String Feeder = null;
+    // public static final String Feeder = null;
 }

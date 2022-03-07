@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmBar;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.Constants.ArmBarConstants;
-
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.*;
 
 public class Climb extends CommandBase {
@@ -69,10 +69,10 @@ public class Climb extends CommandBase {
 
             case DrivingBackward:
                 if (m_armBar.gripperAIsClosed()) {
-                    m_drive.drive(0.0, 0.0, 0, false); // how incorporate drivetrain?
+                    m_drive.setWheelSpeeds( new MecanumDriveWheelSpeeds( 0.0, 0.0, 0.0, 0.) );
                     currentState = ArmCommandState.MovingToHighBar;
                 } else {
-                    m_drive.drive(-0.1, 0.0, 0, false);
+                    m_drive.setWheelSpeeds( new MecanumDriveWheelSpeeds( 1.0, 1.0, 1.0, 1.0) );
                 }
                 break;
 
