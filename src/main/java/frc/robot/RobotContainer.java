@@ -219,8 +219,8 @@ public class RobotContainer {
 
             // wpk need to test this out.
 
-            intakeButton = new JoystickAnalogButton(m_driverController, Constants.RadioMaster_Controller.SA_Axis, 0.5, 1.0);
-            // intakeButton = new JoystickButton(m_driverController,
+            //intakeButton = new JoystickAnalogButton(m_driverController, Constants.RadioMaster_Controller.SA_Axis, 0.5, 1.0);
+             intakeButton = new JoystickButton(m_driverController, 1 ) ;
             // Constants.Logitech_F310_Controller.Right_Bumper);
 
             liftToShootingButton = new JoystickAnalogButton(m_driverController, Constants.RadioMaster_Controller.SB3_Axis, 0.75, 1.0);
@@ -356,7 +356,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        PathPlannerTrajectory trajectory = trajectories.get(20); 
+        PathPlannerTrajectory trajectory = trajectories.get(24); 
+
+        //use network tables to get value from driver station
 
         PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
                 trajectory,
@@ -394,24 +396,41 @@ public class RobotContainer {
             // new GotoIntakePosition(m_shooterIndex));
 
 
-            SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-                    // new DriveBackwards(m_robotDrive),
-                    // new GotoShootingPosition(m_shooterIndex), // Should already be up
+        //     SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+        //             // new DriveBackwards(m_robotDrive),
+        //             // new GotoShootingPosition(m_shooterIndex), // Should already be up
+        //             new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+        //             new StopShooting(m_shooterIndex),
+        //             new GotoIntakePosition(m_shooterIndex),
+        //             new StartIntake(m_shooterIndex, m_intake),
+        //             pathCommand,
+        //             new MoveToTarget(m_robotDrive),
+        //             new StopIntake(m_intake, m_shooterIndex),
+        //             //new DriveToPose(temp2, m_robotDrive),
+        //             new GotoShootingPosition(m_shooterIndex),
+        //             new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+        //             new StopShooting(m_shooterIndex),
+        //             new GotoIntakePosition(m_shooterIndex));
+
+
+                SequentialCommandGroup autoCommand = new SequentialCommandGroup(
                     new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                     new StopShooting(m_shooterIndex),
                     new GotoIntakePosition(m_shooterIndex),
-                    new StartIntake(m_shooterIndex, m_intake),
-                    pathCommand,
-                    new MoveToTarget(m_robotDrive),
-                    new StopIntake(m_intake, m_shooterIndex),
+                    //new StartIntake(m_shooterIndex, m_intake),
+                    pathCommand
+                //     new MoveToTarget(m_robotDrive),
+                    //new StopIntake(m_intake, m_shooterIndex)
                     //new DriveToPose(temp2, m_robotDrive),
-                    new GotoShootingPosition(m_shooterIndex),
-                    new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-                    new StopShooting(m_shooterIndex),
-                    new GotoIntakePosition(m_shooterIndex));
+                //     new GotoShootingPosition(m_shooterIndex),
+                //     new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                //     new StopShooting(m_shooterIndex),
+                //     new GotoIntakePosition(m_shooterIndex)
+                    );
+
 
             // Run path following command, then stop at the end.
             return autoCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-        }
+      }
     }
 }

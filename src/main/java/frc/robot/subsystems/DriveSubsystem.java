@@ -85,10 +85,10 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.update(
                 m_gyro.getRotation2d(),
                 new MecanumDriveWheelSpeeds(
-                    getSpeed(m_frontLeft) ,
-                    getSpeed(m_backLeft) ,
-                    getSpeed(m_frontRight) ,
-                    getSpeed(m_backRight) 
+                    -getSpeed(m_frontLeft) ,
+                    -getSpeed(m_backLeft) ,
+                    -getSpeed(m_frontRight) ,
+                    -getSpeed(m_backRight) 
                     )
          ) ;
         report();
@@ -162,10 +162,10 @@ public class DriveSubsystem extends SubsystemBase {
 
 
     public void setWheelSpeeds(MecanumDriveWheelSpeeds speeds) {
-        m_frontLeft.set(TalonFXControlMode.Velocity, speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_frontRight.set(TalonFXControlMode.Velocity, speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_backLeft.set(TalonFXControlMode.Velocity, speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_backRight.set(TalonFXControlMode.Velocity, speeds.rearRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_frontLeft.set(TalonFXControlMode.Velocity, -speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_frontRight.set(TalonFXControlMode.Velocity, -speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_backLeft.set(TalonFXControlMode.Velocity, -speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_backRight.set(TalonFXControlMode.Velocity, -speeds.rearRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         NetworkTableInstance.getDefault().getEntry("drive/set_speed/frontLeft").setDouble(speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         NetworkTableInstance.getDefault().getEntry("drive/set_speed/frontRight").setDouble(speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         NetworkTableInstance.getDefault().getEntry("drive/set_speed/backLeft").setDouble(speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);

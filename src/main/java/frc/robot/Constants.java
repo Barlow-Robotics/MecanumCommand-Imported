@@ -47,8 +47,8 @@ public final class Constants {
     public static final double Meters_Per_Count = Meters_Per_Revolution / Counts_Per_Revolution;
 
     // PathPlanner velocity and acceleration constants 
-    public static final double pPMaxVel = 2.0;
-    public static final double pPMaxAcc = 0.5;
+    public static final double pPMaxVel = 3.0;
+    public static final double pPMaxAcc = 1.0;
 
     // wpk need to measure and update.
         // Distance between centers of right and left wheels on robot
@@ -162,12 +162,12 @@ public final class Constants {
         public static final int Right_Gimbal_Y = 1;
 
         public static final int SB3_Axis = 6 ;
-        public static final int SA_Axis = 5 ;
+        public static final int SA_Axis =7 ;
         public static final int SH_Momentary = 4 ;
 
         public static final double Forward_Axis_Attenuation = -0.5 ;
-        public static final double Lateral_Axis_Attenuation = 0.5 ;
-        public static final double Yaw_Axis_Attenuation = 0.5 ;
+        public static final double Lateral_Axis_Attenuation = -0.5 ;
+        public static final double Yaw_Axis_Attenuation = -0.5 ;
 
         // // Constants for buttons
         // public static final int Button_A = 2;
@@ -308,14 +308,14 @@ public final class Constants {
         public static final double kAutoDriveDistanceInches = 1;
         public static final double kAutoDriveSpeed = 0.2;
 
-        public static final double AutoShootingTimeout = 1.0;
+        public static final double AutoShootingTimeout = 2.0;
 
     // public static final double kPXController = 0.5;
     // public static final double kPYController = 0.5;
-    public static final double kPXController = 3.0;
-    public static final double kPYController = 3.0;
+    public static final double kPXController = 6.0;
+    public static final double kPYController = 6.0;
     // public static final double kPThetaController = 0.5;
-    public static final double kPThetaController = 10.0;
+    public static final double kPThetaController = 12.0;
 
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -398,7 +398,7 @@ public final class Constants {
         public static final double RevPerSecondVelocity = TotalUnitsPerRotation / 10.0 ; 
         public static final double RPM = RevPerSecondVelocity / 60.0 ;
         
-        public static final double IntakeMotorSpeed = 1700 * RPM;
+        public static final double IntakeMotorSpeed = 2000.0 * RPM;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;
 
