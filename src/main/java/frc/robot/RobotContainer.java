@@ -384,8 +384,11 @@ public class RobotContainer {
                         targetPose,
                         config);
 
-                MecanumControllerCommand driveToTarmac = new MecanumControllerCommand(
-                        tarmacTrajectory,
+                PathPlannerTrajectory tarmacPPTrajectory = PathPlanner.loadPath(
+                        tarmacTrajectory, Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc);
+
+                PPMecanumControllerCommand driveToTarmac = new PPMecanumControllerCommand(
+                        tarmacPPTrajectory,
                         m_robotDrive::getPose,
                         DriveConstants.kDriveKinematics,
                         new PIDController(AutoConstants.kPXController, 0, 0),
