@@ -74,9 +74,40 @@ public class ArmBar extends SubsystemBase {
         rightMotor.setSelectedSensorPosition(angle, 0,  30);
     }
 
+
+
+    private void updateHallStatesForDashboard() {
+        NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
+
+        inst.getEntry("hall_effetcts/A1").setBoolean(hallEffectsA1.get()) ;
+        inst.getEntry("hall_effetcts/A2").setBoolean(hallEffectsA2.get()) ;
+        inst.getEntry("hall_effetcts/B1").setBoolean(hallEffectsB1.get()) ;
+        inst.getEntry("hall_effetcts/B2").setBoolean(hallEffectsB2.get()) ;
+
+    }
+
+
+    public boolean A1HallOpen() {
+        return hallEffectsA1.get() ;
+    }
+
+    public boolean A2HallOpen() {
+        return hallEffectsA2.get() ;
+    }
+
+    public boolean B1HallOpen() {
+        return hallEffectsB1.get() ;
+    }
+
+    public boolean B2HallOpen() {
+        return hallEffectsB2.get() ;
+    }
+
+
     @Override
     public void periodic() {
         
+        updateHallStatesForDashboard(); 
         // This method will be called once per scheduler run
         report() ;
     }
@@ -101,29 +132,30 @@ public class ArmBar extends SubsystemBase {
     }
 
     public void releaseGripperA() {
-        clawA1Servo.setAngle(Constants.ArmBarConstants.ClawServoReleasePosition);
-        clawA2Servo.setAngle(Constants.ArmBarConstants.ClawServoReleasePosition);
+        clawA1Servo.set(0.0) ;
+        clawA2Servo.set(0.5) ;
+
     }
 
     public void releaseGripperB() {
-        clawB1Servo.setAngle(Constants.ArmBarConstants.ClawServoReleasePosition);
-        clawB2Servo.setAngle(Constants.ArmBarConstants.ClawServoReleasePosition);
+        clawB1Servo.set(0.5) ;
+        clawB2Servo.set(0.5) ;
     }
 
-
     public void neutralGripperA() {
-        clawA1Servo.setAngle(Constants.ArmBarConstants.ClawServoLatchPosition);
-        clawA2Servo.setAngle(Constants.ArmBarConstants.ClawServoLatchPosition);
+        clawA1Servo.set(0.5) ;
+        clawA2Servo.set(0.0) ;
     }
 
     public void neutralGripperB() {
-        clawB1Servo.setAngle(Constants.ArmBarConstants.ClawServoLatchPosition);
-        clawB2Servo.setAngle(Constants.ArmBarConstants.ClawServoLatchPosition);
+        clawB1Servo.set(0.0) ;
+        clawB2Servo.set(0.0) ;
     }
 
 
     public boolean gripperAIsClosed() {
         return (!hallEffectsA1.get() && !hallEffectsA2.get());
+//        return (!hallEffectsA1.get() );
     }
 
     public boolean gripperBIsClosed() {
@@ -131,11 +163,19 @@ public class ArmBar extends SubsystemBase {
     }
 
     public boolean gripperAIsOpen() {
+//        return (hallEffectsA1.get() );
         return (hallEffectsA1.get() && hallEffectsA2.get());
     }
 
     public boolean gripperBIsOpen() {
         return (hallEffectsB1.get() && hallEffectsB2.get());
+    }
+
+
+
+    public void setMotorsNeutral() {
+        leftMotor.setNeutralMode(NeutralMode.Coast);
+        rightMotor.setNeutralMode(NeutralMode.Coast);
     }
 
 
@@ -202,6 +242,7 @@ public class ArmBar extends SubsystemBase {
     void report() {
         report( rightMotor, "rightMotor") ;
         report( leftMotor, "leftMotor") ;
+        
     }
 
 

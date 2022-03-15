@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.*;
@@ -54,21 +55,10 @@ public class DriveSubsystem extends SubsystemBase {
         motors.add(m_frontRight);
         motors.add(m_backRight);
 
-        // // These are OK forward/back, but not good with rot
-        // m_backLeft.setInverted(true);
-        // m_frontLeft.setInverted(false);
-        // m_backRight.setInverted(true);
-        // m_frontRight.setInverted(false);
-
-        m_frontRight.setInverted(false);
-        m_backRight.setInverted(false);
-        m_frontLeft.setInverted(true);
-        m_backLeft.setInverted(true);
-
-        // m_backLeft.setInverted(false);
-        // m_frontLeft.setInverted(false);
-        // m_backRight.setInverted(true);
-        // m_frontRight.setInverted(true);
+        m_frontRight.setInverted(TalonFXInvertType.Clockwise);
+        m_backRight.setInverted(TalonFXInvertType.Clockwise);
+        m_frontLeft.setInverted(TalonFXInvertType.CounterClockwise);
+        m_backLeft.setInverted(TalonFXInvertType.CounterClockwise);
 
         setMotorConfig(m_backLeft);
         setMotorConfig(m_frontLeft);
@@ -85,10 +75,10 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.update(
                 m_gyro.getRotation2d(),
                 new MecanumDriveWheelSpeeds(
-                    -getSpeed(m_frontLeft) ,
-                    -getSpeed(m_backLeft) ,
-                    -getSpeed(m_frontRight) ,
-                    -getSpeed(m_backRight) 
+                    getSpeed(m_frontLeft) ,
+                    getSpeed(m_backLeft) ,
+                    getSpeed(m_frontRight) ,
+                    getSpeed(m_backRight) 
                     )
          ) ;
         report();
@@ -162,10 +152,10 @@ public class DriveSubsystem extends SubsystemBase {
 
 
     public void setWheelSpeeds(MecanumDriveWheelSpeeds speeds) {
-        m_frontLeft.set(TalonFXControlMode.Velocity, -speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_frontRight.set(TalonFXControlMode.Velocity, -speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_backLeft.set(TalonFXControlMode.Velocity, -speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
-        m_backRight.set(TalonFXControlMode.Velocity, -speeds.rearRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_frontLeft.set(TalonFXControlMode.Velocity, speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_frontRight.set(TalonFXControlMode.Velocity, speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_backLeft.set(TalonFXControlMode.Velocity, speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
+        m_backRight.set(TalonFXControlMode.Velocity, speeds.rearRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         NetworkTableInstance.getDefault().getEntry("drive/set_speed/frontLeft").setDouble(speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         NetworkTableInstance.getDefault().getEntry("drive/set_speed/frontRight").setDouble(speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         NetworkTableInstance.getDefault().getEntry("drive/set_speed/backLeft").setDouble(speeds.rearLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
@@ -259,6 +249,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(m_odometry.getPoseMeters().getX());
         NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(m_odometry.getPoseMeters().getY());
+
 
     }
 

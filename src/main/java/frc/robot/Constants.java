@@ -162,12 +162,13 @@ public final class Constants {
         public static final int Right_Gimbal_Y = 1;
 
         public static final int SB3_Axis = 6 ;
-        public static final int SA_Axis =7 ;
+        public static final int SF_Axis = 4 ;
+        public static final int SE_Axis = 5 ;
         public static final int SH_Momentary = 4 ;
 
-        public static final double Forward_Axis_Attenuation = -0.5 ;
-        public static final double Lateral_Axis_Attenuation = -0.5 ;
-        public static final double Yaw_Axis_Attenuation = -0.5 ;
+        public static final double Forward_Axis_Attenuation = 0.5 ;
+        public static final double Lateral_Axis_Attenuation = 0.5 ;
+        public static final double Yaw_Axis_Attenuation = 0.5 ;
 
         // // Constants for buttons
         // public static final int Button_A = 2;
@@ -347,16 +348,25 @@ public final class Constants {
         public static final double UnitsPerArmRotation = UnitsPerMotorRotation * GearboxGearRatio * ChainGearRatio ;
         public static final double UnitsPerArmDegree = UnitsPerArmRotation / 360.0 ;
 
+        // public static final double AngleToNextArm = 33.0 ;
+        // public static final double MidBarRotationAngle = 95;
+        // public static final double HighBarRotationAngle = MidBarRotationAngle + 90 + AngleToNextArm ;
+        // public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;
+        // public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90 - AngleToNextArm) ; // angle to hang straight down.
+        // public static final double AngleTolerance = 1.0;
+
         public static final double AngleToNextArm = 33.0 ;
-        public static final double MidBarRotationAngle = 90;
-        public static final double HighBarRotationAngle = MidBarRotationAngle + 90 + AngleToNextArm ;
-        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;
-        public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90 - AngleToNextArm) ; // angle to hang straight down.
+        public static final double MidBarRotationAngle = 101.0;
+        public static final double HighBarRotationAngle = MidBarRotationAngle + 120.0 + AngleToNextArm ;
+        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180.0 ;
+        public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90.0 - AngleToNextArm) + 90.0 ; // angle to hang straight down.
         public static final double AngleTolerance = 1.0;
-//        public static final double ConsistentRotationAngleTolerance = 6;
+
+
+        //        public static final double ConsistentRotationAngleTolerance = 6;
 
 //        public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
-        public static final double DesiredArmVelocity = 0.75 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        public static final double DesiredArmVelocity = 0.50 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
         public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
 //        public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
         public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
@@ -369,9 +379,9 @@ public final class Constants {
 
         public static final int Position_PID_id = 0;
         public static final double Position_kF = 0.048;  // wpk need to give this some thought
-        public static final double Position_kP = 0.05;  // wpk need to give this some thought
+        public static final double Position_kP = 0.07;  // wpk need to give this some thought
         public static final double Position_kD = 0.01;  // wpk need to give this some thought
-        public static final double Position_kI = 0.00001;  // wpk need to give this some thought
+        public static final double Position_kI = 0.00003;  // wpk need to give this some thought
 
 
         // public static final double ArmBarMotorSpeed = 0.1;
@@ -435,9 +445,11 @@ public final class Constants {
 
 
         public static final int ID_FlyWheelMotor = 8;
-        public static final double FlyWheelMotorShootingVelocity = 2500 * RPM;
+//        public static final double FlyWheelMotorShootingVelocity = 2500 * RPM;
+        public static final double FlyWheelMotorShootingVelocity = 5000 * RPM;
         public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorShootingVelocity * 0.95;
-        public static final double BeltMotorShootingVelocity = -FlyWheelMotorShootingVelocity * 0.6;
+//        public static final double BeltMotorShootingVelocity = -FlyWheelMotorShootingVelocity * 0.6;
+        public static final double BeltMotorShootingVelocity = -FlyWheelMotorShootingVelocity * 0.5;
 
         public static final double FlyWheelMotorEjectingVelocity = 2000 * RPM;
         public static final double BeltMotorEjectingVelocity = -1500 * RPM;

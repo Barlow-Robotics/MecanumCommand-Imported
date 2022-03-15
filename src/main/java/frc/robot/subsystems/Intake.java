@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants;
-
+import frc.robot.sim.PhysicsSim;
 import edu.wpi.first.networktables.*;
 
 public class Intake extends SubsystemBase {
@@ -57,7 +57,7 @@ public class Intake extends SubsystemBase {
     boolean simulationInitialized = false;
 
     public void simulationInit() {
-        // PhysicsSim.getInstance().addTalonFX(intakeMotor, 0.5, 6800);
+        PhysicsSim.getInstance().addTalonFX(intakeMotor, 0.5, 6800);
     }
 
     @Override

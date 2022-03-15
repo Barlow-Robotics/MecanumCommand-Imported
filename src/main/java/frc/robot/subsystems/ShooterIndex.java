@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -29,8 +30,10 @@ public class ShooterIndex extends SubsystemBase {
 
     Solenoid extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid);
     Solenoid retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid);
-    Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid2);
-    Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid2);
+    // Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid2);
+    // Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid2);
+    Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+    Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
     Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
 
@@ -150,9 +153,9 @@ public class ShooterIndex extends SubsystemBase {
 
     void report() {
         NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed").setDouble(beltMotor.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("index/belt_motor_target_velocity").setDouble(beltMotor.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("index/belt_motor_target_velocity").setDouble(beltMotor.getClosedLoopTarget());
         NetworkTableInstance.getDefault().getEntry("index/flywheel_motor_speed").setDouble(flyWheelMotor.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("index/flywheel_target_velocity").setDouble(flyWheelMotor.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("index/flywheel_target_velocity").setDouble(flyWheelMotor.getClosedLoopTarget());
         NetworkTableInstance.getDefault().getEntry("index/commandedPosition").setDouble(commandedPosition);
 
         NetworkTableInstance.getDefault().getEntry("driverStation/is_shooting").setBoolean(isShooting);

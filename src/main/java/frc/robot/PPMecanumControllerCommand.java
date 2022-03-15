@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -67,6 +68,7 @@ public class PPMecanumControllerCommand extends CommandBase {
     m_kinematics = kinematics;
 
     m_controller = new HolonomicDriveController(xController, yController, thetaController);
+    m_controller.setTolerance(new Pose2d(0.5,0.5, new Rotation2d(2.0*(Math.PI/180.0)) ) );
 
     m_maxWheelVelocityMetersPerSecond = maxWheelVelocityMetersPerSecond;
 
@@ -103,6 +105,9 @@ public class PPMecanumControllerCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if ( m_controller.atReference()) {
+      System.out.println("Path is at the reference point") ;
+    }
     return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
   }
 }

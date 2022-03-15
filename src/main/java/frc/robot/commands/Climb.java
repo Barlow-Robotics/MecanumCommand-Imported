@@ -9,9 +9,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmBar;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmBarConstants;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class Climb extends CommandBase {
 
@@ -20,6 +22,7 @@ public class Climb extends CommandBase {
 
     public enum ArmCommandState {
         ResettingPosition,
+        FreeingBClaws ,
         WaitingForArmToBeStraightUp,
         DrivingBackward,
         MovingToHighBar,
@@ -32,20 +35,87 @@ public class Climb extends CommandBase {
     };
 
     ArmCommandState currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+    Joystick controller ;
+    Joystick gamePad ;
+    int forwardAxis ;
+    double forwardAttenutaion ;
+    int lateralAxis ;
+    double lateralAttenuation ;
+    int yawAxis ;
+    double yawAttenuation ;
+
 
     /** Creates a new Climb. */
-    public Climb(ArmBar a, DriveSubsystem d) {
+    public Climb(ArmBar a, Joystick c, Joystick gp) { 
+
+    // public Climb(ArmBar a, DriveSubsystem d, Joystick c, Joystick gp, 
+    //              int fa, int la, int ya,
+    //              double fat, double lat, double yat) {
         // Use addRequirements() here to declare subsystem dependencies.
         m_armBar = a;
         addRequirements(m_armBar);
-        m_drive = d;
+        // m_drive = d;
+        controller = c ;
+        gamePad = gp ;
+        // forwardAxis = fa ;
+        // lateralAxis = la ;
+        // yawAxis = ya ;
+        // forwardAttenutaion = fat ;
+        // lateralAttenuation = lat ;
+        // yawAttenuation = yat ;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+        m_armBar.neutralGripperA();
+        m_armBar.neutralGripperB();
+
+        currentState = ArmCommandState.FreeingBClaws;
     }
+
+
+
+    private void updateHallStatesForDashboard() {
+        NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
+
+        if ( currentState == ArmCommandState.DrivingBackward) {
+            inst.getEntry("hall_effetcts/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
+            inst.getEntry("hall_effetcts/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
+            inst.getEntry("hall_effetcts/B1_At_Desired_State").setBoolean(m_armBar.B1HallOpen()) ;
+            inst.getEntry("hall_effetcts/B2_At_Desired_State").setBoolean(m_armBar.B2HallOpen()) ;
+        } else if ( currentState == ArmCommandState.MovingToHighBar) {
+            inst.getEntry("hall_effetcts/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
+            inst.getEntry("hall_effetcts/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
+            inst.getEntry("hall_effetcts/B1_At_Desired_State").setBoolean(!m_armBar.B1HallOpen()) ;
+            inst.getEntry("hall_effetcts/B2_At_Desired_State").setBoolean(!m_armBar.B2HallOpen()) ;
+        } else if ( currentState == ArmCommandState.LettingGoMidBar) {
+            inst.getEntry("hall_effetcts/A1_At_Desired_State").setBoolean(m_armBar.A1HallOpen()) ;
+            inst.getEntry("hall_effetcts/A2_At_Desired_State").setBoolean(m_armBar.A2HallOpen()) ;
+            inst.getEntry("hall_effetcts/B1_At_Desired_State").setBoolean(!m_armBar.B1HallOpen()) ;
+            inst.getEntry("hall_effetcts/B2_At_Desired_State").setBoolean(!m_armBar.B2HallOpen()) ;
+        } else if ( currentState == ArmCommandState.MovingToTraversalBar) {
+            inst.getEntry("hall_effetcts/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
+            inst.getEntry("hall_effetcts/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
+            inst.getEntry("hall_effetcts/B1_At_Desired_State").setBoolean(!m_armBar.B1HallOpen()) ;
+            inst.getEntry("hall_effetcts/B2_At_Desired_State").setBoolean(!m_armBar.B2HallOpen()) ;
+        } else if ( currentState == ArmCommandState.LettingGoHighBar) {
+            inst.getEntry("hall_effetcts/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
+            inst.getEntry("hall_effetcts/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
+            inst.getEntry("hall_effetcts/B1_At_Desired_State").setBoolean(m_armBar.B1HallOpen()) ;
+            inst.getEntry("hall_effetcts/B2_At_Desired_State").setBoolean(m_armBar.B2HallOpen()) ;
+        } else {
+            inst.getEntry("hall_effetcts/A1_At_Desired_State").setBoolean(true) ;
+            inst.getEntry("hall_effetcts/A2_At_Desired_State").setBoolean(true) ;
+            inst.getEntry("hall_effetcts/B1_At_Desired_State").setBoolean(true) ;
+            inst.getEntry("hall_effetcts/B2_At_Desired_State").setBoolean(true) ;
+        }
+
+    }
+
+
+    double latchedAngle ;
+
 
     // For brake mode: talon.setNeutralMode(NeutralMode.Brake),
     // For coast mode: talon.setNeutralMode(NeutralMode.Coast).
@@ -54,11 +124,28 @@ public class Climb extends CommandBase {
     @Override
     public void execute() {
 
+        NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
+
+        inst.getEntry("climb_command/climb_button").setBoolean(gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) ;
+
+
         switch (currentState) {
             case ResettingPosition:
-                //m_armBar.ResetPosition();
-                currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+                m_armBar.ResetPosition(0.0);
+                currentState = ArmCommandState.FreeingBClaws;
+                m_armBar.neutralGripperA();
+                m_armBar.neutralGripperA();
                 break ;
+            case FreeingBClaws:
+                m_armBar.neutralGripperA();
+                m_armBar.neutralGripperA();
+                if (m_armBar.getArmAngle() > -43.0) {
+                    m_armBar.rotateGripperArmDegree(-45.0);
+                } else {
+
+                    currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+                }
+                break;
             case WaitingForArmToBeStraightUp:
                 if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.MidBarRotationAngle) > ArmBarConstants.AngleTolerance) {
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle);
@@ -69,10 +156,23 @@ public class Climb extends CommandBase {
 
             case DrivingBackward:
                 if (m_armBar.gripperAIsClosed()) {
-                    m_drive.setWheelSpeeds( new MecanumDriveWheelSpeeds( 0.0, 0.0, 0.0, 0.) );
-                    currentState = ArmCommandState.MovingToHighBar;
+                    //m_drive.setWheelSpeeds( new MecanumDriveWheelSpeeds( 0.0, 0.0, 0.0, 0.) );
+                    // wpk test
+                    
+                    // if (controller.getRawButton(5)) {
+                    if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+
+                        currentState = ArmCommandState.MovingToHighBar;
+                    }
                 } else {
-                    m_drive.setWheelSpeeds( new MecanumDriveWheelSpeeds( 1.0, 1.0, 1.0, 1.0) );
+                    if ( gamePad.getPOV(0) == 0.0) {
+                        m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle + 4.0);
+                    } else if ( gamePad.getPOV(0) == 180.0) {
+                        m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle - 4.0) ;
+                    } else if ( gamePad.getPOV(0) == -1.0) {
+                        m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle) ;
+                    }
+                    //m_drive.setWheelSpeeds( new MecanumDriveWheelSpeeds( -1.0, -1.0, -1.0, -1.0) );
                 }
                 break;
 
@@ -81,7 +181,13 @@ public class Climb extends CommandBase {
                     // wpk Need tthink about whether this is the correct angle angle from mid to high might be more than 180
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.HighBarRotationAngle);
                 } else {
-                    currentState = ArmCommandState.LettingGoMidBar;
+                    if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        currentState = ArmCommandState.LettingGoMidBar;
+                        latchedAngle = m_armBar.getArmAngle() -5.0 ;
+                        m_armBar.rotateGripperArmDegree(latchedAngle);
+                    } else {
+                        m_armBar.stopMotor();
+                    }
                 }
                 break;
 
@@ -90,6 +196,14 @@ public class Climb extends CommandBase {
                 if(m_armBar.gripperAIsOpen()){
                     m_armBar.neutralGripperA();
                     currentState = ArmCommandState.MovingToTraversalBar;
+                } else {
+                    if ( gamePad.getPOV(0) == 180.0) {
+                        m_armBar.rotateGripperArmDegree(latchedAngle + 5.0);
+                    } else if ( gamePad.getPOV(0) == 0.0)  {
+                        m_armBar.rotateGripperArmDegree(latchedAngle - 5.0);
+                    } else {
+                        m_armBar.rotateGripperArmDegree(latchedAngle);
+                    }
                 }
                 break;
 
@@ -98,17 +212,30 @@ public class Climb extends CommandBase {
                     // wpk is this the angle we want?
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.TraverseBarRotationAngle);
                 } else {
-                    m_armBar.setSlowMotionConfig();  // slow thngs down so we don't drop like a stone
-                    currentState = ArmCommandState.LettingGoHighBar;
+                    if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        m_armBar.setSlowMotionConfig();  // slow thngs down so we don't drop like a stone
+                        currentState = ArmCommandState.LettingGoHighBar;
+                        latchedAngle = m_armBar.getArmAngle() -5.0 ;
+                        m_armBar.rotateGripperArmDegree(latchedAngle);
+                    }
                 }
                 break;
 
             case LettingGoHighBar:
                 m_armBar.releaseGripperB();
-                if(m_armBar.gripperBIsOpen()){
+                if (m_armBar.gripperBIsOpen()) {
                     m_armBar.neutralGripperB();
                     currentState = ArmCommandState.OnTraversalBar;
+                } else {
+                    if ( gamePad.getPOV(0) == 180.0) {
+                        m_armBar.rotateGripperArmDegree(latchedAngle + 5.0);
+                    } else if ( gamePad.getPOV(0) == 0.0)  {
+                        m_armBar.rotateGripperArmDegree(latchedAngle - 5.0);
+                    } else {
+                        m_armBar.rotateGripperArmDegree(latchedAngle);
+                    }
                 }
+
                 break;
 
             case OnTraversalBar:
@@ -131,6 +258,7 @@ public class Climb extends CommandBase {
                 m_armBar.stopMotor();
                 break;
         }
+        updateHallStatesForDashboard();
     }
 
     // Called once the command ends or is interrupted.

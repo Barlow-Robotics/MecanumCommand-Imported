@@ -4,17 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 // import edu.wpi.first.math.trajectory.Trajectory;
 // import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ArmBarConstants;
-import frc.robot.commands.Climb;
 //import frc.robot.sim.PhysicsSim;
-import frc.robot.subsystems.ArmBar;
-import edu.wpi.first.networktables.*;
 
 
 /**
@@ -54,6 +50,39 @@ private Command m_autonomousCommand;
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    
+    NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
+
+    // for ( int i = 0; i <=m_robotContainer.m_driverController.getAxisCount(); i++) {
+    //   String name = "controller/axis " + i;
+    //   try {
+    //     inst.getEntry(name).setDouble(m_robotContainer.m_driverController.getRawAxis(i)) ;
+    //   } catch (Exception ex) {
+
+    //   }
+    // }
+
+    // for ( int i = 0; i <= m_robotContainer.m_driverController.getButtonCount(); i++) {
+    //   String name = "controller/button " + i;
+    //   try {
+    //     inst.getEntry(name).setBoolean(m_robotContainer.m_driverController.getRawButton(i)) ;
+    //   } catch (Exception ex) {
+        
+    //   }
+    // }
+
+    // for ( int i = 0; i <= m_robotContainer.m_gamepad.getPOVCount(); i++) {
+    //   String name = "controller/POV " + i;
+    //   try {
+    //     inst.getEntry(name).setDouble(m_robotContainer.m_gamepad.getPOV(i)) ;
+    //   } catch (Exception ex) {
+        
+    //   }
+    // }
+
+
+
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
