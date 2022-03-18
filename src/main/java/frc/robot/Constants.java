@@ -39,104 +39,74 @@ public final class Constants {
         public static final double circumferenceOfWheel = 6.0 * Math.PI;
         public static final double distanceGoal = 120.0;
 
-    // wpk need to measure and update.
-    public static final int Counts_Per_Revolution = 21300;
-    public static final double Wheel_Diameter = 6.0;
-    public static final double Inches_Per_Revolution = Math.PI * Wheel_Diameter;
-    public static final double Meters_Per_Revolution = Inches_Per_Revolution * InchesToMeters;
-    public static final double Meters_Per_Count = Meters_Per_Revolution / Counts_Per_Revolution;
-
-    // PathPlanner velocity and acceleration constants 
-    public static final double pPMaxVel = 3.0;
-    public static final double pPMaxAcc = 1.0;
-
-    // wpk need to measure and update.
         // Distance between centers of right and left wheels on robot
-    public static final double kTrackWidth = 28 * InchesToMeters;
+        public static final double kTrackWidth = 22.48 * InchesToMeters;
 
-    // wpk need to measure and update.
         // Distance between centers of front and back wheels on robot
-    public static final double kWheelBase = 20.5 * InchesToMeters;
+        public static final double kWheelBase = 19.81 * InchesToMeters;
 
         public static final MecanumDriveKinematics kDriveKinematics = new MecanumDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
-    );
+                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
+                );
 
-    // public static final int kEncoderCPR = 1024;
-    // public static final double kWheelDiameterMeters = 0.15;
-    // public static final double kEncoderDistancePerPulse =
-    // // Assumes the encoders are directly mounted on the wheel shafts
-    // (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+        // // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
+        // // These characterization values MUST be determined either experimentally or
+        // // theoretically
+        // // for *your* robot's drive.
+        // // The RobotPy Characterization Toolsuite provides a convenient tool for
+        // // obtaining these
+        // // values for your robot.
+        // public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(1, 0.8, 0.15);
 
-        // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-        // These characterization values MUST be determined either experimentally or
-        // theoretically
-        // for *your* robot's drive.
-        // The RobotPy Characterization Toolsuite provides a convenient tool for
-        // obtaining these
-        // values for your robot.
-        public static final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(1, 0.8, 0.15);
+        // // Example value only - as above, this must be tuned for your drive!
+        // public static final double kPFrontLeftVel = 0.75;
+        // public static final double kPRearLeftVel = 0.75;
+        // public static final double kPFrontRightVel = 0.75;
+        // public static final double kPRearRightVel = 0.75;
 
-        // Example value only - as above, this must be tuned for your drive!
-        public static final double kPFrontLeftVel = 0.75;
-        public static final double kPRearLeftVel = 0.75;
-        public static final double kPFrontRightVel = 0.75;
-        public static final double kPRearRightVel = 0.75;
+        // // Drivetrain
+        // public static final double GearRatio = 48 / 1;
 
-        // Drivetrain
-        public static final double GearRatio = 48 / 1;
-
-        public static final double drivetrainMinPower = 0.05;
-        public static final double drivetrainMaxPower = 1.0;
+        // public static final double drivetrainMinPower = 0.05;
+        // public static final double drivetrainMaxPower = 1.0;
         public static final double manualVoltageRampingConstant = 0.21;
         public static final double closedVoltageRampingConstant = 0.21;
 
         public static final int PID_id = 0;
         public static final double PID_Period = 1.0 / 20.0;
-    public static final double Drivetrainkf = 0.2; // 0.1797
+        public static final double Drivetrainkf = 0.2; // 0.1797
         public static final double DrivetrainkP = 0.02;
-    public static final double DrivetrainkI = 0.0; // 0.1797
-    public static final double DrivetrainkD = 0.0;
+        public static final double DrivetrainkI = 0.0; // 0.1797
+        public static final double DrivetrainkD = 0.0;
 
-    public static final double UnitsPerRotation = 2048;
-    public static final double WheelDiamater = 6.0 * 0.0254; // meters
-    public static final double WheelCircumference = Math.PI * WheelDiamater; // meters
-    public static final double WheelCountsPerMeter = (1.0 / WheelCircumference) * UnitsPerRotation;
-    public static final double MotorVelocityOneMeterPerSecond = WheelCountsPerMeter / 10.0;
+
+        public static final int Counts_Per_Revolution = 2048;
+        public static final double Wheel_Diameter = 6.0;
+        public static final double Inches_Per_Revolution = Math.PI * Wheel_Diameter;
+        public static final double Meters_Per_Revolution = Inches_Per_Revolution * InchesToMeters;
+        public static final double Meters_Per_Count = Meters_Per_Revolution / Counts_Per_Revolution;
+
+        public static final double WheelDiamater = 6.0 * 0.0254; // meters
+        public static final double WheelCircumference = Math.PI * WheelDiamater; // meters
+        public static final double WheelCountsPerMeter = (1.0 / WheelCircumference) * Counts_Per_Revolution;
+        public static final double MotorVelocityOneMeterPerSecond = WheelCountsPerMeter / 10.0;
 
         public static final double RPMsToUnitsPerHundredMilliseconds = 1.0 / 600.0;
-        public static final double DesiredRPMsForDrive = 560.0;
-        public static final double MaxDriveVelocity = 6000.0;
-        public static final double VelocityInputConversionFactor = DesiredRPMsForDrive * UnitsPerRotation
-                * RPMsToUnitsPerHundredMilliseconds;
+        // public static final double DesiredRPMsForDrive = 560.0;
+        // public static final double MaxDriveVelocity = 6000.0;
+        // public static final double VelocityInputConversionFactor = DesiredRPMsForDrive * Counts_Per_Revolution * RPMsToUnitsPerHundredMilliseconds;
 
         public static final int encoderTimeout = 30;
         public static final int mainFeedbackLoop = 0;
 
-        public static final double autoBackingDistance = 3.5; // 3.5 rotations of the wheel ~ 65"
-        public static final double pathFollowingThreshold = 20;
-        public static final int autonomousDriveTime = 2500;
-        public static final double autonomousDriveSpeed = 0.7;
-        public static final double autonomousTurnRate = 0.7;
-
-        public static final double speedConstantForBallChase = 0.3;
+        public static final double BallChaseSpeed = 2.0 ;
         public static final double maxAngleChangeForAlignFinish = 0.5;
         public static final double maxAngleDifferenceBetweenNavXAndVision = 0.01;
         public static final double alignTimeoutTime = 1000;
         public static final double alignMemorySize = 3;
-
-        public static final double kFrontLeft_x = 3; // feet (change)
-        public static final double kFrontLeft_y = 3; // feet (change)
-        public static final double kFrontRight_x = 3; // feet (change)
-        public static final double kFrontRight_y = 3; // feet (change)
-        public static final double kBackLeft_x = 3; // feet (change)
-        public static final double kBackLeft_y = 3; // feet (change)
-        public static final double kBackRight_x = 3; // feet (change)
-        public static final double kBackRight_y = 3; // feet (change)
-
 
     }
 
@@ -302,25 +272,30 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 3;
+        // public static final double kMaxSpeedMetersPerSecond = 4 ;
+        // public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxSpeedMetersPerSecond = 5 ;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-        public static final double kAutoDriveDistanceInches = 1;
-        public static final double kAutoDriveSpeed = 0.2;
+//        public static final double kAutoDriveDistanceInches = 1;
+//        public static final double kAutoDriveSpeed = 0.2;
 
         public static final double AutoShootingTimeout = 2.0;
 
-    // public static final double kPXController = 0.5;
-    // public static final double kPYController = 0.5;
-    public static final double kPXController = 6.0;
-    public static final double kPYController = 6.0;
-    // public static final double kPThetaController = 0.5;
-    public static final double kPThetaController = 12.0;
+        // these are the constants from waterbury
+        // public static final double kPXController = 6.0;
+        // public static final double kPYController = 6.0;
+        // public static final double kPThetaController = 12.0;
+
+        public static final double kPXController = 12.0 ;
+        public static final double kPYController = 12.0 ;
+        public static final double kPThetaController = 12.0;
+
 
         // Constraint for the motion profilied robot angle controller
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints 
+            = new TrapezoidProfile.Constraints( kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared );
     }
 
 
@@ -443,28 +418,23 @@ public final class Constants {
         public static final double BeltMotorIntakeVelocity = 700 * RPM;
 
 
-
         public static final int ID_FlyWheelMotor = 8;
-//        public static final double FlyWheelMotorShootingVelocity = 2500 * RPM;
-        public static final double FlyWheelMotorShootingVelocity = 5000 * RPM;
-        public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorShootingVelocity * 0.95;
-//        public static final double BeltMotorShootingVelocity = -FlyWheelMotorShootingVelocity * 0.6;
-        public static final double BeltMotorShootingVelocity = -FlyWheelMotorShootingVelocity * 0.5;
+        public static final double FlyWheelMotorLowGoalShootingVelocity = 2500 * RPM;
+        public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorLowGoalShootingVelocity * 0.95;
+        public static final double BeltMotorLowGoalShootingVelocity = -FlyWheelMotorLowGoalShootingVelocity * 0.6;
+
+        public static final double FlyWheelMotorHighGoalShootingVelocity = 5000 * RPM;
+        public static final double BeltMotorHighGoalShootingVelocity = -1000 * RPM;
 
         public static final double FlyWheelMotorEjectingVelocity = 2000 * RPM;
         public static final double BeltMotorEjectingVelocity = -1500 * RPM;
 
 
-
         public static final class Lift {
             public static final int ID_Extend_Solenoid = 0;    
-            public static final int ID_Extend_Solenoid2 = 3;    
+            public static final int ID_Extend_Solenoid2 = 2;    
             public static final int ID_Retract_Solenoid = 1;
-            public static final int ID_Retract_Solenoid2 = 2;
+            public static final int ID_Retract_Solenoid2 = 3;
         }
-
-
     }
-
-    // public static final String Feeder = null;
 }

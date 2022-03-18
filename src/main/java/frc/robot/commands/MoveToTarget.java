@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
@@ -39,8 +40,10 @@ public class MoveToTarget extends CommandBase {
   public void execute() {
     if(NetworkTableInstance.getDefault().getEntry("robot_cam/object_found").getBoolean(false)){
         error = NetworkTableInstance.getDefault().getEntry("robot_cam/distance_from_center").getDouble(0);
-        leftVelocity = 1.0 - pid.calculate(error);
-        rightVelocity = 1.0 + pid.calculate(error);
+        double adjustment = pid.calculate(error) ;
+        adjustment = Math.signum(adjustment)*Math.min( Math.abs(adjustment), Constants.DriveConstants.BallChaseSpeed / 4.0) ;
+        leftVelocity = Constants.DriveConstants.BallChaseSpeed - adjustment ;
+        rightVelocity = Constants.DriveConstants.BallChaseSpeed + adjustment;
 
         m_drive.setWheelSpeeds(
             new MecanumDriveWheelSpeeds(

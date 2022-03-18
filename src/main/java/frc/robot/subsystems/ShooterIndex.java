@@ -30,10 +30,8 @@ public class ShooterIndex extends SubsystemBase {
 
     Solenoid extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid);
     Solenoid retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid);
-    // Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid2);
-    // Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid2);
-    Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-    Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+    Solenoid extendSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Extend_Solenoid2);
+    Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid2);
     Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
 
@@ -49,23 +47,22 @@ public class ShooterIndex extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
-
-        double temp = flyWheelMotor.getSelectedSensorVelocity() ;
-
         if ( isShooting && (flyWheelMotor.getSelectedSensorVelocity() > Constants.ShooterConstants.FlyWheelMinShootingSpeed ) ) {
- //       if ( isShooting  ) {
             if (!beltStarted) {
-                beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorShootingVelocity) ;
+                beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorLowGoalShootingVelocity) ;
                 beltStarted = true;
             }
         }
         report();
-
     }
 
-    public void startShooting() {
-        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorShootingVelocity ) ;
+    public void startShootingLow() {
+        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorLowGoalShootingVelocity ) ;
+        isShooting = true;
+    }
+
+    public void startShootingHigh() {
+        flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorHighGoalShootingVelocity);
         isShooting = true;
     }
 
@@ -147,9 +144,6 @@ public class ShooterIndex extends SubsystemBase {
         motor.config_kD(Constants.IntakeConstants.PID_id, Constants.ShooterConstants.kD);
         motor.setNeutralMode(NeutralMode.Brake);
     }
-
-
-
 
     void report() {
         NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed").setDouble(beltMotor.getSelectedSensorVelocity());

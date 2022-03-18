@@ -25,10 +25,6 @@ import edu.wpi.first.networktables.*;
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.PathPlannerTrajectory.*;
 
-// import java.io.IOException;
-// import java.nio.file.Path;
-// import java.util.List;
-// import frc.robot.Robot;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -53,8 +49,9 @@ public class RobotContainer {
 
     private JoystickButton intakeButton;
     private JoystickButton liftToShootingButton;
-    private JoystickButton liftToIntakeButton;
-    private JoystickButton shooterButton;
+    private JoystickButton lowerToIntakeButton;
+    private JoystickButton shooterLowButton;
+    private JoystickButton shooterHighButton;
     private JoystickButton climbButton;
     private JoystickButton ejectButton;
     private JoystickButton moveToTargetButton;
@@ -68,8 +65,6 @@ public class RobotContainer {
     private double Lateral_Speed_Attenuation = 0.5;
     private double Yaw_Attenuation = 0.5;
 
-    private boolean initiateSequence = false;
-
     // PathPlannerTrajectory trajectory;
     ArrayList<PathPlannerTrajectory> trajectories;
 
@@ -81,7 +76,8 @@ public class RobotContainer {
     private final GotoShootingPosition shootingPositionCommand = new GotoShootingPosition(m_shooterIndex);
     private final GotoIntakePosition intakePositionCommand = new GotoIntakePosition(m_shooterIndex);
 
-    private final StartShooting startShootingCommand = new StartShooting(m_shooterIndex);
+    private final StartShootingLow startShootingLowCommand = new StartShootingLow(m_shooterIndex);
+    private final StartShootingHigh startShootingHighCommand = new StartShootingHigh(m_shooterIndex);
     private final StopShooting stopShootingCommand = new StopShooting(m_shooterIndex);
 
     private Climb climbCommand;
@@ -105,65 +101,37 @@ public class RobotContainer {
         // trajectory = PathPlanner.loadPath("2_TarmacB2_to_BBallB", 1.0, 0.5);
 
         trajectories = new ArrayList<PathPlannerTrajectory>();
-        trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("13_Test_Constant_x",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("14_Test_Constant_y",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("15_Test_Diagonal",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("16_Test_Loop",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("17_Test_Sideways",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        // trajectories.add(PathPlanner.loadPath("20_Back_Off_Tarmac",
-        // Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("20_TarmacB1_Back_Off_Tarmac",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("21_TarmacB1_to_BBallD_Vicinity",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("22_TarmacR1_Back_Off_Tarmac",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("23_TarmacB2_to_BBallB_Vicinity",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("24_TarmacB2_to_BBallC_Vicinity",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("25_TarmacR1_to_RBallD_Vicinity",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("26_TarmacR1_to_RBallE_Vicinity",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
-        trajectories.add(PathPlanner.loadPath("27_TarmacR2_to_RBallF_Vicinity",
-                Constants.DriveConstants.pPMaxVel, Constants.DriveConstants.pPMaxAcc));
+        double maxVel = AutoConstants.kMaxSpeedMetersPerSecond ;
+        double maxAccel = AutoConstants.kMaxAccelerationMetersPerSecondSquared ;
 
+        trajectories.add(PathPlanner.loadPath("0_TarmacB1_to_BBallD", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("1_TarmacB1_to_BBallD_BBallC", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("2_TarmacB2_to_BBallB", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("3_TarmacB2_to_BBallB_BBallC", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("4_TarmacB2_to_BBallC", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("5_TarmacB2_to_BBallC_BBallB", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("6_TarmacB2_to_BBallC_BBallD", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE",    maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_R BallF", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("13_Test_Constant_x", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("14_Test_Constant_y", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("15_Test_Diagonal", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("16_Test_Loop",    maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("17_Test_Sideways",   maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("18_Test_U_Shape_Dif_Angle", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("19_Test_U_Shape_Same_Angle",  maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("20_TarmacB1_Back_Off_Tarmac", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("21_TarmacB1_to_BBallD_Vicinity", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("22_TarmacR1_Back_Off_Tarmac", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("23_TarmacB2_to_BBallB_Vicinity", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("24_TarmacB2_to_BBallC_Vicinity", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("25_TarmacR1_to_RBallD_Vicinity", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("26_TarmacR1_to_RBallE_Vicinity", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("27_TarmacR2_to_RBallF_Vicinity", maxVel, maxAccel));
 
         m_armBar.neutralGripperA();;
         m_armBar.neutralGripperB();
@@ -180,8 +148,6 @@ public class RobotContainer {
                             m_driverController.getRawAxis(Yaw_Axis) * Yaw_Attenuation,
                             false);
                 }, m_robotDrive));
-
-        
     }
 
     /**
@@ -252,12 +218,13 @@ public class RobotContainer {
 
             liftToShootingButton = new JoystickAnalogButton(m_driverController,
                     Constants.RadioMaster_Controller.SF_Axis, 0.75, 1.0);
-            liftToIntakeButton = new JoystickAnalogButton(m_driverController, Constants.RadioMaster_Controller.SF_Axis,
+            lowerToIntakeButton = new JoystickAnalogButton(m_driverController, Constants.RadioMaster_Controller.SF_Axis,
                     -1.0, -0.5);
             // liftToShootingButton = new JoystickButton(m_driverController, 0 );
             // liftToIntakeButton = new JoystickButton(m_driverController, 0 );
 
-            shooterButton = new JoystickButton(m_driverController, Constants.RadioMaster_Controller.SH_Momentary);
+            shooterLowButton = new JoystickButton(m_driverController, Constants.RadioMaster_Controller.SH_Momentary);
+            shooterHighButton = new JoystickButton(m_driverController, 2);
             // climbButton = new JoystickButton(m_driverController,
             // Constants.Logitech_F310_Controller.Back_Button);
             // ejectButton = new JoystickButton(m_driverController,
@@ -379,12 +346,12 @@ public class RobotContainer {
         if (controllerFound) {
             intakeButton.whenPressed(startIntakeCommand).whenReleased(stopIntakeCommand);
             // liftToShootingButton.whenPressed(shootingPositionCommand);
-            liftToIntakeButton.whenPressed(intakePositionCommand);
+            lowerToIntakeButton.whenPressed(intakePositionCommand);
             liftToShootingButton.whenPressed(shootingPositionCommand);
-            shooterButton.whenPressed(startShootingCommand).whenReleased(stopShootingCommand);
+            shooterLowButton.whenPressed(startShootingLowCommand).whenReleased(stopShootingCommand);
+            shooterHighButton.whenPressed(startShootingHighCommand).whenReleased(stopShootingCommand);
             // moveToTargetButton.whenPressed(moveToTargetCommand);
         }
-
     }
 
     /**
@@ -401,7 +368,11 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        PathPlannerTrajectory trajectory = trajectories.get(20);
+// wpk put this back for competition        PathPlannerTrajectory trajectory = trajectories.get(20);
+
+        PathPlannerTrajectory trajectory = trajectories.get(16);
+
+
         // PathPlannerTrajectory trajectory =
         // trajectories.get((int)NetworkTableInstance.getDefault().getEntry("pathSelected").getDouble(20.0));
 
@@ -411,10 +382,10 @@ public class RobotContainer {
                 trajectory,
                 m_robotDrive::getPose,
                 DriveConstants.kDriveKinematics,
-                new PIDController(AutoConstants.kPXController, 0, 0),
-                new PIDController(AutoConstants.kPYController, 0, 0),
-                new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,
-                        AutoConstants.kThetaControllerConstraints),
+                new PIDController(AutoConstants.kPXController, 3, 0.1),
+                //new PIDController(AutoConstants.kPYController, 0, 0.01),
+                new PIDController(AutoConstants.kPYController, 3, 0.1),
+                new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 m_robotDrive::setWheelSpeeds,
                 m_robotDrive);
@@ -425,56 +396,55 @@ public class RobotContainer {
         Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
         m_robotDrive.resetOdometry(temp2);
 
-        // if (initiateSequence == false) {
-        // return pathCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-        // } else {
+        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(  
+                //shoot, follow path to pick up ball and go back to tarmac, shoot 
+                // new StartShootingLow(m_shooterIndex).withTimeout(1.0),
+                // new StopShooting(m_shooterIndex),
+                // new GotoIntakePosition(m_shooterIndex),
+                // new StartIntake(m_shooterIndex, m_intake),
+                // pathCommand,
+                // new StopIntake(m_intake, m_shooterIndex),
+                // new GotoShootingPosition(m_shooterIndex),
+                // new StartShootingLow(m_shooterIndex).withTimeout(1.0),
+                // new StopShooting(m_shooterIndex),
+                // new GotoIntakePosition(m_shooterIndex));
 
-        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-        // // new DriveBackwards(m_robotDrive),
-        // // new GotoShootingPosition(m_shooterIndex), // Should already be up
-        // new StartShooting(m_shooterIndex).withTimeout(1.0),
-        // new StopShooting(m_shooterIndex),
-        // new GotoIntakePosition(m_shooterIndex),
-        // new StartIntake(m_shooterIndex, m_intake),
-        // pathCommand,
-        // new StopIntake(m_intake, m_shooterIndex),
-        // new GotoShootingPosition(m_shooterIndex),
-        // new StartShooting(m_shooterIndex).withTimeout(1.0),
-        // new StopShooting(m_shooterIndex),
-        // new GotoIntakePosition(m_shooterIndex));
-
-        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-        // // new DriveBackwards(m_robotDrive),
-        // // new GotoShootingPosition(m_shooterIndex), // Should already be up
-        // new
-        // StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-        // new StopShooting(m_shooterIndex),
-        // new GotoIntakePosition(m_shooterIndex),
-        // new StartIntake(m_shooterIndex, m_intake),
-        // pathCommand,
-        // new MoveToTarget(m_robotDrive),
-        // new StopIntake(m_intake, m_shooterIndex),
-        // //new DriveToPose(temp2, m_robotDrive),
-        // new GotoShootingPosition(m_shooterIndex),
-        // new
-        // StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-        // new StopShooting(m_shooterIndex),
-        // new GotoIntakePosition(m_shooterIndex));
+        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(  
+                //shoot, follow path to ball vicinity, shoot for high goal, follow path to other ball, shoot for high goal
+                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                // new StopShooting(m_shooterIndex),
+                // new GotoIntakePosition(m_shooterIndex),
+                // new StartIntake(m_shooterIndex, m_intake),
+                // pathCommand1,
+                // new MoveToTarget(m_robotDrive),
+                // new StopIntake(m_intake, m_shooterIndex),
+                // new DriveToHighGoalPose(m_robotDrive),
+                // new GotoShootingPosition(m_shooterIndex),
+                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                // new StopShooting(m_shooterIndex),
+                // pathCommand2,
+                // new MoveToTarget(m_robotDrive),
+                // new StopIntake(m_intake, m_shooterIndex),
+                // new DriveToHighGoalPose(m_robotDrive),
+                // new GotoShootingPosition(m_shooterIndex),
+                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                // new StopShooting(m_shooterIndex), 
+                // new GotoIntakePosition(m_shooterIndex)
+                //);
 
         SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-                new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
                 new GotoIntakePosition(m_shooterIndex),
-                // new StartIntake(m_shooterIndex, m_intake),
+                //new StartIntake(m_shooterIndex, m_intake),
                 pathCommand
-        // new MoveToTarget(m_robotDrive),
-        // new StopIntake(m_intake, m_shooterIndex)
-        // new DriveToPose(temp2, m_robotDrive),
-        // new GotoShootingPosition(m_shooterIndex),
-        // new
-        // StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-        // new StopShooting(m_shooterIndex),
-        // new GotoIntakePosition(m_shooterIndex)
+                // new MoveToTarget(m_robotDrive),
+                // new StopIntake(m_intake, m_shooterIndex)
+                // new DriveToPose(temp2, m_robotDrive),
+                // new GotoShootingPosition(m_shooterIndex),
+                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                // new StopShooting(m_shooterIndex),
+                // new GotoIntakePosition(m_shooterIndex)
         );
 
         // Run path following command, then stop at the end.

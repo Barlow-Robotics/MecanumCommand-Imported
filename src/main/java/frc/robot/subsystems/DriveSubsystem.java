@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,12 +33,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     ArrayList<WPI_TalonFX> motors = new ArrayList<WPI_TalonFX>();
 
-    MecanumDriveOdometry odometry;
+//    MecanumDriveOdometry odometry;
 
     public final MecanumDrive m_drive;
 
     // The gyro sensor
-    private final Gyro m_gyro = new ADXRS450_Gyro();
+    private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
+    private final ADXRS450_GyroSim gyroSim = new ADXRS450_GyroSim(m_gyro) ;
 
     // Odometry class for tracking robot pose
     MecanumDriveOdometry m_odometry = new MecanumDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
@@ -81,7 +83,7 @@ public class DriveSubsystem extends SubsystemBase {
                     getSpeed(m_backRight) 
                     )
          ) ;
-        report();
+         report();
     }
 
     private double getSpeed(WPI_TalonFX motor) {
@@ -249,6 +251,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(m_odometry.getPoseMeters().getX());
         NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(m_odometry.getPoseMeters().getY());
+        NetworkTableInstance.getDefault().getEntry("drive/odometry/theta").setDouble(m_odometry.getPoseMeters().getRotation().getDegrees());
 
 
     }
@@ -258,10 +261,10 @@ public class DriveSubsystem extends SubsystemBase {
     boolean simulationInitialized = false;
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(m_frontRight, 0.75, 6800, true);
-        PhysicsSim.getInstance().addTalonFX(m_frontLeft, 0.75, 6800);
-        PhysicsSim.getInstance().addTalonFX(m_backRight, 0.75, 6800);
-        PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 6800, true);
+        PhysicsSim.getInstance().addTalonFX(m_frontRight, 0.75, 6800, false);
+        PhysicsSim.getInstance().addTalonFX(m_frontLeft, 0.75, 6800, false);
+        PhysicsSim.getInstance().addTalonFX(m_backRight, 0.75, 6800, false);
+        PhysicsSim.getInstance().addTalonFX(m_backLeft, 0.75, 6800, false);
     }
 
     @Override
@@ -271,6 +274,13 @@ public class DriveSubsystem extends SubsystemBase {
             simulationInitialized = true;
         }
         PhysicsSim.getInstance().run();
+
+        double headingNoise = 0.0 ; // (Math.random() - 0.5) * 4.0 ;
+//        gyroSim.setAngle(this.m_odometry.getPoseMeters().getRotation().getDegrees() + headingNoise);
+        gyroSim.setAngle(5.0);
+        gyroSim.setRate(1.0);
+        NetworkTableInstance.getDefault().getEntry("drive/gyro/getAngle").setDouble(m_gyro.getAngle());
+
 
         // do sim stuff
 

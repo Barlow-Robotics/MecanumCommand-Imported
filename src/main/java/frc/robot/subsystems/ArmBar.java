@@ -79,10 +79,10 @@ public class ArmBar extends SubsystemBase {
     private void updateHallStatesForDashboard() {
         NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
 
-        inst.getEntry("hall_effetcts/A1").setBoolean(hallEffectsA1.get()) ;
-        inst.getEntry("hall_effetcts/A2").setBoolean(hallEffectsA2.get()) ;
-        inst.getEntry("hall_effetcts/B1").setBoolean(hallEffectsB1.get()) ;
-        inst.getEntry("hall_effetcts/B2").setBoolean(hallEffectsB2.get()) ;
+        inst.getEntry("hall_effects/A1").setBoolean(hallEffectsA1.get()) ;
+        inst.getEntry("hall_effects/A2").setBoolean(hallEffectsA2.get()) ;
+        inst.getEntry("hall_effects/B1").setBoolean(hallEffectsB1.get()) ;
+        inst.getEntry("hall_effects/B2").setBoolean(hallEffectsB2.get()) ;
 
     }
 
@@ -155,7 +155,6 @@ public class ArmBar extends SubsystemBase {
 
     public boolean gripperAIsClosed() {
         return (!hallEffectsA1.get() && !hallEffectsA2.get());
-//        return (!hallEffectsA1.get() );
     }
 
     public boolean gripperBIsClosed() {
@@ -163,7 +162,6 @@ public class ArmBar extends SubsystemBase {
     }
 
     public boolean gripperAIsOpen() {
-//        return (hallEffectsA1.get() );
         return (hallEffectsA1.get() && hallEffectsA2.get());
     }
 
