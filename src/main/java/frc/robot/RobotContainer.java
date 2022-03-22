@@ -132,6 +132,7 @@ public class RobotContainer {
         trajectories.add(PathPlanner.loadPath("25_TarmacR1_to_RBallD_Vicinity", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("26_TarmacR1_to_RBallE_Vicinity", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("27_TarmacR2_to_RBallF_Vicinity", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("29_Autonomous_Path", maxVel, maxAccel));
 
         m_armBar.neutralGripperA();;
         m_armBar.neutralGripperB();
@@ -370,7 +371,8 @@ public class RobotContainer {
 
 // wpk put this back for competition        PathPlannerTrajectory trajectory = trajectories.get(20);
 
-        PathPlannerTrajectory trajectory = trajectories.get(16);
+        PathPlannerTrajectory trajectory1 = trajectories.get(16);
+        PathPlannerTrajectory trajectory2 = trajectories.get(29);
 
 
         // PathPlannerTrajectory trajectory =
@@ -378,8 +380,20 @@ public class RobotContainer {
 
         // use network tables to get value from driver station
 
-        PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
-                trajectory,
+        PPMecanumControllerCommand pathCommand1 = new PPMecanumControllerCommand(
+                trajectory1,
+                m_robotDrive::getPose,
+                DriveConstants.kDriveKinematics,
+                new PIDController(AutoConstants.kPXController, 3, 0.1),
+                //new PIDController(AutoConstants.kPYController, 0, 0.01),
+                new PIDController(AutoConstants.kPYController, 3, 0.1),
+                new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                m_robotDrive::setWheelSpeeds,
+                m_robotDrive);
+
+        PPMecanumControllerCommand pathCommand2 = new PPMecanumControllerCommand(
+                trajectory2,
                 m_robotDrive::getPose,
                 DriveConstants.kDriveKinematics,
                 new PIDController(AutoConstants.kPXController, 3, 0.1),
@@ -391,8 +405,8 @@ public class RobotContainer {
                 m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
-        Pose2d temp = trajectory.getInitialPose();
-        PathPlannerState s = (PathPlannerState) trajectory.getStates().get(0);
+        Pose2d temp = trajectory1.getInitialPose();
+        PathPlannerState s = (PathPlannerState) trajectory1.getStates().get(0);
         Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
         m_robotDrive.resetOdometry(temp2);
 
@@ -437,7 +451,7 @@ public class RobotContainer {
                 new StopShooting(m_shooterIndex),
                 new GotoIntakePosition(m_shooterIndex),
                 //new StartIntake(m_shooterIndex, m_intake),
-                pathCommand
+                pathCommand1
                 // new MoveToTarget(m_robotDrive),
                 // new StopIntake(m_intake, m_shooterIndex)
                 // new DriveToPose(temp2, m_robotDrive),
