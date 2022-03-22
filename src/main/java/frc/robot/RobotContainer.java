@@ -371,29 +371,15 @@ public class RobotContainer {
 
 // wpk put this back for competition        PathPlannerTrajectory trajectory = trajectories.get(20);
 
-        PathPlannerTrajectory trajectory1 = trajectories.get(16);
-        PathPlannerTrajectory trajectory2 = trajectories.get(29);
-
+        PathPlannerTrajectory trajectory = trajectories.get(21);
 
         // PathPlannerTrajectory trajectory =
         // trajectories.get((int)NetworkTableInstance.getDefault().getEntry("pathSelected").getDouble(20.0));
 
         // use network tables to get value from driver station
 
-        PPMecanumControllerCommand pathCommand1 = new PPMecanumControllerCommand(
-                trajectory1,
-                m_robotDrive::getPose,
-                DriveConstants.kDriveKinematics,
-                new PIDController(AutoConstants.kPXController, 3, 0.1),
-                //new PIDController(AutoConstants.kPYController, 0, 0.01),
-                new PIDController(AutoConstants.kPYController, 3, 0.1),
-                new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                m_robotDrive::setWheelSpeeds,
-                m_robotDrive);
-
-        PPMecanumControllerCommand pathCommand2 = new PPMecanumControllerCommand(
-                trajectory2,
+        PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
+                trajectory,
                 m_robotDrive::getPose,
                 DriveConstants.kDriveKinematics,
                 new PIDController(AutoConstants.kPXController, 3, 0.1),
@@ -405,8 +391,8 @@ public class RobotContainer {
                 m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
-        Pose2d temp = trajectory1.getInitialPose();
-        PathPlannerState s = (PathPlannerState) trajectory1.getStates().get(0);
+        Pose2d temp = trajectory.getInitialPose();
+        PathPlannerState s = (PathPlannerState) trajectory.getStates().get(0);
         Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
         m_robotDrive.resetOdometry(temp2);
 
@@ -423,42 +409,21 @@ public class RobotContainer {
                 // new StopShooting(m_shooterIndex),
                 // new GotoIntakePosition(m_shooterIndex));
 
-        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(  
-                //shoot, follow path to ball vicinity, shoot for high goal, follow path to other ball, shoot for high goal
-                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+                //shoot, back up
+                // new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 // new StopShooting(m_shooterIndex),
                 // new GotoIntakePosition(m_shooterIndex),
-                // new StartIntake(m_shooterIndex, m_intake),
-                // pathCommand1,
-                // new MoveToTarget(m_robotDrive),
-                // new StopIntake(m_intake, m_shooterIndex),
-                // new DriveToHighGoalPose(m_robotDrive),
-                // new GotoShootingPosition(m_shooterIndex),
-                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-                // new StopShooting(m_shooterIndex),
-                // pathCommand2,
-                // new MoveToTarget(m_robotDrive),
-                // new StopIntake(m_intake, m_shooterIndex),
-                // new DriveToHighGoalPose(m_robotDrive),
-                // new GotoShootingPosition(m_shooterIndex),
-                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-                // new StopShooting(m_shooterIndex), 
-                // new GotoIntakePosition(m_shooterIndex)
-                //);
+                // pathCommand);
 
         SequentialCommandGroup autoCommand = new SequentialCommandGroup(
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
                 new GotoIntakePosition(m_shooterIndex),
-                //new StartIntake(m_shooterIndex, m_intake),
-                pathCommand1
-                // new MoveToTarget(m_robotDrive),
-                // new StopIntake(m_intake, m_shooterIndex)
-                // new DriveToPose(temp2, m_robotDrive),
-                // new GotoShootingPosition(m_shooterIndex),
-                // new StartShooting(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
-                // new StopShooting(m_shooterIndex),
-                // new GotoIntakePosition(m_shooterIndex)
+                new StartIntake(m_shooterIndex, m_intake),
+                pathCommand,
+                new MoveToTarget(m_robotDrive)
+             // new command scheduler (create new path, MoveToTarget, rotate until facing hub, shoot)
         );
 
         // Run path following command, then stop at the end.
