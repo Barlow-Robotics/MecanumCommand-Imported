@@ -371,7 +371,9 @@ public class RobotContainer {
 
 // wpk put this back for competition        PathPlannerTrajectory trajectory = trajectories.get(20);
 
-        PathPlannerTrajectory trajectory = trajectories.get(21);
+        //constant x = 13
+        //vicinity path = 21
+        PathPlannerTrajectory trajectory = trajectories.get(1);
 
         // PathPlannerTrajectory trajectory =
         // trajectories.get((int)NetworkTableInstance.getDefault().getEntry("pathSelected").getDouble(20.0));
@@ -382,9 +384,15 @@ public class RobotContainer {
                 trajectory,
                 m_robotDrive::getPose,
                 DriveConstants.kDriveKinematics,
-                new PIDController(AutoConstants.kPXController, 3, 0.1),
+
+                new PIDController(6, 0, 0),
                 //new PIDController(AutoConstants.kPYController, 0, 0.01),
-                new PIDController(AutoConstants.kPYController, 3, 0.1),
+                new PIDController(6, 0, 0),
+
+
+                // new PIDController(AutoConstants.kPXController, 3, 0.1),
+                // //new PIDController(AutoConstants.kPYController, 0, 0.01),
+                // new PIDController(AutoConstants.kPYController, 3, 0.1),
                 new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 m_robotDrive::setWheelSpeeds,
@@ -422,8 +430,12 @@ public class RobotContainer {
                 new GotoIntakePosition(m_shooterIndex),
                 new StartIntake(m_shooterIndex, m_intake),
                 pathCommand,
-                new MoveToTarget(m_robotDrive)
-             // new command scheduler (create new path, MoveToTarget, rotate until facing hub, shoot)
+                new StopIntake(m_intake, m_shooterIndex),
+                new GotoShootingPosition(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
+                new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                new StopShooting(m_shooterIndex)
+                //new MoveToTarget(m_robotDrive)
+             // new command scheduler (create new path, MoveToTarget, rotate until facing hub, go to shooting posision, shoot)
         );
 
         // Run path following command, then stop at the end.

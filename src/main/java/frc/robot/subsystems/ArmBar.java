@@ -132,23 +132,23 @@ public class ArmBar extends SubsystemBase {
     }
 
     public void releaseGripperA() {
-        clawA1Servo.set(0.0) ;
+        clawA1Servo.set(0.5) ;
         clawA2Servo.set(0.5) ;
 
     }
 
     public void releaseGripperB() {
-        clawB1Servo.set(0.5) ;
+        clawB1Servo.set(0.0) ;
         clawB2Servo.set(0.5) ;
     }
 
     public void neutralGripperA() {
-        clawA1Servo.set(0.5) ;
+        clawA1Servo.set(0.0) ;
         clawA2Servo.set(0.0) ;
     }
 
     public void neutralGripperB() {
-        clawB1Servo.set(0.0) ;
+        clawB1Servo.set(0.5) ;
         clawB2Servo.set(0.0) ;
     }
 

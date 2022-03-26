@@ -19,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.*;
@@ -77,9 +78,9 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.update(
                 m_gyro.getRotation2d(),
                 new MecanumDriveWheelSpeeds(
-                    getSpeed(m_frontLeft) ,
-                    getSpeed(m_backLeft) ,
-                    getSpeed(m_frontRight) ,
+                    getSpeed(m_frontLeft),
+                    getSpeed(m_backLeft),
+                    getSpeed(m_frontRight),
                     getSpeed(m_backRight) 
                     )
          ) ;
@@ -109,7 +110,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         m_odometry.resetPosition(pose, m_gyro.getRotation2d());
     }
-
 
     /**
      * Drives the robot at given x, y and theta speeds. Speeds range from [-1, 1]
@@ -151,8 +151,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_backRight.setSelectedSensorPosition(0);
     }
 
-
-
     public void setWheelSpeeds(MecanumDriveWheelSpeeds speeds) {
         m_frontLeft.set(TalonFXControlMode.Velocity, speeds.frontLeftMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
         m_frontRight.set(TalonFXControlMode.Velocity, speeds.frontRightMetersPerSecond * Constants.DriveConstants.MotorVelocityOneMeterPerSecond);
@@ -192,7 +190,6 @@ public class DriveSubsystem extends SubsystemBase {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) ;
     }
 
-
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(getGyroHeading()) ;
     }
@@ -218,11 +215,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         		/* Config sensor used for Primary PID [Velocity] */
         motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
-
     }
-
-
-
 
     private void report() {
         // Report various parameters out to network tables for monitoring purposes
@@ -243,7 +236,6 @@ public class DriveSubsystem extends SubsystemBase {
     
         NetworkTableInstance.getDefault().getEntry("drive/gyro_heading").setDouble(getGyroHeading());
 
-
         NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontLeft").setDouble(getSpeed(m_frontLeft));
         NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontRight").setDouble(getSpeed(m_frontRight));
         NetworkTableInstance.getDefault().getEntry("drive/get_speed/backLeft").setDouble(getSpeed(m_backLeft));
@@ -252,11 +244,17 @@ public class DriveSubsystem extends SubsystemBase {
         NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(m_odometry.getPoseMeters().getX());
         NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(m_odometry.getPoseMeters().getY());
         NetworkTableInstance.getDefault().getEntry("drive/odometry/theta").setDouble(m_odometry.getPoseMeters().getRotation().getDegrees());
+    
+        NetworkTableInstance.getDefault().getEntry("drive/frontLeft_closed_loop_error").setDouble(m_frontLeft.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("drive/frontRight_closed_loop_error").setDouble(m_frontRight.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("drive/backLeft_closed_loop_error").setDouble(m_backLeft.getClosedLoopError());
+        NetworkTableInstance.getDefault().getEntry("drive/backRight_closed_loop_error").setDouble(m_backRight.getClosedLoopError());
 
-
+        NetworkTableInstance.getDefault().getEntry("drive/frontLeft_closed_loop_target").setDouble(m_frontLeft.getClosedLoopTarget());
+        NetworkTableInstance.getDefault().getEntry("drive/frontRight_closed_loop_target").setDouble(m_frontRight.getClosedLoopTarget());
+        NetworkTableInstance.getDefault().getEntry("drive/backLeft_closed_loop_target").setDouble(m_backLeft.getClosedLoopTarget());
+        NetworkTableInstance.getDefault().getEntry("drive/backRight_closed_loop_target").setDouble(m_backRight.getClosedLoopTarget());
     }
-
-
 
     boolean simulationInitialized = false;
 
