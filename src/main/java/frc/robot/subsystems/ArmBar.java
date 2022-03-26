@@ -66,15 +66,11 @@ public class ArmBar extends SubsystemBase {
 
         setNormalMotionConfig();
         report() ;
-
     }
 
-
-    public void ResetPosition(double angle) {
+    public void resetPosition(double angle) {
         rightMotor.setSelectedSensorPosition(angle, 0,  30);
     }
-
-
 
     private void updateHallStatesForDashboard() {
         NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
@@ -83,9 +79,7 @@ public class ArmBar extends SubsystemBase {
         inst.getEntry("hall_effects/A2").setBoolean(hallEffectsA2.get()) ;
         inst.getEntry("hall_effects/B1").setBoolean(hallEffectsB1.get()) ;
         inst.getEntry("hall_effects/B2").setBoolean(hallEffectsB2.get()) ;
-
     }
-
 
     public boolean A1HallOpen() {
         return hallEffectsA1.get() ;

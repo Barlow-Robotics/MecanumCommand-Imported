@@ -65,12 +65,7 @@ public class Climb extends CommandBase {
 
     }
 
-
-
-
-
     double latchedAngle ;
-
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
@@ -80,12 +75,9 @@ public class Climb extends CommandBase {
 
         inst.getEntry("climb_command/climb_button").setBoolean(gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) ;
 
-
         switch (currentState) {
-
-
             case ResettingPosition:
-                m_armBar.ResetPosition(0.0);
+                m_armBar.resetPosition(0.0);
                 currentState = ArmCommandState.FreeingBClaws;
                 m_armBar.neutralGripperA();
                 m_armBar.neutralGripperA();

@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj.SerialPort;
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the constants are needed, to reduce verbosity.
  */
-public final class Constants {
+
+ public final class Constants {
 
     public static final double RadiansToDegrees = 180.0 / Math.PI;
     public static final double DegreesToRadians = Math.PI / 180.0;
@@ -43,7 +44,7 @@ public final class Constants {
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
-                );
+            );
 
         public static final double manualVoltageRampingConstant = 0.21;
         public static final double closedVoltageRampingConstant = 0.21;
@@ -81,9 +82,7 @@ public final class Constants {
         // public static final double maxAngleDifferenceBetweenNavXAndVision = 0.01;
         // public static final double alignTimeoutTime = 1000;
         // public static final double alignMemorySize = 3;
-
     }
-
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 2;
@@ -97,7 +96,6 @@ public final class Constants {
 
         public static final int gamepadPort = 1;
     }
-
 
     public final class RadioMaster_Controller {
 
@@ -125,15 +123,9 @@ public final class Constants {
         // public static final int Start_Button = 8;
         // public static final int Left_Stick = 9;
         // public static final int Right_Stick = 10;
-
-
-
     }
 
-
-
     public final class Logitech_F310_Controller {
-
         // Constants for Axes
         public static final int Left_Stick_X = 0;
         public static final int Left_Stick_Y = 1;
@@ -157,9 +149,7 @@ public final class Constants {
         public static final double Forward_Axis_Attenuation = -0.5 ;
         public static final double Lateral_Axis_Attenuation = 0.5 ;
         public static final double Yaw_Axis_Attenuation = 0.5 ;
-
     }
-
 
     public final class Logitech_Dual_Action {
 
@@ -186,13 +176,9 @@ public final class Constants {
         public static final double Forward_Axis_Attenuation = -0.5 ;
         public static final double Lateral_Axis_Attenuation = 0.5 ;
         public static final double Yaw_Axis_Attenuation = 0.5 ;
-
     }
 
-
-
     public final class Xbox_Controller {
-
         // Constants for Axes
         public static final int Left_Stick_X = 0;
         public static final int Left_Stick_Y = 1;
@@ -201,7 +187,7 @@ public final class Constants {
         public static final int Right_Stick_X = 4;
         public static final int Right_Stick_Y = 5;
 
-        // Constants for buttons
+        // Constants for Buttons
         public static final int Button_A = 1;
         public static final int Button_B = 2;
         public static final int Button_X = 3;
@@ -216,16 +202,13 @@ public final class Constants {
         public static final double Forward_Axis_Attenuation = -0.5 ;
         public static final double Lateral_Axis_Attenuation = 0.5 ;
         public static final double Yaw_Axis_Attenuation = 0.5 ;
-
     }
 
     public final class Fight_Stick {
         public static final int Button_Y = 4;
-        
         public static final int Left_Trigger = 2;
         public static final int Right_Trigger = 3;
     }
-
 
     // For Brian's Controller
 
@@ -252,8 +235,8 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-//        public static final double kAutoDriveDistanceInches = 1;
-//        public static final double kAutoDriveSpeed = 0.2;
+        // public static final double kAutoDriveDistanceInches = 1;
+        // public static final double kAutoDriveSpeed = 0.2;
 
         public static final double AutoShootingTimeout = 2.0;
         public static final double AutoIndexRaiseTimeout = 2.0;
@@ -267,15 +250,16 @@ public final class Constants {
         public static final double kPYController = 12.0 ;
         public static final double kPThetaController = 12.0;
 
-
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints 
             = new TrapezoidProfile.Constraints( kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared );
     }
 
+    public static final class VisionConstants {
+        public static final int ID_CameraLight = 5;
+    }
 
     public static final class ArmBarConstants {
-
         public static final int ID_rightMotor = 10;
         public static final int ID_leftMotor = 15;
 
@@ -315,12 +299,12 @@ public final class Constants {
         public static final double FreeingBClawAngle = 45.0 ;
 
 
-        //        public static final double ConsistentRotationAngleTolerance = 6;
+        // public static final double ConsistentRotationAngleTolerance = 6;
 
-//        public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        // public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
         public static final double DesiredArmVelocity = 0.50 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
         public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
-//        public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
+        // public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
         public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
         public static final int AccelerationSmoothing = 2 ;
 
@@ -328,27 +312,22 @@ public final class Constants {
         public static final double SlowCruiseVelocity = (UnitsPerArmDegree * SlowArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
         public static final double SlowMaxAcceleration = SlowCruiseVelocity * 0.75 ;
 
-
         public static final int Position_PID_id = 0;
         public static final double Position_kF = 0.048;  // wpk need to give this some thought
         public static final double Position_kP = 0.07;  // wpk need to give this some thought
         public static final double Position_kD = 0.01;  // wpk need to give this some thought
         public static final double Position_kI = 0.00003;  // wpk need to give this some thought
 
-
         // public static final double ArmBarMotorSpeed = 0.1;
 
         public static final double manualVoltageRampingConstant = 0.05;
         public static final double closedVoltageRampingConstant = 0.05;
 
-
         public static final int Velocity_PID_id = 1;
         public static final double Velocity_kF = 0.0485;
         public static final double Velocity_kP = 0.01;
         public static final double Velocity_kD = 0.00;
-
     }
-
 
     public static final class IntakeConstants {
         public static final int ID_IntakeMotor = 3;
@@ -370,12 +349,10 @@ public final class Constants {
         public static final double kP = 0.005;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-
         public static final int PID_id = 0;
     }
 
     public static final class ShooterConstants {
-
         public static final int UnitsPerMotorRotation = 2048;
         public static final double GearboxGearRatio = 1.0 / 1.0; // farther gear to axel gear
         public static final double TotalUnitsPerRotation = (double) UnitsPerMotorRotation * GearboxGearRatio ;
@@ -393,7 +370,6 @@ public final class Constants {
         public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
         public static final double BeltMotorIntakeVelocity = 700 * RPM;
 
-
         public static final int ID_FlyWheelMotor = 8;
         public static final double FlyWheelMotorLowGoalShootingVelocity = 2500 * RPM;
         public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorLowGoalShootingVelocity * 0.95;
@@ -406,7 +382,6 @@ public final class Constants {
         public static final double BeltMotorEjectingVelocity = -1500 * RPM;
 
         public static final double ShooterTransitionTimeout = 1.25 ;
-
 
         public static final class Lift {
             public static final int ID_Extend_Solenoid = 0;    

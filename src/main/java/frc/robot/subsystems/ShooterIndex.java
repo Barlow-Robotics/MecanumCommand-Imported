@@ -123,8 +123,6 @@ public class ShooterIndex extends SubsystemBase {
         }
     }
 
-
-
     public boolean hasStarted() {
         return (beltMotor.get() != 0.0 && flyWheelMotor.get() != 0.0);
     }

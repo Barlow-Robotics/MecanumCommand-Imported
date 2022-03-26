@@ -404,27 +404,15 @@ public class RobotContainer {
         Pose2d temp2 = new Pose2d(temp.getTranslation(), s.holonomicRotation);
         m_robotDrive.resetOdometry(temp2);
 
-        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(  
-                //shoot, follow path to pick up ball and go back to tarmac, shoot 
-                // new StartShootingLow(m_shooterIndex).withTimeout(1.0),
-                // new StopShooting(m_shooterIndex),
-                // new GotoIntakePosition(m_shooterIndex),
-                // new StartIntake(m_shooterIndex, m_intake),
-                // pathCommand,
-                // new StopIntake(m_intake, m_shooterIndex),
-                // new GotoShootingPosition(m_shooterIndex),
-                // new StartShootingLow(m_shooterIndex).withTimeout(1.0),
-                // new StopShooting(m_shooterIndex),
-                // new GotoIntakePosition(m_shooterIndex));
-
         // SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-                //shoot, back up
+                // // Shoot, Back Up
                 // new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 // new StopShooting(m_shooterIndex),
                 // new GotoIntakePosition(m_shooterIndex),
                 // pathCommand);
 
         SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+                // Shoot, Follow Path (2 balls), Shoot
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
                 new GotoIntakePosition(m_shooterIndex),
