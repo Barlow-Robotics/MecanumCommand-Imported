@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -34,7 +35,12 @@ public class ShooterIndex extends SubsystemBase {
     Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid2);
     Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
+    Timer transitionTimer ;
 
+    enum TransitionState { Idle, In_Transition } ;
+
+    TransitionState transitionState = TransitionState.Idle ;
+ 
     public enum LiftPosition { In_Transition, Intake, Shooting } ;
 
     public ShooterIndex() {
@@ -43,6 +49,8 @@ public class ShooterIndex extends SubsystemBase {
 
         setMotorConfig(beltMotor);
         setMotorConfig(flyWheelMotor);
+
+        transitionTimer = new Timer() ;
     }
 
     @Override
@@ -78,6 +86,9 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(false);
         retractSolenoid.set(true);
         retractSolenoid2.set(true);
+        transitionTimer.reset();
+        transitionTimer.start();
+        transitionState = TransitionState.In_Transition ;
     }
 
     public void GotoIntakePosition() {
@@ -85,26 +96,34 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(true);
         retractSolenoid.set(false);
         retractSolenoid2.set(false);
+        transitionTimer.reset();
+        transitionTimer.start();
+        transitionState = TransitionState.In_Transition ;
     }
 
     public LiftPosition getPosition() { //NO MORE MOTOR, NOW PISTON - use sensor or time (not rec) ?
-//        System.out.println("shooter position is " + liftMotor.getSelectedSensorPosition() ) ;
-        // if (liftMotor.getSelectedSensorPosition() > Constants.ShooterConstants.Lift.MotorShootingAngle * 0.98 ) {
-        //     return LiftPosition.Shooting;
-        // } else if (liftMotor.getSelectedSensorPosition() < Constants.ShooterConstants.Lift.MotorShootingAngle * 0.02) {
-        //     return LiftPosition.Intake;
-        // } else {
-        //     return LiftPosition.In_Transition;
-        // }
 
-        if (!extendSolenoid.get() && retractSolenoid.get() && !extendSolenoid2.get() && retractSolenoid2.get()) {
-            return LiftPosition.Shooting;
-        } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid.get() && !retractSolenoid2.get()) {
-            return LiftPosition.Intake;
+        if ( transitionState == TransitionState.In_Transition) {
+            if ( transitionTimer.hasElapsed(Constants.ShooterConstants.ShooterTransitionTimeout) ) {
+                transitionState = TransitionState.Idle ;
+                transitionTimer.stop();
+                transitionTimer.reset() ;
+            }
+        }
+        if (transitionState == TransitionState.Idle) {
+            if (!extendSolenoid.get() && retractSolenoid.get() && !extendSolenoid2.get() && retractSolenoid2.get()) {
+                return LiftPosition.Shooting;
+            } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid.get() && !retractSolenoid2.get()) {
+                return LiftPosition.Intake;
+            } else {
+                return LiftPosition.In_Transition;
+            }
         } else {
             return LiftPosition.In_Transition;
         }
     }
+
+
 
     public boolean hasStarted() {
         return (beltMotor.get() != 0.0 && flyWheelMotor.get() != 0.0);

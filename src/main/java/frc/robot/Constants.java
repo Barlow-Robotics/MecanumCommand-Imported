@@ -383,7 +383,6 @@ public final class Constants {
         public static final double RevPerSecondVelocity = TotalUnitsPerRotation / 10.0 ; 
         public static final double RPM = RevPerSecondVelocity / 60.0 ;
 
-
         public static final int ID_BeltMotor = 7;
 
         public static final double kF = 0.048;
@@ -405,6 +404,8 @@ public final class Constants {
 
         public static final double FlyWheelMotorEjectingVelocity = 2000 * RPM;
         public static final double BeltMotorEjectingVelocity = -1500 * RPM;
+
+        public static final double ShooterTransitionTimeout = 1.25 ;
 
 
         public static final class Lift {
