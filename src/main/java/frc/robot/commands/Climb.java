@@ -8,17 +8,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmBar;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmBarConstants;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Climb extends CommandBase {
 
     private ArmBar m_armBar;
-    private DriveSubsystem m_drive;
 
     public enum ArmCommandState {
         ResettingPosition,

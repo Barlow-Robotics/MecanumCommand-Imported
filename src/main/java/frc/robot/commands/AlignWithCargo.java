@@ -7,25 +7,28 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.networktables.*;
 
-public class MoveToTarget extends CommandBase {
+public class AlignWithCargo extends CommandBase {
   
   private PIDController pid = new PIDController(0.01, 0, 0);
   private DriveSubsystem m_drive;
+  private Vision m_vision;
 
   private double error;
   private double leftVelocity;
   private double rightVelocity;
   private int missedFrames = 0;
+  private double adjustment;
   
   /** Creates a new MoveToTarget. */
-  public MoveToTarget(DriveSubsystem d) {
+  public AlignWithCargo(Vision v, DriveSubsystem d) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = d;
-    addRequirements(m_drive);
+    m_vision = v;
+    addRequirements(m_drive, m_vision);
   }
 
   // Called when the command is initially scheduled.
@@ -38,12 +41,12 @@ public class MoveToTarget extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(NetworkTableInstance.getDefault().getEntry("robot_cam/object_found").getBoolean(false)){
-        error = NetworkTableInstance.getDefault().getEntry("robot_cam/distance_from_center").getDouble(0);
-        double adjustment = pid.calculate(error) ;
-        adjustment = Math.signum(adjustment)*Math.min( Math.abs(adjustment), Constants.DriveConstants.BallChaseSpeed / 4.0) ;
-        leftVelocity = Constants.DriveConstants.BallChaseSpeed - adjustment ;
-        rightVelocity = Constants.DriveConstants.BallChaseSpeed + adjustment;
+    if(m_vision.cargoIsVisible()){
+        error = m_vision.cargoDistanceFromCenter();
+        adjustment = pid.calculate(error);
+        adjustment = Math.signum(adjustment)*Math.min( Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0) ;
+        leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment ;
+        rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
 
         m_drive.setWheelSpeeds(
             new MecanumDriveWheelSpeeds(

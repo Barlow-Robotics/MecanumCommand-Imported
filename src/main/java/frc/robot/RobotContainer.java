@@ -17,13 +17,15 @@ import frc.robot.commands.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import java.util.ArrayList;
-import edu.wpi.first.networktables.*;
+// import edu.wpi.first.networktables.*;
 
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.PathPlannerTrajectory.*;
+
 
 
 /*
@@ -39,6 +41,7 @@ public class RobotContainer {
     private final Intake m_intake = new Intake();
     private final ShooterIndex m_shooterIndex = new ShooterIndex();
     public final ArmBar m_armBar = new ArmBar();
+    public final Vision m_vision = new Vision();
     // private final UnderGlow underGlow = new UnderGlow() ;
 
     // The driver's controller
@@ -54,7 +57,8 @@ public class RobotContainer {
     private JoystickButton shooterHighButton;
     private JoystickButton climbButton;
     private JoystickButton ejectButton;
-    private JoystickButton moveToTargetButton;
+//     private JoystickButton alignWithCargoButton;
+    private JoystickButton alignWithTargetButton;
     private JoystickButton switchCameraButton;
 
     private int Forward_Speed_Axis;
@@ -85,7 +89,8 @@ public class RobotContainer {
     private final StartEjecting startEjectingCommand = new StartEjecting(m_intake, m_shooterIndex);
     private final StopEjecting stopEjectingCommand = new StopEjecting(m_intake, m_shooterIndex);
 
-    private final MoveToTarget moveToTargetCommand = new MoveToTarget(m_robotDrive);
+    private final AlignWithCargo alignWithCargoCommand = new AlignWithCargo(m_vision, m_robotDrive);
+    private final AlignWithTarget alignWithTargetCommand = new AlignWithTarget(m_vision, m_robotDrive);
     private final SwitchCamera switchCameraCommand = new SwitchCamera();
 
     /**
@@ -148,8 +153,9 @@ public class RobotContainer {
                                     * Lateral_Speed_Attenuation,
                             m_driverController.getRawAxis(Yaw_Axis) * Yaw_Attenuation,
                             false);
-                }, m_robotDrive));
-    }
+                }, m_robotDrive)
+        );
+}
 
     /**
      * Use this method to define your button->command mappings. Buttons can be
@@ -230,9 +236,9 @@ public class RobotContainer {
             // Constants.Logitech_F310_Controller.Back_Button);
             // ejectButton = new JoystickButton(m_driverController,
             // Constants.Logitech_F310_Controller.Button_X);
-            // moveToTargetButton = new JoystickButton(m_driverController,
-            // Constants.Logitech_F310_Controller.Start_Button); ***what to do w/ this?
             controllerFound = true;
+
+            alignWithTargetButton = new JoystickButton(m_driverController, Constants.RadioMaster_Controller.SB3_Axis);// Button should be changed
 
         // } else if (controllerType.equals("Controller (Gamepad F310)")) {
 
@@ -411,13 +417,15 @@ public class RobotContainer {
                 // new GotoIntakePosition(m_shooterIndex),
                 // pathCommand);
 
+
         SequentialCommandGroup autoCommand = new SequentialCommandGroup(
                 // Shoot, Follow Path (2 balls), Shoot
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
                 new GotoIntakePosition(m_shooterIndex),
-                new StartIntake(m_shooterIndex, m_intake),
-                pathCommand,
+                new ParallelDeadlineGroup(
+                        pathCommand,
+                        new StartIntake(m_shooterIndex, m_intake)),
                 new StopIntake(m_intake, m_shooterIndex),
                 new GotoShootingPosition(m_shooterIndex),  // .withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),

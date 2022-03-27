@@ -23,27 +23,40 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void turnOnLight() {
+  public void turnOnVisionLight() {
+    //turn the green LEDs on and off.
+    //The LEDs will be controlled by a digital output from the RoboRio.
+    cameraLight.set(true);
+  }
+
+  public void turnOffVisionLight() {
+    //turn the green LEDs on and off.
+    //The LEDs will be controlled by a digital output from the RoboRio.
+    //true = on, false = off
+    cameraLight.set(false);
 
   }
 
-  public void turnOffLight() {
-
-  }
-
-  public boolean isVisionTargetDetected() {
-    //NetworkTableInstance.getEntry("").;
+  public boolean visionTargetIsVisible() {
+    //The data for this will come from the Jetson Nano via network tables.
+    return NetworkTableInstance.getDefault().getEntry("vision/target_detected").getBoolean(false);
   }
 
   public double visionTargetDistanceFromCenter() {
-    //NetworkTableInstance.getEntry("").''
+    //returns the number of pixels from the center of the screen to the center of the vision target. 
+    //The data for this will come from the Jetson Nano via network tables.
+    return NetworkTableInstance.getDefault().getEntry("vision/target_distance_from_center").getDouble(0.0);
   }
 
-  public boolean isCargoVisible() {
-    //NetworkTableInstance.getEntry("").;
+  public boolean cargoIsVisible() {
+    //The data for this will come from the Jetson Nano via network tables.
+    return NetworkTableInstance.getDefault().getEntry("vision/cargo_detected").getBoolean(false);
   }
 
   public double cargoDistanceFromCenter() {
-    //NetworkTableInstance.getEntry("").;
+    //tell how many pixels the piece of cargo is from the center of the screen.
+    //The data for this will come from the Jetson Nano via network tables.
+    return NetworkTableInstance.getDefault().getEntry("vision/cargo_distance_from_center").getDouble(0.0);
   }
+
 }

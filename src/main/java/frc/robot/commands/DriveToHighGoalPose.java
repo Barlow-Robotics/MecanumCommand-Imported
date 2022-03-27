@@ -1,32 +1,34 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// Probably won't need due to change in auto plans
 
-package frc.robot.commands;
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+// package frc.robot.commands;
 
-public class DriveToHighGoalPose extends CommandBase {
-  /** Creates a new GoToHighGoalPose. */
-  public DriveToHighGoalPose() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+// import edu.wpi.first.wpilibj2.command.CommandBase;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+// public class DriveToHighGoalPose extends CommandBase {
+//   /** Creates a new GoToHighGoalPose. */
+//   public DriveToHighGoalPose() {
+//     // Use addRequirements() here to declare subsystem dependencies.
+//   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
+//   // Called when the command is initially scheduled.
+//   @Override
+//   public void initialize() {}
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+//   // Called every time the scheduler runs while the command is scheduled.
+//   @Override
+//   public void execute() {}
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
-}
+//   // Called once the command ends or is interrupted.
+//   @Override
+//   public void end(boolean interrupted) {}
+
+//   // Returns true when the command should end.
+//   @Override
+//   public boolean isFinished() {
+//     return false;
+//   }
+// }

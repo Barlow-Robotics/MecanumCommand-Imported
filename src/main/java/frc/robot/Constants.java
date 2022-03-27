@@ -76,7 +76,7 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final int encoderTimeout = 30;  // mSec
         public static final int mainFeedbackLoop = 0;
 
-        public static final double BallChaseSpeed = 2.0 ;  // meters/sec
+        public static final double CorrectionRotationSpeed = 2.0 ;  // meters/sec
 
         // public static final double maxAngleChangeForAlignFinish = 0.5;  // degrees
         // public static final double maxAngleDifferenceBetweenNavXAndVision = 0.01;
