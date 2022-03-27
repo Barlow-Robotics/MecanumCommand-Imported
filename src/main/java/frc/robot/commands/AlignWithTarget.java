@@ -13,67 +13,66 @@ import frc.robot.Constants;
 
 public class AlignWithTarget extends CommandBase {
 
-  private PIDController pid = new PIDController(0.01, 0, 0);
-  private DriveSubsystem m_drive;
-  private Vision m_vision;
+    private PIDController pid = new PIDController(0.01, 0, 0);
+    private DriveSubsystem m_drive;
+    private Vision m_vision;
 
-  private double error;
-  private double leftVelocity;
-  private double rightVelocity;
-  private int missedFrames = 0;
-  private double adjustment;
+    private double error;
+    private double leftVelocity;
+    private double rightVelocity;
+    private double adjustment;
+    private boolean alignmentComplete = false;
 
-  /** Creates a new AlignRobotToVision. */
-  public AlignWithTarget(Vision v, DriveSubsystem d) {
-    m_vision = v; 
-    m_drive = d; 
-    addRequirements(m_vision); 
-    addRequirements(m_drive);
-  }
+    /** Creates a new AlignRobotToVision. */
+    public AlignWithTarget(Vision v, DriveSubsystem d) {
+        m_vision = v;
+        m_drive = d;
+        addRequirements(m_vision);
+        addRequirements(m_drive);
+    }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    pid.reset();
-    missedFrames = 0 ;
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+        pid.reset();
+        alignmentComplete = false;
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if(m_vision.visionTargetIsVisible()){
-        error = m_vision.visionTargetDistanceFromCenter();
-        adjustment = pid.calculate(error) ;
-        adjustment = Math.signum(adjustment)*Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0) ;
-        leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-        rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        if (m_vision.visionTargetIsVisible()) {
+            error = m_vision.visionTargetDistanceFromCenter();
+            if (Math.abs(error) < Constants.VisionConstants.AlignmentTolerence) {
+                alignmentComplete = true;
+                leftVelocity = 0.0;
+                rightVelocity = 0.0;
+            } else {
+                adjustment = pid.calculate(error);
+                adjustment = Math.signum(adjustment)
+                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+            }
+            m_drive.setWheelSpeeds(
+                    new MecanumDriveWheelSpeeds(
+                            leftVelocity, rightVelocity, leftVelocity, rightVelocity));
+        } else {
+            alignmentComplete = true;
+        }
+    }
 
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
         m_drive.setWheelSpeeds(
-            new MecanumDriveWheelSpeeds(
-              leftVelocity, rightVelocity, leftVelocity, rightVelocity)
-            );
-    } else{
-      missedFrames++;
+                new MecanumDriveWheelSpeeds(
+                        0, 0, 0, 0));
     }
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_drive.setWheelSpeeds(
-      new MecanumDriveWheelSpeeds(
-        0, 0, 0, 0)
-    );
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    if (missedFrames > 10){
-      return true;
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return alignmentComplete;
     }
-    else{
-      return false;
-    }
-  }
 }

@@ -257,6 +257,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 
     public static final class VisionConstants {
         public static final int ID_CameraLight = 5;
+        public static final double AlignmentTolerence = 5.0 ; // pixels
     }
 
     public static final class ArmBarConstants {
