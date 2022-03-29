@@ -16,6 +16,7 @@ import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -386,6 +387,12 @@ public class RobotContainer {
 
         // use network tables to get value from driver station
 
+        ArrayList<Translation2d> cargoPoints = new ArrayList<Translation2d>() ;
+        cargoPoints.add( new Translation2d(5.0, 6.2)) ;
+        cargoPoints.add( new Translation2d(5.16, 1.9)) ;
+        cargoPoints.add( new Translation2d(7.65, 0.30)) ;
+        cargoPoints.add( new Translation2d(1.2, 1.2)) ;
+
         PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
                 trajectory,
                 m_robotDrive::getPose,
@@ -402,7 +409,10 @@ public class RobotContainer {
                 new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 m_robotDrive::setWheelSpeeds,
-                m_robotDrive);
+                cargoPoints ,
+                m_robotDrive ,
+                m_vision
+                );
 
         // Reset odometry to the starting pose of the trajectory.
         Pose2d temp = trajectory.getInitialPose();
@@ -423,15 +433,13 @@ public class RobotContainer {
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
                 new GotoIntakePosition(m_shooterIndex),
-                new ParallelDeadlineGroup(
-                        pathCommand,
-                        new StartIntake(m_shooterIndex, m_intake)),
+                new StartIntake(m_shooterIndex, m_intake),
+                pathCommand,
                 new StopIntake(m_intake, m_shooterIndex),
                 new GotoShootingPosition(m_shooterIndex),  // .withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex)
                 //new MoveToTarget(m_robotDrive)
-             // new command scheduler (create new path, MoveToTarget, rotate until facing hub, go to shooting posision, shoot)
         );
 
         // Run path following command, then stop at the end.

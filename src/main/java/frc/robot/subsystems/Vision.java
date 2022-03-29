@@ -39,13 +39,13 @@ public class Vision extends SubsystemBase {
 
   public boolean visionTargetIsVisible() {
     //The data for this will come from the Jetson Nano via network tables.
-    return NetworkTableInstance.getDefault().getEntry("vision/target_detected").getBoolean(false);
+    return NetworkTableInstance.getDefault().getEntry("vision/vision_target_detected").getBoolean(false);
   }
 
   public double visionTargetDistanceFromCenter() {
     //returns the number of pixels from the center of the screen to the center of the vision target. 
     //The data for this will come from the Jetson Nano via network tables.
-    return NetworkTableInstance.getDefault().getEntry("vision/target_distance_from_center").getDouble(0.0);
+    return NetworkTableInstance.getDefault().getEntry("vision/vision_target_distance_from_center").getDouble(0.0);
   }
 
   public boolean cargoIsVisible() {

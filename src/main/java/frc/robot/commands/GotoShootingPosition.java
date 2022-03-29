@@ -44,5 +44,4 @@ public class GotoShootingPosition extends CommandBase {
             return false;
         }
     }
-
 }

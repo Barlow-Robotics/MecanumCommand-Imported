@@ -12,15 +12,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 // import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -46,8 +43,6 @@ public class PPMecanumControllerCommand extends CommandBase {
     private final Consumer<MecanumDriveWheelSpeeds> m_outputWheelSpeeds;
 
     private ArrayList<Translation2d> m_cargoLocations ;
-    private Vision m_vision ;
-    private PIDController m_cargoPID ;
 
     /**
      * Constructs a new PPMecanumControllerCommand that when executed will follow
@@ -90,21 +85,21 @@ public class PPMecanumControllerCommand extends CommandBase {
             double maxWheelVelocityMetersPerSecond,
             Consumer<MecanumDriveWheelSpeeds> outputWheelSpeeds,
             ArrayList<Translation2d> cargo ,
-            DriveSubsystem drive ,
-            Vision v ) {
+            Subsystem... requirements) {
         m_trajectory = trajectory;
         m_pose = pose;
         m_kinematics = kinematics;
 
         m_controller = new HolonomicDriveController(xController, yController, thetaController);
-        m_maxWheelVelocityMetersPerSecond = maxWheelVelocityMetersPerSecond;
-        m_outputWheelSpeeds = outputWheelSpeeds;
-        m_cargoLocations = cargo ;
-        m_vision = v ;
-        m_cargoPID = new PIDController(0.005, 0.0, 0.0001) ;
+        //m_controller.setTolerance(new Pose2d(0.5, 0.5, new Rotation2d(2.0 * (Math.PI / 180.0))));
 
-        addRequirements(drive);
-        addRequirements(v);
+        m_maxWheelVelocityMetersPerSecond = maxWheelVelocityMetersPerSecond;
+
+        m_outputWheelSpeeds = outputWheelSpeeds;
+
+        m_cargoLocations = cargo ;
+
+        addRequirements(requirements);
     }
 
     @Override
@@ -128,8 +123,6 @@ public class PPMecanumControllerCommand extends CommandBase {
         return result ;
     }
 
-    boolean trackingCargo = false ;
-    int missedCargoFrames = 0 ;
 
 
     @Override
@@ -138,47 +131,9 @@ public class PPMecanumControllerCommand extends CommandBase {
         double curTime = m_timer.get();
         var desiredState = (PathPlannerState) m_trajectory.sample(curTime);
 
-        Pose2d currentPose = m_pose.get() ;
 
-        double cargoDistanceFromCenter = 0.0 ;
-        Translation2d nearestCargoLocation = getNearbyCargoLocation(currentPose.getTranslation(), 1.5) ;
-        if (nearestCargoLocation != null) {
-            if (m_vision.cargoIsVisible()) {
-                if (!trackingCargo) {
-                    m_cargoPID.reset();
-                }
-                trackingCargo = true ;
-                missedCargoFrames = 0 ;
-                cargoDistanceFromCenter = m_vision.cargoDistanceFromCenter() ;
-                // need to compute velocity adjustment
-
-            } else {
-                if ( trackingCargo) {
-                    missedCargoFrames++ ;
-                    if ( missedCargoFrames > 5) {
-                        trackingCargo = false ;
-                    }
-                }
-            }
-        } else {
-            trackingCargo = false ;
-            missedCargoFrames = 0 ;
-        }
-
-        ChassisSpeeds targetChassisSpeeds ;
-        MecanumDriveWheelSpeeds targetWheelSpeeds ;
-        if ( trackingCargo) {
-            double velocity = desiredState.velocityMetersPerSecond ;
-            double adjustment = m_cargoPID.calculate(cargoDistanceFromCenter) ;
-            double ls = velocity + adjustment ;
-            double rs = velocity - adjustment ;
-            targetWheelSpeeds = new MecanumDriveWheelSpeeds(ls, rs, ls, rs ) ;
-        } else {
-            targetChassisSpeeds = m_controller.calculate(currentPose, desiredState, desiredState.holonomicRotation);
-            targetWheelSpeeds = m_kinematics.toWheelSpeeds(targetChassisSpeeds);
-        }
-
-        //var targetChassisSpeeds = m_controller.calculate(currentPose, desiredState, desiredState.holonomicRotation);
+        var targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState, desiredState.holonomicRotation);
+        var targetWheelSpeeds = m_kinematics.toWheelSpeeds(targetChassisSpeeds);
 
         NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_front_left").setDouble(targetWheelSpeeds.frontLeftMetersPerSecond);
         NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_front_right").setDouble(targetWheelSpeeds.frontRightMetersPerSecond);
