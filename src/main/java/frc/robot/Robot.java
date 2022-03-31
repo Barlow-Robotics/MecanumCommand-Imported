@@ -5,163 +5,164 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-// import edu.wpi.first.math.trajectory.Trajectory;
-// import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 //import frc.robot.sim.PhysicsSim;
 
-
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the
+ * build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
-private Command m_autonomousCommand;
+    private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+    private RobotContainer m_robotContainer;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-    //Climb.m_armBarMotor.set(ArmBarConstants.defaultangle); (<-- set to 180, set motors to break)
-  }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-    
-    NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
-
-    // for ( int i = 0; i <=m_robotContainer.m_driverController.getAxisCount(); i++) {
-    //   String name = "controller/axis " + i;
-    //   try {
-    //     inst.getEntry(name).setDouble(m_robotContainer.m_driverController.getRawAxis(i)) ;
-    //   } catch (Exception ex) {
-
-    //   }
-    // }
-
-    // for ( int i = 0; i <= m_robotContainer.m_driverController.getButtonCount(); i++) {
-    //   String name = "controller/button " + i;
-    //   try {
-    //     inst.getEntry(name).setBoolean(m_robotContainer.m_driverController.getRawButton(i)) ;
-    //   } catch (Exception ex) {
-        
-    //   }
-    // }
-
-    // for ( int i = 0; i <= m_robotContainer.m_gamepad.getPOVCount(); i++) {
-    //   String name = "controller/POV " + i;
-    //   try {
-    //     inst.getEntry(name).setDouble(m_robotContainer.m_gamepad.getPOV(i)) ;
-    //   } catch (Exception ex) {
-        
-    //   }
-    // }
-
-
-
-
-  }
-
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any
+     * initialization code.
      */
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    @Override
+    public void robotInit() {
+        // Instantiate our RobotContainer. This will perform all our button bindings,
+        // and put our
+        // autonomous chooser on the dashboard.
+        m_robotContainer = new RobotContainer();
     }
-  }
 
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {}
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for
+     * items like
+     * diagnostics that you want ran during disabled, autonomous, teleoperated and
+     * test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and
+     * SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled
+        // commands, running already-scheduled commands, removing finished or
+        // interrupted commands,
+        // and running subsystem periodic() methods. This must be called from the
+        // robot's periodic
+        // block in order for anything in the Command-based framework to work.
+        CommandScheduler.getInstance().run();
 
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+        // for ( int i = 0; i <=m_robotContainer.m_driverController.getAxisCount(); i++)
+        // {
+        // String name = "controller/axis " + i;
+        // try {
+        // inst.getEntry(name).setDouble(m_robotContainer.m_driverController.getRawAxis(i))
+        // ;
+        // } catch (Exception ex) {
+
+        // }
+        // }
+
+        // for ( int i = 0; i <= m_robotContainer.m_driverController.getButtonCount();
+        // i++) {
+        // String name = "controller/button " + i;
+        // try {
+        // inst.getEntry(name).setBoolean(m_robotContainer.m_driverController.getRawButton(i))
+        // ;
+        // } catch (Exception ex) {
+
+        // }
+        // }
+
+        // for ( int i = 0; i <= m_robotContainer.m_gamepad.getPOVCount(); i++) {
+        // String name = "controller/POV " + i;
+        // try {
+        // inst.getEntry(name).setDouble(m_robotContainer.m_gamepad.getPOV(i)) ;
+        // } catch (Exception ex) {
+
+        // }
+        // }
+
     }
-  }
 
-  //private long startTime, endTime, duration, previousStartTime;
+    /** This function is called once each time the robot enters Disabled mode. */
+    @Override
+    public void disabledInit() {
+    }
 
+    @Override
+    public void disabledPeriodic() {
+    }
 
-  // Servo testrun = new Servo(1);
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {
-    // endTime = System.currentTimeMillis();
-    // duration = endTime - startTime;
-    // NetworkTableInstance.getDefault().getEntry("performance/frameTime").setDouble((double) duration) ;
+    /**
+     * This autonomous runs the autonomous command selected by your
+     * {@link RobotContainer} class.
+     */
+    @Override
+    public void autonomousInit() {
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+        // schedule the autonomous command (example)
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
+    }
 
-    // double control = Math.max(0, m_robotContainer.m_driverController.getRawAxis(2));
-    // if (control > 0.2) {
-    //   int wpk = 1;
-    // } 
-    // testrun.setAngle(control*180.0);
-    // testrun.setRaw((int)control*255);
-  }
+    /** This function is called periodically during autonomous. */
+    @Override
+    public void autonomousPeriodic() {
+    }
 
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
+    @Override
+    public void teleopInit() {
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+    }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+    // private long startTime, endTime, duration, previousStartTime;
 
+    // Servo testrun = new Servo(1);
+    /** This function is called periodically during operator control. */
+    @Override
+    public void teleopPeriodic() {
+    }
 
-  @Override
-  public void simulationInit() {
-  }
-  
-  @Override
-  public void simulationPeriodic() {
-		//PhysicsSim.getInstance().run();
-	}
+    @Override
+    public void testInit() {
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
+        m_robotContainer.m_armBar.resetPosition(0.0);
+    }
+
+    /** This function is called periodically during test mode. */
+    @Override
+    public void testPeriodic() {
+
+        m_robotContainer.m_armBar.rotateGripperArmDegree(360);
+        m_robotContainer.m_armBar.report();
+
+    }
+
+    @Override
+    public void simulationInit() {
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        // PhysicsSim.getInstance().run();
+    }
 }

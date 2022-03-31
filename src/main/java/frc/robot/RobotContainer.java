@@ -232,7 +232,7 @@ public class RobotContainer {
             // liftToIntakeButton = new JoystickButton(m_driverController, 0 );
 
             shooterLowButton = new JoystickButton(m_driverController, Constants.RadioMaster_Controller.SH_Momentary);
-            shooterHighButton = new JoystickButton(m_driverController, 2);
+            shooterHighButton = new JoystickButton(m_driverController, Constants.RadioMaster_Controller.SC_Button);
             // climbButton = new JoystickButton(m_driverController,
             // Constants.Logitech_F310_Controller.Back_Button);
             // ejectButton = new JoystickButton(m_driverController,

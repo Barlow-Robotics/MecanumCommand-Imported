@@ -162,7 +162,7 @@ public class Climb extends CommandBase {
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.TraverseBarRotationAngle);
                 } else {
                     if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
-                        m_armBar.setSlowMotionConfig();  // slow thngs down so we don't drop like a stone
+//                        m_armBar.setSlowMotionConfig();  // slow thngs down so we don't drop like a stone
                         latchedAngle = m_armBar.getArmAngle() ;
                         currentState = ArmCommandState.ReleavingLoadOnHighBar;
                     }

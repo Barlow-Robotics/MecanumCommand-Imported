@@ -107,10 +107,11 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final int SF_Axis = 4 ;
         public static final int SE_Axis = 5 ;
         public static final int SH_Momentary = 4 ;
+        public static final int SC_Button = 4 ;
 
-        public static final double Forward_Axis_Attenuation = 0.5 ;
-        public static final double Lateral_Axis_Attenuation = 0.5 ;
-        public static final double Yaw_Axis_Attenuation = 0.5 ;
+        public static final double Forward_Axis_Attenuation = 0.7 ;
+        public static final double Lateral_Axis_Attenuation = 0.7 ;
+        public static final double Yaw_Axis_Attenuation = 0.7 ;
 
         // // Constants for buttons
         // public static final int Button_A = 2;
@@ -283,6 +284,31 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double UnitsPerArmRotation = UnitsPerMotorRotation * GearboxGearRatio * ChainGearRatio ;
         public static final double UnitsPerArmDegree = UnitsPerArmRotation / 360.0 ;
 
+        public static final double DegreePerSecond = UnitsPerArmDegree / 10.0 ;
+
+        public static final double MaxMotorRPMs = 6300 ;
+        public static final double MaxMotorVelocity = UnitsPerMotorRotation * MaxMotorRPMs / 60.0 / 10.0 ; // per 100 mSec 
+
+        public static final double MaxDegreesPerSecond = MaxMotorVelocity / DegreePerSecond ;
+
+//        public static final double CruiseVelocity = 100 * DegreePerSecond ;
+        public static final double CruiseVelocity = 100 * DegreePerSecond ;
+        public static final double MaxAcceleration = CruiseVelocity / 0.5 ;  // get to max velocity in 1/2 second
+
+//        public static final double MaxAcceleration = CruiseVelocity * 0.30 ;
+        public static final int AccelerationSmoothing = 2 ; 
+
+
+        // public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        // public static final double DesiredArmVelocity = 0.50 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        //public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
+        // public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
+        // public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
+        // public static final int AccelerationSmoothing = 2 ;
+
+
+
+
         // public static final double AngleToNextArm = 33.0 ;
         // public static final double MidBarRotationAngle = 95;
         // public static final double HighBarRotationAngle = MidBarRotationAngle + 90 + AngleToNextArm ;
@@ -302,12 +328,12 @@ import edu.wpi.first.wpilibj.SerialPort;
 
         // public static final double ConsistentRotationAngleTolerance = 6;
 
-        // public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
-        public static final double DesiredArmVelocity = 0.50 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
-        public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
-        // public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
-        public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
-        public static final int AccelerationSmoothing = 2 ;
+        // // public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        // public static final double DesiredArmVelocity = 0.50 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
+        // public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
+        // // public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
+        // public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
+        // public static final int AccelerationSmoothing = 2 ;
 
         public static final double SlowArmVelocity = 10 ;
         public static final double SlowCruiseVelocity = (UnitsPerArmDegree * SlowArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
