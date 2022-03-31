@@ -429,14 +429,14 @@ public class RobotContainer {
 
 
         SequentialCommandGroup autoCommand = new SequentialCommandGroup(
-                // Shoot, Follow Path (2 balls), Shoot
+                // Shoot, Follow Path (2 balls) With Vision, Shoot
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
-                new GotoIntakePosition(m_shooterIndex),
+                new GotoIntakePosition(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
                 new StartIntake(m_shooterIndex, m_intake),
                 pathCommand,
                 new StopIntake(m_intake, m_shooterIndex),
-                new GotoShootingPosition(m_shooterIndex),  // .withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
+                new GotoShootingPosition(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex)
                 //new MoveToTarget(m_robotDrive)

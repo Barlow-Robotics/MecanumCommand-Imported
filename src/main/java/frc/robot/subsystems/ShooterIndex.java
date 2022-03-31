@@ -49,6 +49,10 @@ public class ShooterIndex extends SubsystemBase {
 
         setMotorConfig(beltMotor);
         setMotorConfig(flyWheelMotor);
+        extendSolenoid.set(false);
+        extendSolenoid2.set(false);
+        retractSolenoid.set(true) ;
+        retractSolenoid2.set(true) ;
 
         transitionTimer = new Timer() ;
     }
@@ -86,9 +90,11 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(false);
         retractSolenoid.set(true);
         retractSolenoid2.set(true);
-        transitionTimer.reset();
-        transitionTimer.start();
-        transitionState = TransitionState.In_Transition ;
+        if ( transitionState != TransitionState.In_Transition) {
+            transitionTimer.reset();
+            transitionTimer.start();
+            transitionState = TransitionState.In_Transition ;
+        }
     }
 
     public void GotoIntakePosition() {
@@ -96,14 +102,17 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(true);
         retractSolenoid.set(false);
         retractSolenoid2.set(false);
-        transitionTimer.reset();
-        transitionTimer.start();
-        transitionState = TransitionState.In_Transition ;
+        if ( transitionState != TransitionState.In_Transition) {
+            transitionTimer.reset();
+            transitionTimer.start();
+            transitionState = TransitionState.In_Transition ;
+        }
     }
 
     public LiftPosition getPosition() { //NO MORE MOTOR, NOW PISTON - use sensor or time (not rec) ?
 
         if ( transitionState == TransitionState.In_Transition) {
+
             if ( transitionTimer.hasElapsed(Constants.ShooterConstants.ShooterTransitionTimeout) ) {
                 transitionState = TransitionState.Idle ;
                 transitionTimer.stop();
@@ -113,7 +122,7 @@ public class ShooterIndex extends SubsystemBase {
         if (transitionState == TransitionState.Idle) {
             if (!extendSolenoid.get() && retractSolenoid.get() && !extendSolenoid2.get() && retractSolenoid2.get()) {
                 return LiftPosition.Shooting;
-            } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid.get() && !retractSolenoid2.get()) {
+            } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid2.get() && !retractSolenoid2.get()) {
                 return LiftPosition.Intake;
             } else {
                 return LiftPosition.In_Transition;
