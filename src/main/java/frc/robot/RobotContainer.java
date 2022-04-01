@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import java.util.ArrayList;
 // import edu.wpi.first.networktables.*;
 
@@ -432,14 +434,14 @@ public class RobotContainer {
                 // Shoot, Follow Path (2 balls) With Vision, Shoot
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex),
-                new GotoIntakePosition(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
+                new GotoIntakePosition(m_shooterIndex).andThen(new WaitCommand(Constants.AutoConstants.AutoIndexRaiseTimeout)), 
                 new StartIntake(m_shooterIndex, m_intake),
                 pathCommand,
                 new StopIntake(m_intake, m_shooterIndex),
-                new GotoShootingPosition(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoIndexRaiseTimeout),
+                new GotoShootingPosition(m_shooterIndex).andThen(new WaitCommand(Constants.AutoConstants.AutoIndexLowerTimeout)),
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex)
-                //new MoveToTarget(m_robotDrive)
+                //new MoveToTarget(m_robotDrive)                
         );
 
         // Run path following command, then stop at the end.

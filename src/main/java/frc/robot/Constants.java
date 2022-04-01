@@ -240,7 +240,8 @@ import edu.wpi.first.wpilibj.SerialPort;
         // public static final double kAutoDriveSpeed = 0.2;
 
         public static final double AutoShootingTimeout = 2.0;
-        public static final double AutoIndexRaiseTimeout = 2.0;
+        public static final double AutoIndexRaiseTimeout = 1.25;
+        public static final double AutoIndexLowerTimeout = 0.75;
 
         // these are the constants from waterbury
         // public static final double kPXController = 6.0;
@@ -395,7 +396,7 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double kD = 0.0;
 
         public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
-        public static final double BeltMotorIntakeVelocity = 700 * RPM;
+        public static final double BeltMotorIntakeVelocity = 1000 * RPM;
 
         public static final int ID_FlyWheelMotor = 8;
         public static final double FlyWheelMotorLowGoalShootingVelocity = 2500 * RPM;

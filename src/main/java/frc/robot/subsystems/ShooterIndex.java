@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.Constants;
+import frc.robot.commands.GotoShootingPosition;
 import edu.wpi.first.networktables.*;
 import frc.robot.sim.PhysicsSim;
 
@@ -35,12 +36,6 @@ public class ShooterIndex extends SubsystemBase {
     Solenoid retractSolenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.Lift.ID_Retract_Solenoid2);
     Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
-    Timer transitionTimer ;
-
-    enum TransitionState { Idle, In_Transition } ;
-
-    TransitionState transitionState = TransitionState.Idle ;
- 
     public enum LiftPosition { In_Transition, Intake, Shooting } ;
 
     public ShooterIndex() {
@@ -49,12 +44,7 @@ public class ShooterIndex extends SubsystemBase {
 
         setMotorConfig(beltMotor);
         setMotorConfig(flyWheelMotor);
-        extendSolenoid.set(false);
-        extendSolenoid2.set(false);
-        retractSolenoid.set(true) ;
-        retractSolenoid2.set(true) ;
-
-        transitionTimer = new Timer() ;
+        GotoShootingPosition() ;
     }
 
     @Override
@@ -90,11 +80,6 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(false);
         retractSolenoid.set(true);
         retractSolenoid2.set(true);
-        if ( transitionState != TransitionState.In_Transition) {
-            transitionTimer.reset();
-            transitionTimer.start();
-            transitionState = TransitionState.In_Transition ;
-        }
     }
 
     public void GotoIntakePosition() {
@@ -102,31 +87,14 @@ public class ShooterIndex extends SubsystemBase {
         extendSolenoid2.set(true);
         retractSolenoid.set(false);
         retractSolenoid2.set(false);
-        if ( transitionState != TransitionState.In_Transition) {
-            transitionTimer.reset();
-            transitionTimer.start();
-            transitionState = TransitionState.In_Transition ;
-        }
     }
 
     public LiftPosition getPosition() { //NO MORE MOTOR, NOW PISTON - use sensor or time (not rec) ?
 
-        if ( transitionState == TransitionState.In_Transition) {
-
-            if ( transitionTimer.hasElapsed(Constants.ShooterConstants.ShooterTransitionTimeout) ) {
-                transitionState = TransitionState.Idle ;
-                transitionTimer.stop();
-                transitionTimer.reset() ;
-            }
-        }
-        if (transitionState == TransitionState.Idle) {
-            if (!extendSolenoid.get() && retractSolenoid.get() && !extendSolenoid2.get() && retractSolenoid2.get()) {
-                return LiftPosition.Shooting;
-            } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid2.get() && !retractSolenoid2.get()) {
-                return LiftPosition.Intake;
-            } else {
-                return LiftPosition.In_Transition;
-            }
+        if (!extendSolenoid.get() && retractSolenoid.get() && !extendSolenoid2.get() && retractSolenoid2.get()) {
+            return LiftPosition.Shooting;
+        } else if (extendSolenoid.get() && !retractSolenoid.get() && extendSolenoid2.get() && !retractSolenoid2.get()) {
+            return LiftPosition.Intake;
         } else {
             return LiftPosition.In_Transition;
         }
