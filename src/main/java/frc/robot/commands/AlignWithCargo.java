@@ -41,7 +41,7 @@ public class AlignWithCargo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_vision.cargoIsVisible()){
+    if(m_vision.cargoIsVisible() && (m_vision.bbWidth() > 50 || m_vision.bbHeight() > 85)){
         error = m_vision.cargoDistanceFromCenter();
         adjustment = pid.calculate(error);
         adjustment = Math.signum(adjustment)*Math.min( Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0) ;

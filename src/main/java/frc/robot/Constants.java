@@ -232,10 +232,10 @@ import edu.wpi.first.wpilibj.SerialPort;
     public static final class AutoConstants {
         // public static final double kMaxSpeedMetersPerSecond = 4 ;
         // public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxSpeedMetersPerSecond = 2.0;
+        public static final double kMaxSpeedMetersPerSecond = 1.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI / 0.5;
         // public static final double kAutoDriveDistanceInches = 1;
         // public static final double kAutoDriveSpeed = 0.2;
 
@@ -250,7 +250,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 
         public static final double kPXController = 12.0 ;
         public static final double kPYController = 12.0 ;
-        public static final double kPThetaController = 12.0;
+        public static final double kPThetaController = 6.0;
 
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints 
@@ -395,8 +395,9 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
-        public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
-        public static final double BeltMotorIntakeVelocity = 1000 * RPM;
+//        public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
+        public static final double FlyWheelMotorIntakeVelocity = -1900 * RPM;
+        public static final double BeltMotorIntakeVelocity = 700 * RPM;
 
         public static final int ID_FlyWheelMotor = 8;
         public static final double FlyWheelMotorLowGoalShootingVelocity = 2500 * RPM;

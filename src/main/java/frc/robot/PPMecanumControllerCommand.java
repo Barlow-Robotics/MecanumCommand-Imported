@@ -170,8 +170,8 @@ public class PPMecanumControllerCommand extends CommandBase {
         if ( trackingCargo) {
             double velocity = desiredState.velocityMetersPerSecond ;
             double adjustment = m_cargoPID.calculate(cargoDistanceFromCenter) ;
-            double ls = velocity + adjustment ;
-            double rs = velocity - adjustment ;
+            double ls = velocity - adjustment ;
+            double rs = velocity + adjustment ;
             targetWheelSpeeds = new MecanumDriveWheelSpeeds(ls, rs, ls, rs ) ;
         } else {
             targetChassisSpeeds = m_controller.calculate(currentPose, desiredState, desiredState.holonomicRotation);

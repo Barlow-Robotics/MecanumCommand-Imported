@@ -53,6 +53,14 @@ public class Vision extends SubsystemBase {
     return NetworkTableInstance.getDefault().getEntry("vision/cargo_detected").getBoolean(false);
   }
 
+  public double bbHeight() {
+    return NetworkTableInstance.getDefault().getEntry("vision/bb_height").getDouble(0.0);
+  }
+
+  public double bbWidth() {
+    return NetworkTableInstance.getDefault().getEntry("vision/bb_width").getDouble(0.0);
+  }
+
   public double cargoDistanceFromCenter() {
     //tell how many pixels the piece of cargo is from the center of the screen.
     //The data for this will come from the Jetson Nano via network tables.

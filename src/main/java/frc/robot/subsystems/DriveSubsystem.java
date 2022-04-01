@@ -245,15 +245,15 @@ public class DriveSubsystem extends SubsystemBase {
         NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(m_odometry.getPoseMeters().getY());
         NetworkTableInstance.getDefault().getEntry("drive/odometry/theta").setDouble(m_odometry.getPoseMeters().getRotation().getDegrees());
     
-        NetworkTableInstance.getDefault().getEntry("drive/frontLeft_closed_loop_error").setDouble(m_frontLeft.getClosedLoopError());
-        NetworkTableInstance.getDefault().getEntry("drive/frontRight_closed_loop_error").setDouble(m_frontRight.getClosedLoopError());
-        NetworkTableInstance.getDefault().getEntry("drive/backLeft_closed_loop_error").setDouble(m_backLeft.getClosedLoopError());
-        NetworkTableInstance.getDefault().getEntry("drive/backRight_closed_loop_error").setDouble(m_backRight.getClosedLoopError());
+        // NetworkTableInstance.getDefault().getEntry("drive/frontLeft_closed_loop_error").setDouble(m_frontLeft.getClosedLoopError());
+        // NetworkTableInstance.getDefault().getEntry("drive/frontRight_closed_loop_error").setDouble(m_frontRight.getClosedLoopError());
+        // NetworkTableInstance.getDefault().getEntry("drive/backLeft_closed_loop_error").setDouble(m_backLeft.getClosedLoopError());
+        // NetworkTableInstance.getDefault().getEntry("drive/backRight_closed_loop_error").setDouble(m_backRight.getClosedLoopError());
 
-        NetworkTableInstance.getDefault().getEntry("drive/frontLeft_closed_loop_target").setDouble(m_frontLeft.getClosedLoopTarget());
-        NetworkTableInstance.getDefault().getEntry("drive/frontRight_closed_loop_target").setDouble(m_frontRight.getClosedLoopTarget());
-        NetworkTableInstance.getDefault().getEntry("drive/backLeft_closed_loop_target").setDouble(m_backLeft.getClosedLoopTarget());
-        NetworkTableInstance.getDefault().getEntry("drive/backRight_closed_loop_target").setDouble(m_backRight.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("drive/frontLeft_closed_loop_target").setDouble(m_frontLeft.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("drive/frontRight_closed_loop_target").setDouble(m_frontRight.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("drive/backLeft_closed_loop_target").setDouble(m_backLeft.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("drive/backRight_closed_loop_target").setDouble(m_backRight.getClosedLoopTarget());
     }
 
     boolean simulationInitialized = false;

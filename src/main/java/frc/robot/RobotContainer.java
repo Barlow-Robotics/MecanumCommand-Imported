@@ -122,7 +122,7 @@ public class RobotContainer {
         trajectories.add(PathPlanner.loadPath("7_TarmacR1_to_RBallD", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("8_TarmacR1_to_RBallD_RBallE", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("9_TarmacR1_to_RBallE",    maxVel, maxAccel));
-        trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_R BallF", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("10_TarmacR1_to_RBallE_RBallF", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("11_TarmacR2_to_RBallF", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("12_TarmacR2_to_RBallF_RBallE", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("13_Test_Constant_x", maxVel, maxAccel));
@@ -141,6 +141,7 @@ public class RobotContainer {
         trajectories.add(PathPlanner.loadPath("26_TarmacR1_to_RBallE_Vicinity", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("27_TarmacR2_to_RBallF_Vicinity", maxVel, maxAccel));
         trajectories.add(PathPlanner.loadPath("29_Autonomous_Path", maxVel, maxAccel));
+        trajectories.add(PathPlanner.loadPath("Two_Ball_Path_wpk_blue", maxVel, maxAccel));
 
         m_armBar.neutralGripperA();;
         m_armBar.neutralGripperB();
@@ -382,7 +383,7 @@ public class RobotContainer {
 
         //constant x = 13
         //vicinity path = 21
-        PathPlannerTrajectory trajectory = trajectories.get(1);
+        PathPlannerTrajectory trajectory = trajectories.get(29);
 
         // PathPlannerTrajectory trajectory =
         // trajectories.get((int)NetworkTableInstance.getDefault().getEntry("pathSelected").getDouble(20.0));
@@ -394,6 +395,27 @@ public class RobotContainer {
         cargoPoints.add( new Translation2d(5.16, 1.9)) ;
         cargoPoints.add( new Translation2d(7.65, 0.30)) ;
         cargoPoints.add( new Translation2d(1.2, 1.2)) ;
+
+        // PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
+        //         trajectory,
+        //         m_robotDrive::getPose,
+        //         DriveConstants.kDriveKinematics,
+
+        //         new PIDController(6, 0, 0),
+        //         //new PIDController(AutoConstants.kPYController, 0, 0.01),
+        //         new PIDController(6, 0, 0),
+
+
+        //         // new PIDController(AutoConstants.kPXController, 3, 0.1),
+        //         // //new PIDController(AutoConstants.kPYController, 0, 0.01),
+        //         // new PIDController(AutoConstants.kPYController, 3, 0.1),
+        //         new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
+        //         AutoConstants.kMaxSpeedMetersPerSecond,
+        //         m_robotDrive::setWheelSpeeds,
+        //         cargoPoints ,
+        //         m_robotDrive ,
+        //         m_vision
+        //         );
 
         PPMecanumControllerCommand pathCommand = new PPMecanumControllerCommand(
                 trajectory,
@@ -441,8 +463,12 @@ public class RobotContainer {
                 new GotoShootingPosition(m_shooterIndex).andThen(new WaitCommand(Constants.AutoConstants.AutoIndexLowerTimeout)),
                 new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
                 new StopShooting(m_shooterIndex)
-                //new MoveToTarget(m_robotDrive)                
         );
+
+        // SequentialCommandGroup autoCommand = new SequentialCommandGroup(
+        //         // Just vision
+        //         new AlignWithTarget(m_vision, m_robotDrive)
+        // );
 
         // Run path following command, then stop at the end.
         return autoCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
