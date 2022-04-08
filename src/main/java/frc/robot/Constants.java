@@ -51,9 +51,10 @@ import edu.wpi.first.wpilibj.SerialPort;
 
         public static final int PID_id = 0;
         public static final double PID_Period = 1.0 / 20.0;
-        public static final double Drivetrainkf = 0.048; 
-        public static final double DrivetrainkP = 0.01;
-        public static final double DrivetrainkI = 0.0; 
+        public static final double Drivetrainkf = 0.0485; 
+        public static final double DrivetrainkP = 0.001;
+//        public static final double DrivetrainkI = 0.0; 
+        public static final double DrivetrainkI = 0.0005; 
         public static final double DrivetrainkD = 0.001;
 
         public static final double Gear_Ratio = 10.71 ;
@@ -227,8 +228,8 @@ import edu.wpi.first.wpilibj.SerialPort;
         // public static final double kPYController = 6.0;
         // public static final double kPThetaController = 12.0;
 
-        public static final double kPXController = 10.0 ;
-        public static final double kPYController = 10.0 ;
+        public static final double kPXController = 6.0 ;
+        public static final double kPYController = 6.0 ;
 //        public static final double kPThetaController = 4.0;  // this works
         public static final double kPThetaController = 8.0;
 

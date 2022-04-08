@@ -180,17 +180,17 @@ public class PPMecanumControllerCommand extends CommandBase {
 
         //var targetChassisSpeeds = m_controller.calculate(currentPose, desiredState, desiredState.holonomicRotation);
 
-        NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_front_left").setDouble(targetWheelSpeeds.frontLeftMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_front_right").setDouble(targetWheelSpeeds.frontRightMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_back_left").setDouble(targetWheelSpeeds.rearLeftMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_back_right").setDouble(targetWheelSpeeds.rearRightMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_front_left").setDouble(targetWheelSpeeds.frontLeftMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_front_right").setDouble(targetWheelSpeeds.frontRightMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_back_left").setDouble(targetWheelSpeeds.rearLeftMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/saturated_wheel_speeds_back_right").setDouble(targetWheelSpeeds.rearRightMetersPerSecond);
 
         targetWheelSpeeds.desaturate(m_maxWheelVelocityMetersPerSecond);
 
-        NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_front_left").setDouble(targetWheelSpeeds.frontLeftMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_front_right").setDouble(targetWheelSpeeds.frontRightMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_back_left").setDouble(targetWheelSpeeds.rearLeftMetersPerSecond);
-        NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_back_right").setDouble(targetWheelSpeeds.rearRightMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_front_left").setDouble(targetWheelSpeeds.frontLeftMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_front_right").setDouble(targetWheelSpeeds.frontRightMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_back_left").setDouble(targetWheelSpeeds.rearLeftMetersPerSecond);
+        // NetworkTableInstance.getDefault().getEntry("trajectory/desaturated_wheel_speeds_back_right").setDouble(targetWheelSpeeds.rearRightMetersPerSecond);
 
         var cp = m_pose.get() ;
         NetworkTableInstance.getDefault().getEntry("trajectory/currentPose_X").setDouble(cp.getX());
@@ -213,24 +213,42 @@ public class PPMecanumControllerCommand extends CommandBase {
     }
 
 
+    private boolean isCloseEnoughToDestination(Pose2d currentPose ) {
+
+        PathPlannerState endState = (PathPlannerState) m_trajectory.getEndState() ;
+
+        double delta_d = currentPose.getTranslation().getDistance(endState.poseMeters.getTranslation()) ;
+        double delta_theta = Math.abs( currentPose.getRotation().minus( endState.poseMeters.getRotation()).getDegrees()) ;
+
+        if ( delta_d < 0.3 && delta_theta < 2.0 ) {
+            return true ;
+        } else {
+            return false ;
+        }
+
+    }
+
+
 
 
     @Override
     public boolean isFinished() {
-        // if (m_controller.atReference()) {
-        //     System.out.println("Path is at the reference point");
-        // }
-        // if ( m_controller.atReference() || m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()+3.0 ) ) {
-        //     return true ;
-        // } else { 
-        //     return false ;
-        // }
 
-        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()+0.5);
-        // if ( m_controller.atReference()) {
-        //     return true ;
-        // } else {
-        //     return false ;
-        // }
+        // if most of the time is gone, it should be safe to check
+        //    we probably want to do something smarter than this in the future...
+        if ( m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds() * 0.95 )) {
+            if ( isCloseEnoughToDestination(m_pose.get())) {
+                return true ;
+            } else {
+                // lets wait a little longer to see if we can get there...
+                if (m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()+2.0) ) {
+                    return true ;
+                }
+            }
+        }
+
+        return false ;
+
+        //return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()+0.5);
     }
 }
