@@ -50,8 +50,8 @@ public class Intake extends SubsystemBase {
     }
 
     void report() {
-        NetworkTableInstance.getDefault().getEntry("intake/motor_speed")
-                .setDouble(intakeMotor.getSelectedSensorVelocity());
+        // NetworkTableInstance.getDefault().getEntry("intake/motor_speed")
+        //         .setDouble(intakeMotor.getSelectedSensorVelocity());
     }
 
     boolean simulationInitialized = false;

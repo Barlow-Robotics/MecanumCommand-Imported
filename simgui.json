@@ -16,37 +16,12 @@
           "open": true
         }
       },
-      "Talon FX[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[2]": {
+      "Talon FX[2]/Integrated Sensor": {
         "header": {
           "open": true
         }
       },
       "Talon FX[3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[4]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[5]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[7]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[7]/Integrated Sensor": {
         "header": {
           "open": true
         }
@@ -99,7 +74,12 @@
       "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[20]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[21]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",

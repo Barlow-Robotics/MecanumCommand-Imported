@@ -141,9 +141,9 @@ public class PPMecanumControllerCommand extends CommandBase {
         Pose2d currentPose = m_pose.get() ;
 
         double cargoDistanceFromCenter = 0.0 ;
-        Translation2d nearestCargoLocation = getNearbyCargoLocation(currentPose.getTranslation(), 1.5) ;
+        Translation2d nearestCargoLocation = getNearbyCargoLocation(currentPose.getTranslation(), 2.0) ;
         if (nearestCargoLocation != null) {
-            if (m_vision.cargoIsVisible()) {
+            if (m_vision.cargoIsVisible() & (m_vision.bbWidth() > 50 || m_vision.bbHeight()> 50)) {
                 if (!trackingCargo) {
                     m_cargoPID.reset();
                 }
@@ -220,7 +220,13 @@ public class PPMecanumControllerCommand extends CommandBase {
         // if (m_controller.atReference()) {
         //     System.out.println("Path is at the reference point");
         // }
-        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
+        // if ( m_controller.atReference() || m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()+3.0 ) ) {
+        //     return true ;
+        // } else { 
+        //     return false ;
+        // }
+
+        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()+0.5);
         // if ( m_controller.atReference()) {
         //     return true ;
         // } else {

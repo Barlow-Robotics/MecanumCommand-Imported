@@ -11,6 +11,7 @@ import frc.robot.Constants.ArmBarConstants;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -100,6 +101,27 @@ public class ArmBar extends SubsystemBase {
     }
 
 
+    public void getMotorStatus() {
+        Faults f = new Faults() ;
+        leftMotor.getFaults(f) ;
+    }
+
+
+    public boolean hasPositionDifferenceFault() {
+
+        double rightAngle = rightMotor.getSelectedSensorPosition() / Constants.ArmBarConstants.UnitsPerArmDegree ;
+        double leftAngle = leftMotor.getSelectedSensorPosition() / Constants.ArmBarConstants.UnitsPerArmDegree ;
+
+        if ( Math.abs( leftAngle - rightAngle) > 8.0) {
+            return true ;
+        } else {
+            return false ;
+        }
+
+    }
+
+
+
     @Override
     public void periodic() {
         
@@ -111,11 +133,7 @@ public class ArmBar extends SubsystemBase {
     public void rotateGripperArmDegree(double angle) {
         // motor will go until the bar is rotated so that the the original bar position
         // and the new bar position form the desired angle
-
         double desiredPosition = angle * Constants.ArmBarConstants.UnitsPerArmDegree ;
-        rightMotor.selectProfileSlot(Constants.ArmBarConstants.Position_PID_id, 0);
-        leftMotor.selectProfileSlot(Constants.ArmBarConstants.Position_PID_id, 0);
-        
         rightMotor.set(TalonFXControlMode.MotionMagic, desiredPosition);
         leftMotor.set(TalonFXControlMode.MotionMagic, desiredPosition);
     }
@@ -176,6 +194,23 @@ public class ArmBar extends SubsystemBase {
         rightMotor.setNeutralMode(NeutralMode.Coast);
     }
 
+    public void setSlowSpeed() {
+        leftMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.LettingGoCruiseVelocity) ;
+        rightMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.LettingGoCruiseVelocity) ;
+    }
+
+
+    public void setHighSpeed() {
+        leftMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.CruiseVelocity) ;
+        rightMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.CruiseVelocity) ;
+    }
+
+
+    public void setMegaSpeed() {
+        leftMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.MegaCruiseVelocity) ;
+        rightMotor.configMotionCruiseVelocity(Constants.ArmBarConstants.MegaCruiseVelocity) ;
+    }
+
 
     private void setMotorConfig(WPI_TalonFX motor) {
         motor.configFactoryDefault();
@@ -225,18 +260,18 @@ public class ArmBar extends SubsystemBase {
 
 
     void report(TalonFX motor, String motorName) {
-        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_speed").setDouble(motor.getSelectedSensorVelocity());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_speed_dps").setDouble(motor.getSelectedSensorVelocity() / Constants.ArmBarConstants.DegreePerSecond);
+        // NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_speed").setDouble(motor.getSelectedSensorVelocity());
+        // NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_speed_dps").setDouble(motor.getSelectedSensorVelocity() / Constants.ArmBarConstants.DegreePerSecond);
         NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_position").setDouble(motor.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_stator_current").setDouble(motor.getStatorCurrent());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_supply_current").setDouble(motor.getSupplyCurrent());
-        NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_error").setDouble(motor.getClosedLoopError());
-        if ( motor.getControlMode() == ControlMode.MotionMagic) {
-            NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_target").setDouble(motor.getClosedLoopTarget());
-            NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_error").setDouble(motor.getClosedLoopError());
-        } else {
-            NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_target").setDouble(0.0);
-        }
+        // NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_stator_current").setDouble(motor.getStatorCurrent());
+        // NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_supply_current").setDouble(motor.getSupplyCurrent());
+        // NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_error").setDouble(motor.getClosedLoopError());
+        // if ( motor.getControlMode() == ControlMode.MotionMagic) {
+        //     NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_target").setDouble(motor.getClosedLoopTarget());
+        //     NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_error").setDouble(motor.getClosedLoopError());
+        // } else {
+        //     NetworkTableInstance.getDefault().getEntry("arm_bar/" + motorName + "_closed_loop_target").setDouble(0.0);
+        // }
     }
 
     public void report() {

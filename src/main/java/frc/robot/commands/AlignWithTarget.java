@@ -18,9 +18,6 @@ public class AlignWithTarget extends CommandBase {
     private Vision m_vision;
 
     private double error;
-    private double leftVelocity;
-    private double rightVelocity;
-    private double adjustment;
     private boolean alignmentComplete = false;
 
     /** Creates a new AlignRobotToVision. */
@@ -47,19 +44,20 @@ public class AlignWithTarget extends CommandBase {
         } else { 
             System.out.println("Target is not visible");
         }
-        
+
+        double leftVelocity = 0.0;
+        double rightVelocity = 0.0;
+
         if (m_vision.visionTargetIsVisible()) {
             error = m_vision.visionTargetDistanceFromCenter();
             if (Math.abs(error) < Constants.VisionConstants.AlignmentTolerence) {
                 alignmentComplete = true;
-                leftVelocity = 0.0;
-                rightVelocity = 0.0;
             } else {
-                adjustment = pid.calculate(error);
+                double adjustment = pid.calculate(error);
                 adjustment = Math.signum(adjustment)
                         * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+                leftVelocity =  adjustment;
+                rightVelocity = -adjustment;
             }
             m_drive.setWheelSpeeds(
                     new MecanumDriveWheelSpeeds(

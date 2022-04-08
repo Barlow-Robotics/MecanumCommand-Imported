@@ -27,6 +27,7 @@ public class ShooterIndex extends SubsystemBase {
 
     boolean beltStarted = false;
     boolean isShooting = false;
+    boolean shootingHigh = false ;
 
     double commandedPosition = 0.0 ;
 
@@ -44,14 +45,18 @@ public class ShooterIndex extends SubsystemBase {
 
         setMotorConfig(beltMotor);
         setMotorConfig(flyWheelMotor);
-        GotoShootingPosition() ;
+        //GotoShootingPosition() ;
     }
 
     @Override
     public void periodic() {
         if ( isShooting && (flyWheelMotor.getSelectedSensorVelocity() > Constants.ShooterConstants.FlyWheelMinShootingSpeed ) ) {
             if (!beltStarted) {
-                beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorLowGoalShootingVelocity) ;
+                if ( shootingHigh) {
+                    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorHighGoalShootingVelocity) ;
+                } else {
+                    beltMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.BeltMotorLowGoalShootingVelocity) ;
+                }
                 beltStarted = true;
             }
         }
@@ -61,11 +66,13 @@ public class ShooterIndex extends SubsystemBase {
     public void startShootingLow() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorLowGoalShootingVelocity ) ;
         isShooting = true;
+        shootingHigh = false ;
     }
 
     public void startShootingHigh() {
         flyWheelMotor.set(TalonFXControlMode.Velocity, Constants.ShooterConstants.FlyWheelMotorHighGoalShootingVelocity);
         isShooting = true;
+        shootingHigh = true ;
     }
 
     public void stopShooting() {
@@ -73,6 +80,7 @@ public class ShooterIndex extends SubsystemBase {
         flyWheelMotor.set(TalonFXControlMode.Velocity, 0.0);
         beltStarted = false;
         isShooting = false;
+        shootingHigh = false ;
     }
 
     public void GotoShootingPosition() {
@@ -140,14 +148,14 @@ public class ShooterIndex extends SubsystemBase {
     }
 
     void report() {
-        NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed").setDouble(beltMotor.getSelectedSensorVelocity());
-        // NetworkTableInstance.getDefault().getEntry("index/belt_motor_target_velocity").setDouble(beltMotor.getClosedLoopTarget());
-        NetworkTableInstance.getDefault().getEntry("index/flywheel_motor_speed").setDouble(flyWheelMotor.getSelectedSensorVelocity());
-        // NetworkTableInstance.getDefault().getEntry("index/flywheel_target_velocity").setDouble(flyWheelMotor.getClosedLoopTarget());
-        NetworkTableInstance.getDefault().getEntry("index/commandedPosition").setDouble(commandedPosition);
+        // NetworkTableInstance.getDefault().getEntry("index/belt_motor_speed").setDouble(beltMotor.getSelectedSensorVelocity());
+        // // NetworkTableInstance.getDefault().getEntry("index/belt_motor_target_velocity").setDouble(beltMotor.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("index/flywheel_motor_speed").setDouble(flyWheelMotor.getSelectedSensorVelocity());
+        // // NetworkTableInstance.getDefault().getEntry("index/flywheel_target_velocity").setDouble(flyWheelMotor.getClosedLoopTarget());
+        // NetworkTableInstance.getDefault().getEntry("index/commandedPosition").setDouble(commandedPosition);
 
-        NetworkTableInstance.getDefault().getEntry("driverStation/is_shooting").setBoolean(isShooting);
-        NetworkTableInstance.getDefault().getEntry("driverStation/shoot_orientation").setString(getPosition().name());
+        // NetworkTableInstance.getDefault().getEntry("driverStation/is_shooting").setBoolean(isShooting);
+        // NetworkTableInstance.getDefault().getEntry("driverStation/shoot_orientation").setString(getPosition().name());
     }
 
     boolean simulationInitialized = false;

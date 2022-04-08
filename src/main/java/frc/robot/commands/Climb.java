@@ -8,6 +8,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmBar;
+//import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmBarConstants;
 import edu.wpi.first.networktables.*;
@@ -19,23 +20,33 @@ public class Climb extends CommandBase {
 
     public enum ArmCommandState {
         ResettingPosition,
-        FreeingBClaws ,
-        WaitingForArmToBeStraightUp,
-        AttachingToMidBar,
+        //FreeingBClaws ,
+        WaitingForArmToReady,
         MovingToHighBar,
-        ReleavingLoadOnMidBar ,
         LettingGoMidBar,
         MovingToTraversalBar,
-        ReleavingLoadOnHighBar ,
         LettingGoHighBar,
-        OnTraversalBar,
         GoingToRestingPosition ,
-        Finished
+        //OnTraversalBar,
+        Finished ;
+
+        public static int valueOf(ArmCommandState e) {
+            int result = 0 ;
+            for (ArmCommandState v : values()) {
+                if ( v == e ) {
+                    break ;
+                } else {
+                    result++ ;
+                }
+            }
+            return result;
+        }
     };
 
-    ArmCommandState currentState = ArmCommandState.WaitingForArmToBeStraightUp;
+    ArmCommandState currentState = ArmCommandState.ResettingPosition;
     Joystick controller ;
     Joystick gamePad ;
+//    NavigationSubsystem nav ;
 
 
     /** Creates a new Climb. */
@@ -43,6 +54,7 @@ public class Climb extends CommandBase {
 
         // Use addRequirements() here to declare subsystem dependencies.
         m_armBar = a;
+       // nav = n ;
         addRequirements(m_armBar);
         // m_drive = d;
         controller = c ;
@@ -54,9 +66,6 @@ public class Climb extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_armBar.neutralGripperA();
-        m_armBar.neutralGripperB();
-
         //currentState = ArmCommandState.FreeingBClaws;
         currentState = ArmCommandState.ResettingPosition;
 
@@ -68,148 +77,111 @@ public class Climb extends CommandBase {
     @Override
     public void execute() {
 
-        NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
-
-        inst.getEntry("climb_command/climb_button").setBoolean(gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) ;
+        // NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
+        // inst.getEntry("climb_command/climb_button").setBoolean(gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) ;
 
         switch (currentState) {
             case ResettingPosition:
+                m_armBar.setHighSpeed();
                 m_armBar.resetPosition(0.0);
-                currentState = ArmCommandState.FreeingBClaws;
-                m_armBar.neutralGripperA();
-                m_armBar.neutralGripperA();
+                // currentState = ArmCommandState.FreeingBClaws;
+                currentState = ArmCommandState.WaitingForArmToReady;
                 break ;
 
-            case FreeingBClaws:
-                m_armBar.neutralGripperA();
-                m_armBar.neutralGripperA();
-                if (m_armBar.getArmAngle() > -(ArmBarConstants.FreeingBClawAngle - ArmBarConstants.AngleTolerance) ) {
-                    m_armBar.rotateGripperArmDegree(-ArmBarConstants.FreeingBClawAngle);
-                } else {
-                    currentState = ArmCommandState.WaitingForArmToBeStraightUp;
-                }
-                break;
+            // case FreeingBClaws:
+            //     if (m_armBar.getArmAngle() > -(ArmBarConstants.FreeingBClawAngle - ArmBarConstants.AngleTolerance) ) {
+            //         m_armBar.rotateGripperArmDegree(-ArmBarConstants.FreeingBClawAngle);
+            //     } else {
+            //         currentState = ArmCommandState.WaitingForArmToReady;
+            //     }
+            //     break;
 
-            case WaitingForArmToBeStraightUp:
+            case WaitingForArmToReady:
                 if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.MidBarRotationAngle) > ArmBarConstants.AngleTolerance) {
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle);
                 } else {
-                    currentState = ArmCommandState.AttachingToMidBar;
-                }
-                break;
-
-            case AttachingToMidBar:
-                if (m_armBar.gripperAIsClosed()) {
                     if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        // System.out.format("Climb Button pressed in %s. Arm angle is %5.2f, pitch is %5.2f", currentState.name(), m_armBar.getArmAngle(), nav.getPitch()) ;
+                        m_armBar.setHighSpeed();
+                        latchedAngle = m_armBar.getArmAngle() ;
                         currentState = ArmCommandState.MovingToHighBar;
                     }
-                } else {
-                    if ( gamePad.getPOV(0) == 0.0) {
-                        m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle + 4.0);
-                    } else if ( gamePad.getPOV(0) == 180.0) {
-                        m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle - 4.0) ;
-                    } else if ( gamePad.getPOV(0) == -1.0) {
-                        m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle) ;
-                    }
                 }
                 break;
-
-
 
 
             case MovingToHighBar:
-                if (!m_armBar.gripperBIsClosed()) {
-                    // wpk Need tthink about whether this is the correct angle angle from mid to high might be more than 180
+                // if the arm is not above the high bar, move the arm higher.
+                // note: this attempts to take the pitch of the chassis into accoun, so the arm may need to rotate more if the
+                // bot is pitched forward.
+//                if (Math.abs ((m_armBar.getArmAngle()-nav.getPitch()) - ArmBarConstants.HighBarRotationAngle) > ArmBarConstants.AngleTolerance) {
+                if (Math.abs ((m_armBar.getArmAngle()) - (ArmBarConstants.HighBarRotationAngle)) > 2.0) {
+                    // this is imprecise. It just adds a constant to the minimum angle in case it need to keep rotating
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.HighBarRotationAngle);
+//                    m_armBar.rotateGripperArmDegree(ArmBarConstants.HighBarRotationAngle);
                 } else {
-                    if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                    // if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        m_armBar.setSlowSpeed();
                         latchedAngle = m_armBar.getArmAngle() ;
-                        currentState = ArmCommandState.ReleavingLoadOnMidBar;
-                    }
-                    m_armBar.stopMotor();
-                }
-                break;
-
-            case ReleavingLoadOnMidBar:
-                // rotate the arm backward to reduce load on claws
-                m_armBar.rotateGripperArmDegree(latchedAngle - ArmBarConstants.LoadReducingAngle );
-                if ( m_armBar.getArmAngle() <= latchedAngle - (ArmBarConstants.LoadReducingAngle - 1.0) ) {
-                    // then start moving forward again and try to release from the bar
-                    m_armBar.rotateGripperArmDegree(latchedAngle + ArmBarConstants.LoadReducingAngle);
-                    currentState = ArmCommandState.LettingGoMidBar;
+                        currentState = ArmCommandState.LettingGoMidBar;
+                    // }
                 }
                 break ;
 
             case LettingGoMidBar:
-                m_armBar.releaseGripperA();
-                if(m_armBar.gripperAIsOpen()){
-                    m_armBar.neutralGripperA();
-                    currentState = ArmCommandState.MovingToTraversalBar;
+                // can we do something with pitch here?
+                if (Math.abs ((m_armBar.getArmAngle()) - (latchedAngle-ArmBarConstants.ReleaseMidBarAngle)) > 2.0) {
+                    // this is imprecise. It just adds a constant to the minimum angle in case it need to keep rotating
+                    m_armBar.rotateGripperArmDegree(latchedAngle-ArmBarConstants.ReleaseMidBarAngle);
                 } else {
-                    // if ( gamePad.getPOV(0) == 180.0)  {
-                    //     // rotate back to reduce pressure on claw so that servos can release.
-                    //     m_armBar.rotateGripperArmDegree(latchedAngle -5.0);
-                    // } else {
-                    //     m_armBar.stopMotor();
+                    // if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        m_armBar.setHighSpeed();
+                        //System.out.format("Climb Button pressed in %s. Arm angle is %5.2f, pitch is %5.2f", currentState.name(), m_armBar.getArmAngle(), nav.getPitch()) ;
+                        latchedAngle = m_armBar.getArmAngle() ;
+                    currentState = ArmCommandState.MovingToTraversalBar;
                     // }
                 }
                 break;
 
-
-
             case MovingToTraversalBar:
-                if (!m_armBar.gripperAIsClosed()) {
+                // if the arm is not above the traverse bar, move the arm higher.
+                // note: this attempts to take the pitch of the chassis into accoun, so the arm may need to rotate more if the
+                // bot is pitched forward.
+                if (Math.abs ((m_armBar.getArmAngle()) - (ArmBarConstants.TraverseBarRotationAngle)) > 2.0) {
+                    // this is imprecise. It just adds a constant to the minimum angle in case it need to keep rotating
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.TraverseBarRotationAngle);
                 } else {
-                    if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
-//                        m_armBar.setSlowMotionConfig();  // slow thngs down so we don't drop like a stone
+                    // if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        m_armBar.setSlowSpeed();
                         latchedAngle = m_armBar.getArmAngle() ;
-                        currentState = ArmCommandState.ReleavingLoadOnHighBar;
-                    }
-                    m_armBar.stopMotor();
-                }
-                break;
-
-            case ReleavingLoadOnHighBar:
-                // rotate the arm backward to reduce load on claws
-                m_armBar.rotateGripperArmDegree(latchedAngle - ArmBarConstants.LoadReducingAngle );
-                if ( m_armBar.getArmAngle() <= latchedAngle - (ArmBarConstants.LoadReducingAngle - 1.0) ) {
-                    // then start moving forward again and try to release from the bar
-                    m_armBar.rotateGripperArmDegree(latchedAngle + ArmBarConstants.LoadReducingAngle);
-                    currentState = ArmCommandState.LettingGoHighBar;
+                        currentState = ArmCommandState.LettingGoHighBar;
+                    // }
                 }
                 break ;
 
             case LettingGoHighBar:
-                m_armBar.releaseGripperB();
-                if (m_armBar.gripperBIsOpen()) {
-                    m_armBar.neutralGripperB();
-                    currentState = ArmCommandState.OnTraversalBar;
+                // can we do something with pitch here?
+                if (Math.abs ((m_armBar.getArmAngle()) - (latchedAngle-ArmBarConstants.ReleaseHighBarAngle)) > 2.0) {
+                    // this is imprecise. It just adds a constant to the minimum angle in case it need to keep rotating
+                    m_armBar.rotateGripperArmDegree((latchedAngle-ArmBarConstants.ReleaseHighBarAngle));
                 } else {
-                    // if ( gamePad.getPOV(0) == 180.0)  {
-                    //     // rotate back to reduce pressure on claw so that servos can release.
-                    //     m_armBar.rotateGripperArmDegree(latchedAngle -5.0);
-                    // } else {
-                    //     m_armBar.stopMotor();
+                    // if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                        latchedAngle = m_armBar.getArmAngle() ;
+                        currentState = ArmCommandState.GoingToRestingPosition;
                     // }
                 }
                 break;
-
-
-
-            case OnTraversalBar:
-                if (m_armBar.gripperAIsClosed() && m_armBar.gripperBIsOpen() ) {
-                    currentState = ArmCommandState.GoingToRestingPosition;
-                }
-                break;
-
             case GoingToRestingPosition:
-                // if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.FinalRestingAngle) > ArmBarConstants.AngleTolerance) {
-                //     m_armBar.rotateGripperArmDegree(ArmBarConstants.FinalRestingAngle);
-                // } else {
+            if (Math.abs ((m_armBar.getArmAngle()) - (latchedAngle+90)) > 2.0) {
+                // this is imprecise. It just adds a constant to the minimum angle in case it need to keep rotating
+                m_armBar.rotateGripperArmDegree((latchedAngle+90));
+            } else {
+                // if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                    //System.out.format("Climb Button pressed in %s. Arm angle is %5.2f, pitch is %5.2f", currentState.name(), m_armBar.getArmAngle(), nav.getPitch()) ;
+                    latchedAngle = m_armBar.getArmAngle() ;
                     currentState = ArmCommandState.Finished;
                 // }
-                break ;
+            }
 
 
             case Finished:
@@ -241,39 +213,13 @@ public class Climb extends CommandBase {
     void report() {
         NetworkTableInstance inst = NetworkTableInstance.getDefault() ;
 
-        inst.getEntry("driverStation/climb_state").setString(currentState.name());
+        inst.getEntry("climb/climb_state").setString(currentState.name());
+        inst.getEntry("climb/climb_state_num").setDouble(ArmCommandState.valueOf(currentState));
+        inst.getEntry("climb/arm_angle").setDouble(m_armBar.getArmAngle()) ;
+//        inst.getEntry("climb/pitch").setDouble(nav.getPitch()) ;
+        // inst.getEntry("climb/pitch_plus_arm").setDouble(nav.getPitch()+m_armBar.getArmAngle()) ;
+        // inst.getEntry("climb/roll").setDouble(nav.getRoll()) ;
 
-        if ( currentState == ArmCommandState.AttachingToMidBar) {
-            inst.getEntry("hall_effects/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
-            inst.getEntry("hall_effects/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
-            inst.getEntry("hall_effects/B1_At_Desired_State").setBoolean(m_armBar.B1HallOpen()) ;
-            inst.getEntry("hall_effects/B2_At_Desired_State").setBoolean(m_armBar.B2HallOpen()) ;
-        } else if ( currentState == ArmCommandState.MovingToHighBar) {
-            inst.getEntry("hall_effects/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
-            inst.getEntry("hall_effects/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
-            inst.getEntry("hall_effects/B1_At_Desired_State").setBoolean(!m_armBar.B1HallOpen()) ;
-            inst.getEntry("hall_effects/B2_At_Desired_State").setBoolean(!m_armBar.B2HallOpen()) ;
-        } else if ( currentState == ArmCommandState.LettingGoMidBar) {
-            inst.getEntry("hall_effects/A1_At_Desired_State").setBoolean(m_armBar.A1HallOpen()) ;
-            inst.getEntry("hall_effects/A2_At_Desired_State").setBoolean(m_armBar.A2HallOpen()) ;
-            inst.getEntry("hall_effects/B1_At_Desired_State").setBoolean(!m_armBar.B1HallOpen()) ;
-            inst.getEntry("hall_effects/B2_At_Desired_State").setBoolean(!m_armBar.B2HallOpen()) ;
-        } else if ( currentState == ArmCommandState.MovingToTraversalBar) {
-            inst.getEntry("hall_effects/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
-            inst.getEntry("hall_effects/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
-            inst.getEntry("hall_effects/B1_At_Desired_State").setBoolean(!m_armBar.B1HallOpen()) ;
-            inst.getEntry("hall_effects/B2_At_Desired_State").setBoolean(!m_armBar.B2HallOpen()) ;
-        } else if ( currentState == ArmCommandState.LettingGoHighBar) {
-            inst.getEntry("hall_effects/A1_At_Desired_State").setBoolean(!m_armBar.A1HallOpen()) ;
-            inst.getEntry("hall_effects/A2_At_Desired_State").setBoolean(!m_armBar.A2HallOpen()) ;
-            inst.getEntry("hall_effects/B1_At_Desired_State").setBoolean(m_armBar.B1HallOpen()) ;
-            inst.getEntry("hall_effects/B2_At_Desired_State").setBoolean(m_armBar.B2HallOpen()) ;
-        } else {
-            inst.getEntry("hall_effects/A1_At_Desired_State").setBoolean(true) ;
-            inst.getEntry("hall_effects/A2_At_Desired_State").setBoolean(true) ;
-            inst.getEntry("hall_effects/B1_At_Desired_State").setBoolean(true) ;
-            inst.getEntry("hall_effects/B2_At_Desired_State").setBoolean(true) ;
-        }
 
     }
 

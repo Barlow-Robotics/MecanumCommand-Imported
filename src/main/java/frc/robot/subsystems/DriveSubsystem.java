@@ -218,28 +218,28 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void report() {
-        // Report various parameters out to network tables for monitoring purposes
-        NetworkTableInstance.getDefault().getEntry("drive/back_left_position").setDouble(m_backLeft.getSelectedSensorPosition());
+        // // Report various parameters out to network tables for monitoring purposes
+        // NetworkTableInstance.getDefault().getEntry("drive/back_left_position").setDouble(m_backLeft.getSelectedSensorPosition());
 
-        //System.out.println( "back left position is " + m_backLeft.getSelectedSensorPosition()) ;
-        NetworkTableInstance.getDefault().getEntry("drive/back_left_velocity").setDouble(m_backLeft.getSelectedSensorVelocity());
-        //NetworkTableInstance.getDefault().getEntry("drive/back_left_target_velocity").setDouble(m_backLeft.getClosedLoopTarget());
+        // //System.out.println( "back left position is " + m_backLeft.getSelectedSensorPosition()) ;
+        // NetworkTableInstance.getDefault().getEntry("drive/back_left_velocity").setDouble(m_backLeft.getSelectedSensorVelocity());
+        // //NetworkTableInstance.getDefault().getEntry("drive/back_left_target_velocity").setDouble(m_backLeft.getClosedLoopTarget());
 
-        NetworkTableInstance.getDefault().getEntry("drive/back_right_position").setDouble(m_backRight.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/back_right_velocity").setDouble(m_backRight.getSelectedSensorVelocity());
+        // NetworkTableInstance.getDefault().getEntry("drive/back_right_position").setDouble(m_backRight.getSelectedSensorPosition());
+        // NetworkTableInstance.getDefault().getEntry("drive/back_right_velocity").setDouble(m_backRight.getSelectedSensorVelocity());
 
-        NetworkTableInstance.getDefault().getEntry("drive/front_left_position").setDouble(m_frontLeft.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/front_left_velocity").setDouble(m_frontLeft.getSelectedSensorVelocity());
+        // NetworkTableInstance.getDefault().getEntry("drive/front_left_position").setDouble(m_frontLeft.getSelectedSensorPosition());
+        // NetworkTableInstance.getDefault().getEntry("drive/front_left_velocity").setDouble(m_frontLeft.getSelectedSensorVelocity());
 
-        NetworkTableInstance.getDefault().getEntry("drive/front_right_position").setDouble(m_frontRight.getSelectedSensorPosition());
-        NetworkTableInstance.getDefault().getEntry("drive/front_right_velocity").setDouble(m_frontRight.getSelectedSensorVelocity());
+        // NetworkTableInstance.getDefault().getEntry("drive/front_right_position").setDouble(m_frontRight.getSelectedSensorPosition());
+        // NetworkTableInstance.getDefault().getEntry("drive/front_right_velocity").setDouble(m_frontRight.getSelectedSensorVelocity());
     
         NetworkTableInstance.getDefault().getEntry("drive/gyro_heading").setDouble(getGyroHeading());
 
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontLeft").setDouble(getSpeed(m_frontLeft));
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontRight").setDouble(getSpeed(m_frontRight));
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/backLeft").setDouble(getSpeed(m_backLeft));
-        NetworkTableInstance.getDefault().getEntry("drive/get_speed/backRight").setDouble(getSpeed(m_backRight));
+        // NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontLeft").setDouble(getSpeed(m_frontLeft));
+        // NetworkTableInstance.getDefault().getEntry("drive/get_speed/frontRight").setDouble(getSpeed(m_frontRight));
+        // NetworkTableInstance.getDefault().getEntry("drive/get_speed/backLeft").setDouble(getSpeed(m_backLeft));
+        // NetworkTableInstance.getDefault().getEntry("drive/get_speed/backRight").setDouble(getSpeed(m_backRight));
 
         NetworkTableInstance.getDefault().getEntry("drive/odometry/X").setDouble(m_odometry.getPoseMeters().getX());
         NetworkTableInstance.getDefault().getEntry("drive/odometry/Y").setDouble(m_odometry.getPoseMeters().getY());

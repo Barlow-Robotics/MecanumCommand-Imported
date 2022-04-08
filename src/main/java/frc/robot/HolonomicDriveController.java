@@ -14,14 +14,21 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.*;
 
 /**
- * This holonomic drive controller can be used to follow trajectories using a holonomic drivetrain
- * (i.e. swerve or mecanum). Holonomic trajectory following is a much simpler problem to solve
- * compared to skid-steer style drivetrains because it is possible to individually control forward,
+ * This holonomic drive controller can be used to follow trajectories using a
+ * holonomic drivetrain
+ * (i.e. swerve or mecanum). Holonomic trajectory following is a much simpler
+ * problem to solve
+ * compared to skid-steer style drivetrains because it is possible to
+ * individually control forward,
  * sideways, and angular velocity.
  *
- * <p>The holonomic drive controller takes in one PID controller for each direction, forward and
- * sideways, and one profiled PID controller for the angular direction. Because the heading dynamics
- * are decoupled from translations, users can specify a custom heading that the drivetrain should
+ * <p>
+ * The holonomic drive controller takes in one PID controller for each
+ * direction, forward and
+ * sideways, and one profiled PID controller for the angular direction. Because
+ * the heading dynamics
+ * are decoupled from translations, users can specify a custom heading that the
+ * drivetrain should
  * point toward. This heading reference is profiled for smoothness.
  */
 @SuppressWarnings("MemberName")
@@ -40,9 +47,12 @@ public class HolonomicDriveController {
   /**
    * Constructs a holonomic drive controller.
    *
-   * @param xController A PID Controller to respond to error in the field-relative x direction.
-   * @param yController A PID Controller to respond to error in the field-relative y direction.
-   * @param thetaController A profiled PID controller to respond to error in angle.
+   * @param xController     A PID Controller to respond to error in the
+   *                        field-relative x direction.
+   * @param yController     A PID Controller to respond to error in the
+   *                        field-relative y direction.
+   * @param thetaController A profiled PID controller to respond to error in
+   *                        angle.
    */
   @SuppressWarnings("ParameterName")
   public HolonomicDriveController(
@@ -79,16 +89,17 @@ public class HolonomicDriveController {
   /**
    * Returns the next output of the holonomic drive controller.
    *
-   * @param currentPose The current pose.
-   * @param poseRef The desired pose.
+   * @param currentPose             The current pose.
+   * @param poseRef                 The desired pose.
    * @param linearVelocityRefMeters The linear velocity reference.
-   * @param angleRef The angular reference.
+   * @param angleRef                The angular reference.
    * @return The next output of the holonomic drive controller.
    */
   @SuppressWarnings("LocalVariableName")
   public ChassisSpeeds calculate(
       Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters, Rotation2d angleRef) {
-    // If this is the first run, then we need to reset the theta controller to the current pose's
+    // If this is the first run, then we need to reset the theta controller to the
+    // current pose's
     // heading.
     if (m_firstRun) {
       m_thetaController.reset(currentPose.getRotation().getRadians());
@@ -98,11 +109,23 @@ public class HolonomicDriveController {
     // Calculate feedforward velocities (field-relative).
     double xFF = linearVelocityRefMeters * poseRef.getRotation().getCos();
     double yFF = linearVelocityRefMeters * poseRef.getRotation().getSin();
-    double thetaFF =
-        m_thetaController.calculate(currentPose.getRotation().getRadians(), angleRef.getRadians());
+
+    double actualAngle = currentPose.getRotation().getRadians();
+    double desiredAngle = angleRef.getRadians();
+
+    // wpk commented out for testing of continuous angle on PID controller
+    // if (angleRef.getRadians() < 0 && currentPose.getRotation().getRadians() > 0) {
+    //     actualAngle = actualAngle - 2 * Math.PI;
+    // } else if (angleRef.getRadians() > 0 && currentPose.getRotation().getRadians() < 0) {
+    //     actualAngle = actualAngle + 2 * Math.PI;
+    // } 
+
+    m_rotationError = angleRef.minus(currentPose.getRotation());
+
+    // double thetaFF = m_thetaController.calculate(currentPose.getRotation().getRadians(), angleRef.getRadians());
+    double thetaFF = m_thetaController.calculate(actualAngle, desiredAngle);
 
     m_poseError = poseRef.relativeTo(currentPose);
-    m_rotationError = angleRef.minus(currentPose.getRotation());
 
     if (!m_enabled) {
       return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, thetaFF, currentPose.getRotation());
@@ -115,14 +138,18 @@ public class HolonomicDriveController {
     NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/xFF").setDouble(xFF);
     NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/yFF").setDouble(yFF);
     NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/thetaFF").setDouble(thetaFF);
-    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/pose_error_x").setDouble(m_poseError.getTranslation().getX());
-    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/pose_error_y").setDouble(m_poseError.getTranslation().getX());
-    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/rotation_error").setDouble(m_rotationError.getDegrees());
+    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/pose_error_x")
+        .setDouble(m_poseError.getTranslation().getX());
+    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/pose_error_y")
+        .setDouble(m_poseError.getTranslation().getY());
+    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/rotation_error")
+        .setDouble(m_rotationError.getDegrees());
+    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/angle_error").setDouble((desiredAngle - actualAngle) *180.0/Math.PI);
     NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/control_vx").setDouble(xFF + xFeedback);
     NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/control_vy").setDouble(yFF + yFeedback);
     NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/control_theta").setDouble(thetaFF);
-    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/control_robot_angle").setDouble(currentPose.getRotation().getDegrees());
-
+    NetworkTableInstance.getDefault().getEntry("holonomic_drive_controller/control_robot_angle")
+        .setDouble(currentPose.getRotation().getDegrees());
 
     // Return next output.
     return ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -132,9 +159,9 @@ public class HolonomicDriveController {
   /**
    * Returns the next output of the holonomic drive controller.
    *
-   * @param currentPose The current pose.
+   * @param currentPose  The current pose.
    * @param desiredState The desired trajectory state.
-   * @param angleRef The desired end-angle.
+   * @param angleRef     The desired end-angle.
    * @return The next output of the holonomic drive controller.
    */
   public ChassisSpeeds calculate(
@@ -144,7 +171,8 @@ public class HolonomicDriveController {
   }
 
   /**
-   * Enables and disables the controller for troubleshooting problems. When calculate() is called on
+   * Enables and disables the controller for troubleshooting problems. When
+   * calculate() is called on
    * a disabled controller, only feedforward values are returned.
    *
    * @param enabled If the controller is enabled or not.

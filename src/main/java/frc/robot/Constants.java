@@ -107,23 +107,12 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final int SF_Axis = 4 ;
         public static final int SE_Axis = 5 ;
         public static final int SH_Momentary = 4 ;
-        public static final int SC_Button = 4 ;
+        public static final int SC_Button = 1 ;
 
-        public static final double Forward_Axis_Attenuation = 0.7 ;
-        public static final double Lateral_Axis_Attenuation = 0.7 ;
-        public static final double Yaw_Axis_Attenuation = 0.7 ;
+        public static final double Forward_Axis_Attenuation = 0.8 ;
+        public static final double Lateral_Axis_Attenuation = 0.8 ;
+        public static final double Yaw_Axis_Attenuation = 0.6 ;
 
-        // // Constants for buttons
-        // public static final int Button_A = 2;
-        // public static final int Button_B = 3;
-        // public static final int Button_X = 1;
-        // public static final int Button_Y = 4;
-        // public static final int Left_Bumper = 5;
-        // public static final int Right_Bumper = 6;
-        // public static final int Back_Button = 7;
-        // public static final int Start_Button = 8;
-        // public static final int Left_Stick = 9;
-        // public static final int Right_Stick = 10;
     }
 
     public final class Logitech_F310_Controller {
@@ -211,16 +200,6 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final int Right_Trigger = 3;
     }
 
-    // For Brian's Controller
-
-    // public static final class OIConstants {
-    // public static final int kDriverControllerPort = 1;
-    // public static final int halfSpeedButton = 2;
-    // public static final int leftYAxis = 0;
-    // public static final int leftXAxis = 1;
-    // public static final int rightXAxis = 3;
-    // public static final int rightYAxis = 5;
-    // }
 
     public static final class UnderGlowConstants {
         public static final SerialPort.Port port = SerialPort.Port.kUSB1;
@@ -232,25 +211,26 @@ import edu.wpi.first.wpilibj.SerialPort;
     public static final class AutoConstants {
         // public static final double kMaxSpeedMetersPerSecond = 4 ;
         // public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxSpeedMetersPerSecond = 1.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI / 0.5;
+        public static final double kMaxSpeedMetersPerSecond = 2.25; // this works
+        public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 2.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 10*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = kMaxAngularSpeedRadiansPerSecond / 0.5;
         // public static final double kAutoDriveDistanceInches = 1;
         // public static final double kAutoDriveSpeed = 0.2;
 
-        public static final double AutoShootingTimeout = 2.0;
-        public static final double AutoIndexRaiseTimeout = 1.25;
-        public static final double AutoIndexLowerTimeout = 0.75;
+        public static final double AutoShootingTimeout = 0.75;
+        public static final double AutoIndexRaiseTimeout = 1.00;
+        public static final double AutoIndexLowerTimeout = 0.25;
 
         // these are the constants from waterbury
         // public static final double kPXController = 6.0;
         // public static final double kPYController = 6.0;
         // public static final double kPThetaController = 12.0;
 
-        public static final double kPXController = 12.0 ;
-        public static final double kPYController = 12.0 ;
-        public static final double kPThetaController = 6.0;
+        public static final double kPXController = 10.0 ;
+        public static final double kPYController = 10.0 ;
+//        public static final double kPThetaController = 4.0;  // this works
+        public static final double kPThetaController = 8.0;
 
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints 
@@ -293,38 +273,40 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double MaxDegreesPerSecond = MaxMotorVelocity / DegreePerSecond ;
 
 //        public static final double CruiseVelocity = 100 * DegreePerSecond ;
-        public static final double CruiseVelocity = 100 * DegreePerSecond ;
+        public static final double CruiseVelocity = 60 * DegreePerSecond ;
         public static final double MaxAcceleration = CruiseVelocity / 0.5 ;  // get to max velocity in 1/2 second
+        public static final double LettingGoCruiseVelocity = 45 * DegreePerSecond ;
+        public static final double MegaCruiseVelocity = 70 * DegreePerSecond ;
 
-//        public static final double MaxAcceleration = CruiseVelocity * 0.30 ;
         public static final int AccelerationSmoothing = 2 ; 
 
 
-        // public static final double DesiredArmVelocity = 0.5 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
-        // public static final double DesiredArmVelocity = 0.50 * (180 - 2 * AngleToNextArm) / (Math.PI * Math.sqrt(14.25/386)) ; // degrees persecond
-        //public static final double CruiseVelocity = (UnitsPerArmDegree * DesiredArmVelocity ) / 10.0 ; // divided by 10 because Falcon Velocities are in 100 mSec units
-        // public static final double MaxAcceleration = CruiseVelocity * 0.75 ;
-        // public static final double MaxAcceleration = CruiseVelocity * 0.25 ;
-        // public static final int AccelerationSmoothing = 2 ;
-
-
-
-
-        // public static final double AngleToNextArm = 33.0 ;
-        // public static final double MidBarRotationAngle = 95;
-        // public static final double HighBarRotationAngle = MidBarRotationAngle + 90 + AngleToNextArm ;
-        // public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;
-        // public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90 - AngleToNextArm) ; // angle to hang straight down.
-        // public static final double AngleTolerance = 1.0;
-
         public static final double AngleToNextArm = 33.0 ;
-        public static final double MidBarRotationAngle = 101.0;
-        public static final double HighBarRotationAngle = MidBarRotationAngle + 120.0 + AngleToNextArm ;
-        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180.0 ;
-        public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90.0 - AngleToNextArm) + 90.0 ; // angle to hang straight down.
+
+        // This is the angle to place the arm bar so that the driver can cause the hook to catch on the mid bar.
+        public static final double MidBarRotationAngle = -55.0;
+
+        // This is the minimum angle required for the arm bar hook to clear the high bar
+        public static final double HighBarRotationAngle = 80 ;  // wpk need to refine this number
+
+        // This is the minimum angle required for the arm bar to release the hook from the mid bar
+        public static final double ReleaseMidBarAngle = 95 ; // wpk need to refine this number
+
+        // This is the minimum angle required for the arm bar hook to clear the traverse bar
+        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 185 ;  // wpk need to refine this number
+
+        // This is the minimum angle required for the arm bar to release the hook from the high bar
+//        public static final double ReleaseHighBarAngle = ReleaseMidBarAngle + 180 ; // wpk need to refine this number
+        public static final double ReleaseHighBarAngle = 100 ; // wpk need to refine this number
+        
+
+        // //public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180.0 ;
+        // public static final double FinalRestingAngle = TraverseBarRotationAngle + ( 90.0 - AngleToNextArm) + 90.0 ; // angle to hang straight down.
         public static final double AngleTolerance = 1.0;
-        public static final double LoadReducingAngle = 11.0 ;
+        // public static final double LoadReducingAngle = 11.0 ;
         public static final double FreeingBClawAngle = 45.0 ;
+
+        public static final int MinLatchCount = 10 ;
 
 
         // public static final double ConsistentRotationAngleTolerance = 6;
@@ -346,15 +328,13 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double Position_kD = 0.01;  // wpk need to give this some thought
         public static final double Position_kI = 0.00003;  // wpk need to give this some thought
 
-        // public static final double ArmBarMotorSpeed = 0.1;
-
         public static final double manualVoltageRampingConstant = 0.05;
         public static final double closedVoltageRampingConstant = 0.05;
 
-        public static final int Velocity_PID_id = 1;
-        public static final double Velocity_kF = 0.0485;
-        public static final double Velocity_kP = 0.01;
-        public static final double Velocity_kD = 0.00;
+        // public static final int Velocity_PID_id = 1;
+        // public static final double Velocity_kF = 0.0485;
+        // public static final double Velocity_kP = 0.01;
+        // public static final double Velocity_kD = 0.00;
     }
 
     public static final class IntakeConstants {
@@ -367,7 +347,8 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double RevPerSecondVelocity = TotalUnitsPerRotation / 10.0 ; 
         public static final double RPM = RevPerSecondVelocity / 60.0 ;
         
-        public static final double IntakeMotorSpeed = 2000.0 * RPM;
+        public static final double IntakeMotorSpeed = 1800.0 * RPM;
+     //   public static final double IntakeMotorSpeed = 1700.0 * RPM;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;
 
@@ -396,16 +377,20 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double kD = 0.0;
 
 //        public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
-        public static final double FlyWheelMotorIntakeVelocity = -1900 * RPM;
-        public static final double BeltMotorIntakeVelocity = 700 * RPM;
+//        public static final double FlyWheelMotorIntakeVelocity = -1900 * RPM;
+        public static final double FlyWheelMotorIntakeVelocity = -2400 * RPM;
+        public static final double BeltMotorIntakeVelocity = 800 * RPM;
+        // public static final double BeltMotorIntakeVelocity = 650 * RPM;
 
         public static final int ID_FlyWheelMotor = 8;
         public static final double FlyWheelMotorLowGoalShootingVelocity = 2500 * RPM;
         public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorLowGoalShootingVelocity * 0.95;
         public static final double BeltMotorLowGoalShootingVelocity = -FlyWheelMotorLowGoalShootingVelocity * 0.6;
 
-        public static final double FlyWheelMotorHighGoalShootingVelocity = 5000 * RPM;
-        public static final double BeltMotorHighGoalShootingVelocity = -1000 * RPM;
+        public static final double FlyWheelMotorHighGoalShootingVelocity = 6000 * RPM;
+//        public static final double BeltMotorHighGoalShootingVelocity = -800 * RPM;
+//        public static final double BeltMotorHighGoalShootingVelocity = -1200 * RPM;
+        public static final double BeltMotorHighGoalShootingVelocity = -1400 * RPM;
 
         public static final double FlyWheelMotorEjectingVelocity = 2000 * RPM;
         public static final double BeltMotorEjectingVelocity = -1500 * RPM;
