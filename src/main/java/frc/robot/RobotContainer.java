@@ -66,6 +66,7 @@ public class RobotContainer {
     private JoystickButton shooterLowButton;
     private JoystickButton shooterHighButton;
     private JoystickButton climbButton;
+    private JoystickButton abortClimbButton;
     private JoystickButton ejectButton;
     private JoystickButton alignWithTargetButton;
     private JoystickButton switchCameraButton;
@@ -95,6 +96,7 @@ public class RobotContainer {
     private final StopShooting stopShootingCommand = new StopShooting(m_shooterIndex);
 
     private Climb climbCommand;
+    private AbortClimb abortClimbCommand ;
 
     private final StartEjecting startEjectingCommand = new StartEjecting(m_intake, m_shooterIndex);
     private final StopEjecting stopEjectingCommand = new StopEjecting(m_intake, m_shooterIndex);
@@ -184,6 +186,7 @@ public class RobotContainer {
         // loadTrajectory("29_Autonomous_Path", maxVel, maxAccel);
 //        loadTrajectory("Two_Ball_Low_Goal", maxVel, maxAccel);
         loadTrajectory("Two_Ball_Low_Goal", 3.0, maxAccel);
+        loadTrajectory("One_Ball_Low_Goal", 3.0, maxAccel);
         loadTrajectory("Two_Ball_High_Goal", 4.0, 3.0);
 
         // // wpk delete this code block after testing complete
@@ -243,15 +246,18 @@ public class RobotContainer {
         alignWithTargetButton = new JoystickButton(m_driverController, Constants.RadioMaster_Controller.SB3_Axis);// Button should be changed
 
         climbCommand = new Climb(m_armBar, m_driverController, m_gamepad);
+        abortClimbCommand = new AbortClimb(climbCommand, m_armBar) ;
 
         controllerFound = true;
 
         // game pad
-        climbButton = new JoystickButton(m_gamepad, Constants.Fight_Stick.Button_Y);
-        ejectButton = new JoystickAnalogButton(m_gamepad, Constants.Fight_Stick.Left_Trigger, 0.5, 1.0);
+        climbButton = new JoystickButton(m_gamepad, Constants.Logitech_F310_Controller.Button_X);
+        abortClimbButton = new JoystickButton(m_gamepad, Constants.Logitech_F310_Controller.Button_B);
+        ejectButton = new JoystickButton(m_gamepad, Constants.Logitech_F310_Controller.Left_Bumper);
         switchCameraButton = new JoystickAnalogButton(m_gamepad, Constants.Fight_Stick.Right_Trigger, 0.5, 1.0);
 
         climbButton.whenPressed(climbCommand);
+        abortClimbButton.whenPressed(abortClimbCommand) ;
         ejectButton.whenPressed(startEjectingCommand).whenReleased(stopEjectingCommand);
         switchCameraButton.whenPressed(switchCameraCommand);
 
@@ -359,7 +365,49 @@ public class RobotContainer {
         autonomousCommands.put("One Plus Two Low Goal", commandHolder) ;
 
         ///////////////////////////////////////////////////////
-        // Create One plus Two High Goal command
+        // Create Left Side command
+        ///////////////////////////////////////////////////////
+
+        thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints) ;
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        trajectory = trajectories.get("One_Ball_Low_Goal");
+        pathCommand = new PPMecanumControllerCommand(
+                trajectory,
+                m_robotDrive::getPose,
+                DriveConstants.kDriveKinematics,
+                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                thetaController,
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                m_robotDrive::setWheelSpeeds,
+                cargoPoints ,
+                m_robotDrive ,
+                m_vision
+                );
+
+        initialPose = new Pose2d(trajectory.getInitialPose().getTranslation(), ((PathPlannerState) trajectory.getStates().get(0)).holonomicRotation);
+
+        autoCommand = new SequentialCommandGroup(
+                // Shoot, Follow Path (1 ball) With Vision, Shoot
+                new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                new StopShooting(m_shooterIndex),
+                new GotoIntakePosition(m_shooterIndex).andThen(new WaitCommand(Constants.AutoConstants.AutoIndexLowerTimeout)), 
+                new StartIntake(m_shooterIndex, m_intake),
+                pathCommand,
+//                new StopIntake(m_intake, m_shooterIndex),
+                new GotoShootingPosition(m_shooterIndex).andThen(new WaitCommand(Constants.AutoConstants.AutoIndexRaiseTimeout)),
+                new StopIntake(m_intake, m_shooterIndex),
+                new StartShootingLow(m_shooterIndex).withTimeout(Constants.AutoConstants.AutoShootingTimeout),
+                new StopShooting(m_shooterIndex)
+        );
+
+        commandHolder = new AutonomousCommandHolder() ;
+        commandHolder.initialPose = initialPose ;
+        commandHolder.autonomousCommand = autoCommand ;
+        autonomousCommands.put("Left Side", commandHolder) ;
+
+        ///////////////////////////////////////////////////////
+        // Create One plus Two Low Goal Human Station command
         ///////////////////////////////////////////////////////
 
         thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints) ;
@@ -398,7 +446,7 @@ public class RobotContainer {
         commandHolder = new AutonomousCommandHolder() ;
         commandHolder.initialPose = initialPose ;
         commandHolder.autonomousCommand = autoCommand ;
-        autonomousCommands.put("One Plus Two High Goal", commandHolder) ;
+        autonomousCommands.put("Human Player Station", commandHolder) ;
 
         // ///////////////////////////////////////////////////////
         // // Create Five Ball

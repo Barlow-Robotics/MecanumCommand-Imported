@@ -60,6 +60,12 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
 
+        if ( m_robotContainer.m_gamepad.getPOV(0) == 0.0) {
+            m_robotContainer.m_armBar.rotateGripperArmDegree(m_robotContainer.m_armBar.getArmAngle() + 8.0);
+        } else if ( m_robotContainer.m_gamepad.getPOV(0) == 180.0) {
+            m_robotContainer.m_armBar.rotateGripperArmDegree(m_robotContainer.m_armBar.getArmAngle() - 8.0) ;
+        }
+
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
         // for ( int i = 0; i <=m_robotContainer.m_driverController.getAxisCount(); i++)

@@ -100,7 +100,7 @@ public class Climb extends CommandBase {
                 if (Math.abs(m_armBar.getArmAngle() - ArmBarConstants.MidBarRotationAngle) > ArmBarConstants.AngleTolerance) {
                     m_armBar.rotateGripperArmDegree(ArmBarConstants.MidBarRotationAngle);
                 } else {
-                    if (gamePad.getRawButton(Constants.Fight_Stick.Button_Y)) {
+                    if (gamePad.getRawButton(Constants.Logitech_F310_Controller.Button_X)) {
                         // System.out.format("Climb Button pressed in %s. Arm angle is %5.2f, pitch is %5.2f", currentState.name(), m_armBar.getArmAngle(), nav.getPitch()) ;
                         m_armBar.setHighSpeed();
                         latchedAngle = m_armBar.getArmAngle() ;

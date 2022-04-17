@@ -110,8 +110,8 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final int SH_Momentary = 4 ;
         public static final int SC_Button = 1 ;
 
-        public static final double Forward_Axis_Attenuation = 0.8 ;
-        public static final double Lateral_Axis_Attenuation = 0.8 ;
+        public static final double Forward_Axis_Attenuation = 1.0 ;
+        public static final double Lateral_Axis_Attenuation = 1.0 ;
         public static final double Yaw_Axis_Attenuation = 0.6 ;
 
     }
@@ -128,7 +128,7 @@ import edu.wpi.first.wpilibj.SerialPort;
         // Constants for buttons
         public static final int Button_A = 1;
         public static final int Button_B = 2;
-        public static final int Button_X = 2;
+        public static final int Button_X = 3;
         public static final int Button_Y = 4;
         public static final int Left_Bumper = 5;
         public static final int Right_Bumper = 6;
@@ -197,6 +197,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 
     public final class Fight_Stick {
         public static final int Button_Y = 4;
+        public static final int Button_B = 2 ;
         public static final int Left_Trigger = 2;
         public static final int Right_Trigger = 3;
     }
@@ -276,7 +277,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 //        public static final double CruiseVelocity = 100 * DegreePerSecond ;
         public static final double CruiseVelocity = 60 * DegreePerSecond ;
         public static final double MaxAcceleration = CruiseVelocity / 0.5 ;  // get to max velocity in 1/2 second
-        public static final double LettingGoCruiseVelocity = 45 * DegreePerSecond ;
+        public static final double LettingGoCruiseVelocity = 35 * DegreePerSecond ;
         public static final double MegaCruiseVelocity = 70 * DegreePerSecond ;
 
         public static final int AccelerationSmoothing = 2 ; 
@@ -294,7 +295,7 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double ReleaseMidBarAngle = 95 ; // wpk need to refine this number
 
         // This is the minimum angle required for the arm bar hook to clear the traverse bar
-        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 185 ;  // wpk need to refine this number
+        public static final double TraverseBarRotationAngle = HighBarRotationAngle + 180 ;  // wpk need to refine this number
 
         // This is the minimum angle required for the arm bar to release the hook from the high bar
 //        public static final double ReleaseHighBarAngle = ReleaseMidBarAngle + 180 ; // wpk need to refine this number
@@ -348,16 +349,16 @@ import edu.wpi.first.wpilibj.SerialPort;
         public static final double RevPerSecondVelocity = TotalUnitsPerRotation / 10.0 ; 
         public static final double RPM = RevPerSecondVelocity / 60.0 ;
         
-        public static final double IntakeMotorSpeed = 1800.0 * RPM;
+        public static final double IntakeMotorSpeed = 2500.0 * RPM;
      //   public static final double IntakeMotorSpeed = 1700.0 * RPM;
         public static final int mainFeedbackLoop = 0;
         public static final int encoderTimeout = 0;
 
-        public static final double closedVoltageRampingConstant = 0.05;
-        public static final double manualVoltageRampingConstant = 0.05;
+        public static final double closedVoltageRampingConstant = 0.0;
+        public static final double manualVoltageRampingConstant = 0.0;
         public static final double kF = 0.048;
         public static final double kP = 0.005;
-        public static final double kI = 0.0;
+        public static final double kI = 0.0001;
         public static final double kD = 0.0;
         public static final int PID_id = 0;
     }
@@ -379,16 +380,16 @@ import edu.wpi.first.wpilibj.SerialPort;
 
 //        public static final double FlyWheelMotorIntakeVelocity = -1800 * RPM;
 //        public static final double FlyWheelMotorIntakeVelocity = -1900 * RPM;
-        public static final double FlyWheelMotorIntakeVelocity = -2400 * RPM;
-        public static final double BeltMotorIntakeVelocity = 800 * RPM;
+        public static final double FlyWheelMotorIntakeVelocity = -2500 * RPM;
+        public static final double BeltMotorIntakeVelocity = 900 * RPM;
         // public static final double BeltMotorIntakeVelocity = 650 * RPM;
 
         public static final int ID_FlyWheelMotor = 8;
         public static final double FlyWheelMotorLowGoalShootingVelocity = 2500 * RPM;
         public static final double FlyWheelMinShootingSpeed =  FlyWheelMotorLowGoalShootingVelocity * 0.95;
-        public static final double BeltMotorLowGoalShootingVelocity = -FlyWheelMotorLowGoalShootingVelocity * 0.6;
+        public static final double BeltMotorLowGoalShootingVelocity = -FlyWheelMotorLowGoalShootingVelocity * 0.7;
 
-        public static final double FlyWheelMotorHighGoalShootingVelocity = 6000 * RPM;
+        public static final double FlyWheelMotorHighGoalShootingVelocity = 5750 * RPM;
 //        public static final double BeltMotorHighGoalShootingVelocity = -800 * RPM;
 //        public static final double BeltMotorHighGoalShootingVelocity = -1200 * RPM;
         public static final double BeltMotorHighGoalShootingVelocity = -1400 * RPM;

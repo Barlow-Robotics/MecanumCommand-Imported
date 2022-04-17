@@ -143,7 +143,7 @@ public class PPMecanumControllerCommand extends CommandBase {
         double cargoDistanceFromCenter = 0.0 ;
         Translation2d nearestCargoLocation = getNearbyCargoLocation(currentPose.getTranslation(), 2.0) ;
         if (nearestCargoLocation != null) {
-            if (m_vision.cargoIsVisible() & (m_vision.bbWidth() > 50 || m_vision.bbHeight()> 50)) {
+            if (m_vision.cargoIsVisible() & (m_vision.bbWidth() > 40 || m_vision.bbHeight()> 80)) {
                 if (!trackingCargo) {
                     m_cargoPID.reset();
                 }
