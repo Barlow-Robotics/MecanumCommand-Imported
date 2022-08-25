@@ -55,10 +55,10 @@ public class RobotContainer {
     // private final UnderGlow underGlow = new UnderGlow() ;
 
     // The driver's controller
-    Joystick m_driverController;
+    Joystick m_driverController; //controller 2
 
     // Gamepad
-    Joystick m_gamepad;
+    Joystick m_gamepad; //controller 1
 
     private JoystickButton intakeButton;
     private JoystickButton liftToShootingButton;
